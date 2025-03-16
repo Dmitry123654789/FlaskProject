@@ -1,0 +1,25 @@
+.tn-atom {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    line-height: 22px;
+}
+
+.href-title {
+    color: #636161;
+    text-decoration: none;
+}
+
+.buuton-whatcap {
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Montserrat',Arial,sans-serif;
+  line-height: 1.55;
+  font-weight: 600;
+  border-radius: 10px;
+  background-color: #35d847;
+  background-position: center center;
+  border-color: transparent;
+  border-style: solid;
+  transition: background-color 0.2s ease-in-out,color 0.2s ease-in-out,border-color 0.2s ease-in-out;
+}
