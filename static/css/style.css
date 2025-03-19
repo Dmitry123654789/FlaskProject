@@ -1,25 +1,52 @@
-.tn-atom {
-    display: table-cell;
-    vertical-align: middle;
-    width: 100%;
-    line-height: 22px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.href-title {
-    color: #636161;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #00ffff;
+    width: 1280px;
+    padding: 10px 20px 10px 20px;
+    border-radius: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    color: black;
+}
+
+.ul-nav-menu {
+    display: flex;
+    list-style-type: none;
+    height: 0px;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+.contact-button {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
     text-decoration: none;
 }
 
-.buuton-whatcap {
-  color: #ffffff;
-  font-size: 14px;
-  font-family: 'Montserrat',Arial,sans-serif;
-  line-height: 1.55;
-  font-weight: 600;
-  border-radius: 10px;
-  background-color: #35d847;
-  background-position: center center;
-  border-color: transparent;
-  border-style: solid;
-  transition: background-color 0.2s ease-in-out,color 0.2s ease-in-out,border-color 0.2s ease-in-out;
+.nav-menu {
+    padding: 10px 20px 10px 20px;
 }
