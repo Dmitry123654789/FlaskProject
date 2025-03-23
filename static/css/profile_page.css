@@ -1,0 +1,136 @@
+:root {
+    --text-color: #000;
+}
+
+* {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.profile-container {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 25px;
+    min-width: 300px;
+    height: max-content;
+}
+
+.profile-page__wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 30px 10%;
+
+    display: grid;
+    grid-template-columns: 300px auto;
+    column-gap: 30px;
+
+    background-color: #f1f1f1;
+}
+
+.profile-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-menu-item{
+    paddig: 10px 5px;
+    height: 40px;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.profile-menu-item a {
+    padding: 5px 10px;
+    display: flex;
+    width: max-content;
+    min-width: 150px;
+    color: var(--text-color);
+}
+
+.active a {
+    color: #000;
+    background-color: #bebebe;
+    border-radius: 8px;
+}
+
+.profile-sidebar-info__wrapper {
+    display: grid;
+    grid-template-columns: 50px auto;
+    column-gap: 20px;
+    margin-bottom: 10px;
+    padding: 10px 0;
+    height: 80px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 25%;
+}
+
+.profile-username {
+    height: max-content;
+    display: block;
+    margin: auto 0;
+}
+
+.content-label {
+    display: block;
+    height: max-content;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-last-order__wrapper {
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.order-card__wrapper {
+    display: grid;
+    grid-template-columns: auto auto auto;
+
+    margin-left: 20px;
+    padding: 10px 15px;
+    min-width: max-content;
+    width:  80%;
+    background-color: lightgray;
+    border-radius: 10px;
+}
+
+.order-card-link {
+    width: max-content;
+}
+
+.order-state {
+    display: block;
+    height: max-content;
+}
+
+.order-state img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+.order-state__text {
+    font-size: 18px;
+}
+
+.order-name {
+    font-size: 20px;
+    height: max-content;
+    margin: auto 8px;
+}
+
+.order-price {
+    font-size: 20px;
+    height: max-content;
+    margin: auto 0;
+}
+

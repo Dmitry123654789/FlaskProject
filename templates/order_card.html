@@ -1,0 +1,32 @@
+{% if order %}
+<a href="{{url_for('order', order_id=order.id)}}" class="order-card-link">
+<div class="order-card__wrapper">
+
+    <div class="order-state">
+        {% if order.status == 'construction' %}
+        <img src="{{url_for('static', filename='svg/order-wait.svg')}}" alt="собирается">
+        <div class="order-state__text">Заказ собирается</div>
+        {% elif order.status == 'ready' %}
+        <img src="{{url_for('static', filename='svg/order-warehouse.svg')}}" alt="готово к доставке">
+        <div class="order-state__text">Заказ готов</div>
+        {% elif order.status == 'sent' %}
+        <img src="{{url_for('static', filename='svg/order-onway.svg')}}" alt="в пути">
+        <div class="order-state__text">Заказ в пути</div>
+        {% elif order.status == 'done' %}
+        <img src="{{url_for('static', filename='svg/order-done.svg')}}" alt="завершён">
+        <div class="order-state__text">Заказ завершён</div>
+        {% endif %}
+
+    </div>
+    <div class="order-name">{{order.name}}</div>
+    <div class="order-price">{{order.price // 1000}} {{order.price % 1000}} ₽</div>
+</div>
+</a>
+{% else %}
+<div class="order-card__wrapper" style="height: 100px;">
+    <div class="order-state">
+    </div>
+    <div class="order-name">У вас пока нет заказов</div>
+    <div></div>
+</div>
+{% endif %}
