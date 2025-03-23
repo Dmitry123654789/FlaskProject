@@ -1,0 +1,153 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, Arial !important;
+    background-color: #ffffff;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    height: max-content;
+    width: 1280px;
+    padding: 10px 20px 10px 20px;
+    border-radius: 20px;
+    filter: brightness(100%)
+}
+
+.logo {
+    font-size: 24px;
+    color: black;
+    vertical-align: middle;
+
+}
+
+ul {
+    text-decoration: none;
+    color: black;
+}
+
+.ul-nav-menu {
+    display: flex;
+    list-style-type: none;
+    margin: 0px;
+}
+
+
+.contact-button {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.nav-menu {
+    padding: 10px 20px;
+    background-image: url('/static/img/home_page_photo.jpg');
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    max-height: 2268px;
+}
+
+
+.text-header {
+    color: white;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 72px;
+    line-height: 100%;
+    letter-spacing: -3px;
+}
+
+
+a {
+    font-family: Inter, Arial !important;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 140%;
+    letter-spacing: -1px;
+    text-decoration: none;
+    color: black;
+}
+
+.card {
+    padding: 25px 25px;
+    background: #FFFFFF;
+    border-radius: 30px;
+    margin: 25px 25px;
+    align-content: center;
+}
+
+.card-span {
+    font-weight: bold;
+    text-align: left;
+}
+
+.card-a {
+    text-align: left;
+}
+
+.cards {
+    padding-top: 0px;
+    padding-bottom: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.background-fill {
+    background: rgba(231, 233, 241, 1);
+}
+
+.card-contact {
+    border-radius: 15px;
+    min-width: 600px;
+    margin: 10px;
+}
+
+.cards-contact {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
+
+.card-service {
+    content:url(/static/img/home_page_photo.jpg);
+    border-radius: 15px;
+    padding: 5px;
+    max-width: 480px;
+    max-height: 348px;
+    transition: 1s;
+}
+.card-service:hover {
+    transform: scale(1.1);
+}
+@media (max-width: 768px) { /* На узких экранах (<768px) */
+    .cards-contact {
+        flex-direction: column; /* Меняем на колонку */
+        align-items: center; /* Центрируем */
+    }
+
+    .card-contact {
+    min-width: 300px;
+    }
+
+    .card-service {
+    max-width: 260px;
+        max-height: 330px;
+}
+}
