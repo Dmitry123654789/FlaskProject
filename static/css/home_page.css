@@ -1,9 +1,12 @@
 
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+div {
+    letter-spacing: 0;
 }
 
 body {
@@ -126,28 +129,81 @@ a {
 }
 
 .card-service {
-    content:url(/static/img/home_page_photo.jpg);
-    border-radius: 15px;
-    padding: 5px;
-    max-width: 480px;
-    max-height: 348px;
+    position: relative;
+    color: white;
+    line-height: 300px;
+    width: 380px;
+    height: 248px;
     transition: 1s;
+    border-radius: 15px;
+    background-size: cover;
+    background-position: center;
+    padding: 0px;
 }
+
+.text-card {
+    position: absolute;
+    width: 380px;
+    height: 248px;
+    background-size: cover;
+    padding-top: 70px;
+    padding-left: 20px;
+}
+
 .card-service:hover {
     transform: scale(1.1);
 }
-@media (max-width: 768px) { /* На узких экранах (<768px) */
+
+.cards-about {
+    display: flex;
+    flex-direction: row;
+}
+
+.card-about {
+    background-color: #FFFFFF;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px;
+    width: 200px;
+    margin-right: 10px;
+    text-align: left;
+}
+
+.text-about {
+    text-align: left;
+}
+@media (max-width: 768px) {
+    /* На узких экранах (<768px) */
     .cards-contact {
         flex-direction: column; /* Меняем на колонку */
         align-items: center; /* Центрируем */
     }
 
     .card-contact {
-    min-width: 300px;
+        min-width: 300px;
+        max-width: 300px;
     }
 
     .card-service {
-    max-width: 260px;
+        max-width: 260px;
         max-height: 330px;
-}
+    }
+
+    .text-header {
+        font-size: 25px;
+        letter-spacing: 0.2px
+    }
+
+    a {
+        font-size: 13px;
+        letter-spacing: 0.1px;
+    }
+
+    .card {
+        min-width: calc(100% / 2);
+    }
+
+    .cards-contact {
+        flex-direction: column;
+    }
 }
