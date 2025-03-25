@@ -38,11 +38,21 @@
     <div class="profile-container">
         <div class="profile-main__wrapper">
             {% block profile_content %}
-            <div class="profile-last-order__wrapper">
+            <div class="profile-main-section__wrapper">
                 <div class="content-label">
                     Последний заказ
                 </div>
                 {% include "order_card.html" with context%}
+            </div>
+            <div class="profile-main-section__wrapper">
+                <a href="tel: +79008007721">
+                    <button class="contact-button" type="button">
+                    <span class="content-label">
+                        Нужна помощь?
+                    </span>
+                        <span>Позвоните нам</span>
+                    </button>
+                </a>
             </div>
             {% endblock %}
         </div>

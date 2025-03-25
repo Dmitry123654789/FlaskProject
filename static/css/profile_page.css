@@ -21,8 +21,13 @@ a {
     height: max-content;
 }
 
+.profile-main__wrapper {
+    padding: 10px 20px;
+}
+
 .profile-page__wrapper {
     width: 100%;
+    min-height: 100vh;
     margin: 0;
     padding: 30px 10%;
 
@@ -30,7 +35,7 @@ a {
     grid-template-columns: 300px auto;
     column-gap: 30px;
 
-    background-color: #f1f1f1;
+    background-color: #e7e9f1;
 }
 
 .profile-menu ul {
@@ -87,9 +92,22 @@ a {
     margin-bottom: 10px;
 }
 
-.profile-last-order__wrapper {
+.contact-button {
+    display: grid;
+    grid-template-rows: auto auto;
+    text-align: left;
+    margin-left: 20px;
+    padding: 10px 15px;
+    min-width: max-content;
+    width:  80%;
+    background-color: lightgray;
+    border-radius: 10px;
+    border: none;
+}
+
+.profile-main-section__wrapper {
     padding: 0;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
 }
 
 .order-card__wrapper {
@@ -134,3 +152,62 @@ a {
     margin: auto 0;
 }
 
+
+.profile-info-group {
+    margin-bottom: 20px;
+}
+
+.profile-info-group__text {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.input-group {
+    width: 70%;
+    margin-left: 20px;
+}
+
+.form-control:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 .25rem rgba(25,25,25,.25);
+}
+.radio-group {
+    width: 100px;
+    display: grid;
+    grid-template-columns: auto auto;
+
+}
+
+.radio-group {
+    accent-color: black;
+}
+
+.submit__wrapper {
+    width: max-content;
+    margin: 0;
+}
+
+.submit__wrapper input {
+    font-weight: 600;
+    font-size: 18px;
+    color: #000;
+    width: 240px;
+    margin-left: 30px;
+    background-color: #bebebe;
+    border-color: #bebebe;
+}
+
+@media (max-width: 1050px) {
+    .order-card__wrapper {
+        grid-template-columns: auto !important;
+        grid-template-rows: 80px 30px 30px;
+    }
+    .order-name {
+        margin: 8px 0;
+    }
+    .input-group {
+        width: 100%;
+        margin-left: 0;
+    }
+}
