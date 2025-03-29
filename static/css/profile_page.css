@@ -17,7 +17,7 @@ a {
     background-color: white;
     padding: 15px 20px;
     border-radius: 25px;
-    min-width: 300px;
+    min-width: max-content;
     height: max-content;
 }
 
@@ -108,50 +108,8 @@ a {
 .profile-main-section__wrapper {
     padding: 0;
     margin-bottom: 25px;
-}
-
-.order-card__wrapper {
-    display: grid;
-    grid-template-columns: auto auto auto;
-
-    margin-left: 20px;
-    padding: 10px 15px;
     min-width: max-content;
-    width:  80%;
-    background-color: lightgray;
-    border-radius: 10px;
 }
-
-.order-card-link {
-    width: max-content;
-}
-
-.order-state {
-    display: block;
-    height: max-content;
-}
-
-.order-state img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 5px;
-}
-.order-state__text {
-    font-size: 18px;
-}
-
-.order-name {
-    font-size: 20px;
-    height: max-content;
-    margin: auto 8px;
-}
-
-.order-price {
-    font-size: 20px;
-    height: max-content;
-    margin: auto 0;
-}
-
 
 .profile-info-group {
     margin-bottom: 20px;
@@ -198,16 +156,218 @@ a {
     border-color: #bebebe;
 }
 
+.list-block__wrapper {
+    margin-top: 30px;
+    max-width: 50vw;
+    min-height: max-content;
+}
+
+.list-block__header {
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: auto auto auto auto;
+    min-width: max-content;
+    height: 65px;
+    background-color: lightgray;
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin-bottom: 30px;
+}
+
+.list-header-filter {
+    display: grid;
+    width: 150px;
+    height: 40px;
+    margin: auto 0;
+    padding: 0;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+    text-align: center;
+}
+
+.filter-button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.filter-button.active {
+    background-color: dodgerblue;
+    color: white;
+}
+.list-header-sortby__wrapper {
+    display: grid;
+    grid-template-columns: auto 150px 150px;
+    column-gap: 25px;
+    width: max-content;
+    height: 40px;
+    margin: auto 0;
+}
+
+.list-header-subtext {
+    display: grid;
+    width: max-content;
+    height: 40px;
+    margin: auto 0;
+    padding: 0;
+    align-items: center;
+    text-align: center;
+}
+
+.list-block__body {
+    width: 100%;
+    display: grid;
+    row-gap: 20px;
+}
+
+
+.order-card__wrapper {
+    margin-left: 20px;
+    min-width: max-content;
+    width:  80%;
+    background-color: lightgray;
+    border-radius: 10px;
+}
+
+.order-card {
+    display: grid;
+    grid-template-columns: auto auto auto;
+
+    padding: 10px 15px;
+    min-width: max-content;
+}
+
+.order-card-link {
+    width: max-content;
+}
+
+.order-state {
+    display: block;
+    height: max-content;
+}
+
+.order-state img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+.order-state__text {
+    font-size: 18px;
+}
+
+.order-name {
+    font-size: 20px;
+    height: max-content;
+    margin: auto 8px;
+}
+
+.order-price {
+    font-size: 20px;
+    height: max-content;
+    margin: auto 0;
+}
+
+/*NOTIFICATON SECTION*/
+.notification-card {
+    width: 100%;
+    min-height: 90px;
+    background-color: lightgray;
+    padding: 10px 15px;
+
+    box-shadow: 0 2px 5px rgba(15, 15, 15, 0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.notification-card .notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: red;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.notification-card.unread .status-dot {
+    display: block;
+}
+
+.notification-title {
+    flex-grow: 1;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.notification-card .date {
+    font-size: 12px;
+    color: gray;
+}
+
+.notification-preview {
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification-full-content {
+    display: none;
+}
+
+.notification-card.expanded .notification-preview {
+    display: none;
+}
+
+.notification-card.expanded .notification-full-content {
+    display: block;
+    margin-top: 10px;
+}
+
+.notification-full-text {
+    white-space: pre-wrap;
+}
+
+.notification-card.expanded {
+    padding-bottom: 15px;
+}
+
+.notification-card .full-date {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+}
+
+
 @media (max-width: 1050px) {
     .order-card__wrapper {
-        grid-template-columns: auto !important;
+        margin-left: 0;
+    }
+    .order-card {
+        grid-template-columns: auto;
         grid-template-rows: 80px 30px 30px;
     }
     .order-name {
         margin: 8px 0;
     }
+
     .input-group {
         width: 100%;
         margin-left: 0;
     }
+
 }

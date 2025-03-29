@@ -1,5 +1,72 @@
 {% extends 'profile.html' %}
 
 {% block profile_content %}
+<div class="profile-main-section__wrapper">
+    <div class="content-label">Уведомления</div>
+    <div class="list-block__wrapper">
+        <div class="list-block__header">
+            <div class="list-header-filter">
+                <button class="filter-button" data-filter="read" onclick="toggleFilter(this)">
+                    Непрочитанные
+                </button>
+            </div>
+            <div class="list-header-filter">
+                <button class="filter-button" data-filter="date" onclick="toggleFilter(this)">
+                    Сначала новые
+                </button>
+            </div>
+            <script>
+                function toggleFilter(button) {
+                    var filter = button.getAttribute('data-filter');
+                    button.classList.toggle('active');
+                    var cards = document.querySelectorAll('.notification-card');
+                    if (filter === 'read') {
+                        if (button.classList.contains('active')) {
+                            cards.forEach(function(card) {
+                                card.style.display = card.classList.contains('unread') ? 'flex' : 'none';
+                            })
+                        } else {
+                            cards.forEach(function(card) {
+                                card.style.display = 'flex';
+                            })
+                        }
+                    } else if (ffilter === 'date') {
+                        //                        TODO СОРТИРОВКА ПО ДАТЕ
+                    }
+                }
 
+            </script>
+        </div>
+        <div class="list-block__body">
+            {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification-card {% if not notification.read %}unread{% endif %}"
+                 onclick="toggleNotification(this)">
+                <div class="notification-header">
+                    {% if not notification.read %}
+                    <div class="status-dot"></div>
+                    {% endif %}
+                    <strong class="notification-title">{{ notification.title }}</strong>
+                    <span class="date short-date">{{ notification.date_short }}</span>
+                </div>
+                <p class="notification-preview">{{ notification.text }}</p>
+                <div class="notification-full-content">
+                    <p class="notification-full-text">{{ notification.text }}</p>
+                    <span class="date full-date">{{ notification.date_full }}</span>
+                </div>
+            </div>
+            {% endfor %}
+            <script>
+                function toggleNotification(card) {
+                    card.classList.toggle('expanded');
+                    //                      TODO ПРОВЕРКА НА НЕПРОЧИТАННОСТЬ И ОБНОВЛЕНИЕ В БД
+                }
+            </script>
+            {% else %}
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+</div>
 {% endblock%}

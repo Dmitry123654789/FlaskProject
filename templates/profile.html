@@ -22,9 +22,6 @@
                     <li class="profile-menu-item {% if '/orders' in request.path %}active{% endif %}"><a
                             href="{{ url_for('user_orders', user_id=user_id) }}">Заказы</a>
                     </li>
-                    <li class="profile-menu-item {% if '/questions' in request.path %}active{% endif %}"><a
-                            href="{{ url_for('user_questions', user_id=user_id) }}">Вопросы</a>
-                    </li>
                     <li class="profile-menu-item {% if '/notifications' in request.path %}active{% endif %}"><a
                             href="{{ url_for('user_notifications', user_id=user_id) }}">Уведомления</a>
                     </li>

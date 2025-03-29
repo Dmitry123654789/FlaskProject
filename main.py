@@ -1,6 +1,7 @@
 from Tools.scripts.make_ctype import method
 from flask import Flask, render_template, session
 from flask_login import login_required, LoginManager, current_user, user_unauthorized
+from jinja2.ext import debug
 
 from user_form import UserForm
 
@@ -52,21 +53,35 @@ def user_info(user_id):
 def user_orders(user_id):
     # if user_unauthorized or current_user.id != user_id and current_user.id not in admin_ids:
     #     return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    return render_template('profile_orders.html', user_id=user_id)
-
-
-@app.route('/profile/<int:user_id>/questions')
-def user_questions(user_id):
-    # if user_unauthorized or current_user.id != user_id and current_user.id not in admin_ids:
-    #     return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    return render_template('profile_questions.html', user_id=user_id)
+    orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
+              {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
+              {'status': 'construction', 'name': 'Шкаф-купе 175x75', 'price': 210000, 'id': 3}]
+    return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
 
 @app.route('/profile/<int:user_id>/notifications')
 def user_notifications(user_id):
     # if user_unauthorized or current_user.id != user_id and current_user.id not in admin_ids:
     #     return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    return render_template('profile_notifications.html', user_id=user_id)
+    notifications = [
+        {
+            'title': 'Новая акция!',
+            'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. 
+            
+                Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
+            'date_short': '29 мар',
+            'date_full': '29 марта 2025',
+            'read': True
+        },
+        {
+            'title': 'Новая акция!',
+            'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
+            'date_short': '29 мар',
+            'date_full': '29 марта 2025',
+            'read': False
+        },
+    ]
+    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 
 @app.route('/order/<int:order_id>')
@@ -84,6 +99,19 @@ def login(user_id):
 @app.route('/profile/<int:user_id>/logout')
 def logout(user_id):
     pass
+
+
+@app.route('/test')
+def test():
+    notifications = [
+        {
+            'title': 'Новая акция!',
+            'text': 'Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada',
+            'date_short': '29 мар',
+            'date_full': '29 марта 2025',
+            'read': True
+        }]
+    return render_template('notifications.html', notifications=notifications)
 
 
 if __name__ == '__main__':
