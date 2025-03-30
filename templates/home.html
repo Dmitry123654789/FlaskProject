@@ -2,10 +2,17 @@
 
 {% block content %}
 <div class="background-fill">
-<div align="center" class="nav-menu">
 
-    <header>
-        <div class="logo"><img width="150px" height="30px" src="/static/img/icon4.png"></div>
+    <div id="modalWin" class="modal">
+        <div class="modal-window">
+            <h1>Hi</h1>
+            <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">x</button>
+        </div>
+        <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
+    </div>
+
+    <header class="nav-menu">
+        <a href="/" class="logo"><img width="150px" height="30px" src="/static/img/icon4.png"></a>
         <nav>
             <ul class="ul-nav-menu">
                 <li style="margin: 0 15px;"><a href="#services">Наши услуги</a></li>
@@ -16,142 +23,152 @@
         </nav>
         <div>
             <a style="margin-right: 20px">+7 (999) 999-99-99</a>
-            <a class="contact-button" href="#contact">Связаться</a>
+            <a href="#" class="contact-button" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe>
+                Связаться
+            </a>
+
         </div>
     </header>
 
-    <div style="padding-top: 80px; max-width: 1184px"><a class="text-header">Изготовление корпусной мебели на заказ –
-        индивидуальность и качество!</a>
+    <div align="center" class="nav-menu-home">
+        <div style="padding-top: 150px; max-width: 1184px"><a class="text-header">Изготовление корпусной мебели на заказ
+            - индивидуальность и качество!</a>
+        </div>
+        <div style="padding-top: 20px; padding-bottom: 60px; max-width: 572px"><a style="color: white">Изготавливаем
+            уникальную корпусную
+            мебель на заказ по индивидуальным проектам.</a></div>
     </div>
-    <div style="padding-top: 20px; padding-bottom: 60px; max-width: 572px"><a style="color: white">Изготавливаем
-        уникальную корпусную
-        мебель на заказ по индивидуальным проектам.</a></div>
-</div>
 
-<div align="center" class="background-fill" style="padding-top: 100px;">
-    <div class="cards">
-        <div class="card" style="max-width: 280px">
-            <img width="100px" src="/static/img/xit.png">
-            <span class="card-span">Изготовление мебели на заказ – быстро и качественно!<br></span>
-            <a class="card-a">Изготавливаем мебель на заказ быстро, чтобы ваш интерьер стал идеальным раньше.</a>
-        </div>
-        <div class="card" style="max-width: 280px">
-            <img width="100px" src="/static/img/strelka.png">
-            <span class="card-span">Гарантия качества на заказную мебель<br></span>
-            <a class="card-a">Мы уверены в качестве своей работы, поэтому предоставляем гарантию на все изделия.</a>
-        </div>
-        <div class="card" style="max-width: 280px">
-            <img width="100px" src="/static/img/cemodan.png">
-            <span class="card-span">Инновационные решения в производстве мебели на заказ<br></span>
-            <a class="card-a">Индивидуальный подход к каждому проекту с использованием передовых технологий
-                производства.</a>
-        </div>
-        <div class="card" style="max-width: 280px">
-            <img width="100px" src="/static/img/mesage.png">
-            <span class="card-span">Изготовление корпусной мебели под ваши потребности<br></span>
-            <a class="card-a">Мы предлагаем персонализированный подход к каждому клиенту, помогая создать уникальную
-                мебель под ваш интерьер.</a>
-        </div>
-    </div>
-</div>
-
-<div align="center" class="background-fill" style="padding-top: 100px;" id="services">
-    <h2>Наши услуги</h2>
-    <div class="cards-contact">
-        <a href="/kitchen">
-            <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
-                <div class="text-card" style="width: max-content">Кухни на заказ</div>
+    <div align="center" class="background-fill" style="padding-top: 100px;">
+        <div class="cards">
+            <div class="card" style="max-width: 280px">
+                <img width="100px" src="/static/img/xit.png">
+                <span class="card-span">Изготовление мебели на заказ – быстро и качественно!<br></span>
+                <a class="card-a">Изготавливаем мебель на заказ быстро, чтобы ваш интерьер стал идеальным раньше.</a>
             </div>
-        </a>
-        <a href="/bedroom">
-            <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
-                <div class="text-card" style="width: max-content">Мебель для спальни</div>
+            <div class="card" style="max-width: 280px">
+                <img width="100px" src="/static/img/strelka.png">
+                <span class="card-span">Гарантия качества на заказную мебель<br></span>
+                <a class="card-a">Мы уверены в качестве своей работы, поэтому предоставляем гарантию на все изделия.</a>
             </div>
-        </a>
-        <a href="/living_room">
-            <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
-                <div class="text-card" style="width: max-content">Мебель для гостиной</div>
+            <div class="card" style="max-width: 280px">
+                <img width="100px" src="/static/img/cemodan.png">
+                <span class="card-span">Инновационные решения в производстве мебели на заказ<br></span>
+                <a class="card-a">Индивидуальный подход к каждому проекту с использованием передовых технологий
+                    производства.</a>
             </div>
-        </a>
-    </div>
-</div>
-
-<div align="center" class="background-fill" style="padding-top: 100px;" id="about">
-    <h2>О компании</h2>
-    <div class="about-container">
-        <div class="cards-column">
-            <div class="card-about">
-                <h3 style="font-size: 45px">1750+</h3>
-                <a class="text-about">постоянных клиентов</a>
-            </div>
-            <div class="card-about">
-                <h3 style="font-size: 45px">75+</h3>
-                <a class="text-about">клиентов ежемесячно</a>
-            </div>
-        </div>
-
-        <div class="about-text">
-            <p style="color: #FFFFFF">
-                Компания «Династия» уже 10 лет занимается изготовлением мебели на заказ.
-                За этот период мы накопили огромный опыт в создании качественной корпусной мебели.
-                Нам доверяют сотни клиентов – подтверждением этому служат многочисленные положительные отзывы.
-            </p>
-        </div>
-
-        <div class="cards-column">
-            <div class="card-about">
-                <h3 style="font-size: 45px">10 лет</h3>
-                <a class="text-about">оказываем наши услуги</a>
-            </div>
-            <div class="card-about">
-                <h3 style="font-size: 45px">999</h3>
-                <a class="text-about">отзывов о нас</a>
+            <div class="card" style="max-width: 280px">
+                <img width="100px" src="/static/img/mesage.png">
+                <span class="card-span">Изготовление корпусной мебели под ваши потребности<br></span>
+                <a class="card-a">Мы предлагаем персонализированный подход к каждому клиенту, помогая создать уникальную
+                    мебель под ваш интерьер.</a>
             </div>
         </div>
     </div>
-</div>
 
-<div class="carousel-container">
+    <div align="center" class="background-fill" style="padding-top: 100px;" id="services">
+        <h2>Наши услуги</h2>
+        <div class="cards-contact">
+            <a href="/kitchen">
+                <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="text-card" style="width: max-content">Кухни на заказ</div>
+                </div>
+            </a>
+            <a href="/bedroom">
+                <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="text-card" style="width: max-content">Мебель для спальни</div>
+                </div>
+            </a>
+            <a href="/living_room">
+                <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="text-card" style="width: max-content">Мебель для гостиной</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div align="center" class="background-fill" style="padding-top: 100px;" id="about">
+        <h2>О компании</h2>
+        <div class="about-container">
+            <div class="cards-column">
+                <div class="card-about">
+                    <h3 style="font-size: 45px">1750+</h3>
+                    <a class="text-about">постоянных клиентов</a>
+                </div>
+                <div class="card-about">
+                    <h3 style="font-size: 45px">75+</h3>
+                    <a class="text-about">клиентов ежемесячно</a>
+                </div>
+            </div>
+
+            <div class="about-text">
+                <p style="color: #FFFFFF">
+                    Компания «Династия» уже 10 лет занимается изготовлением мебели на заказ.
+                    За этот период мы накопили огромный опыт в создании качественной корпусной мебели.
+                    Нам доверяют сотни клиентов – подтверждением этому служат многочисленные положительные отзывы.
+                </p>
+            </div>
+
+            <div class="cards-column">
+                <div class="card-about">
+                    <h3 style="font-size: 45px">10 лет</h3>
+                    <a class="text-about">оказываем наши услуги</a>
+                </div>
+                <div class="card-about">
+                    <h3 style="font-size: 45px">999</h3>
+                    <a class="text-about">отзывов о нас</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="carousel-container" id="reviews">
+        <h2 align="center">Отзывы</h2>
         <div class="carousel">
             <!-- Testimonials will be dynamically added here -->
         </div>
         <button class="nav-button prev">&#8249;</button>
         <button class="nav-button next">&#8250;</button>
-</div>
-<script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
+    </div>
+    <script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
 
-<div class="background-fill" align="center" style="padding-top: 100px;" id="contacts">
-    <h2>Контакты</h2>
-    <div class="cards-contact">
-        <div>
-            <div class="card card-contact" align="left">
-                <a class="card-a">Телефон:</a>
-                <h4>+7 (999) 999-99-99</h4>
+    <div class="background-fill" align="center" style="padding-top: 100px;" id="contacts">
+        <h2>Контакты</h2>
+        <div class="cards-contact">
+            <div>
+                <div class="card card-contact" align="left">
+                    <a class="card-a">Телефон:</a>
+                    <h4>+7 (999) 999-99-99</h4>
+                </div>
+            </div>
+            <div>
+                <div class="card card-contact" align="left">
+                    <a class="card-a">Почта:</a>
+                    <h4>info@info.ru</h4>
+                </div>
             </div>
         </div>
-        <div>
-            <div class="card card-contact" align="left">
-                <a class="card-a">Почта:</a>
-                <h4>info@info.ru</h4>
+        <div class="cards-contact">
+            <div>
+                <div class="card card-contact" align="left">
+                    <a class="card-a">Адрес:</a>
+                    <h4>г. Краснодар, ул. Важная, 99</h4>
+                </div>
+            </div>
+            <div>
+                <div class="card card-contact" align="left">
+                    <a class="card-a">Часы работы:</a>
+                    <h4>C 10:00 до 20:00 Без выходных</h4>
+                </div>
             </div>
         </div>
+        <script type="text/javascript" charset="utf-8" async
+                src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A40d4db7fcb7fa95321f367bee4f27dcb51bb6e52e224fdedb729d0a3e81f2ada&amp;width=1220&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+
     </div>
-    <div class="cards-contact">
-        <div>
-            <div class="card card-contact" align="left">
-                <a class="card-a">Адрес:</a>
-                <h4>г. Краснодар, ул. Важная, 99</h4>
-            </div>
-        </div>
-        <div>
-            <div class="card card-contact" align="left">
-                <a class="card-a">Часы работы:</a>
-                <h4>C 10:00 до 20:00 Без выходных</h4>
-            </div>
-        </div>
+    <div align="center" style="padding: 35px 0 5px; height: max-content;">
+        <a>ООО "Династия" </a>
     </div>
-    <script type="text/javascript" charset="utf-8" async
-            src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A40d4db7fcb7fa95321f367bee4f27dcb51bb6e52e224fdedb729d0a3e81f2ada&amp;width=1220&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
-</div>
+    <script src="/static/js/easy-togler.js"></script>
 </div>
 {% endblock %}

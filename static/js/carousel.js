@@ -4,8 +4,8 @@ const nextBtn = document.querySelector('.next');
 
 const testimonials = [
     {
-        name: "John Doe",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        name: "Поддубный Дмитрий",
+        text: "Высокое качество обслуживание, быстрое и качественное выполнение заказов."
     },
     {
         name: "Jane Smith",
@@ -31,7 +31,7 @@ function createTestimonialElement(testimonial, index) {
     const div = document.createElement('div');
     div.className = 'testimonial';
     div.innerHTML = `
-        <img src="/static/img/icon1.png">
+        <img src="/static/img/icon_avatar.png">
         <h3>${testimonial.name}</h3>
         <p>${testimonial.text}</p>
     `;
