@@ -51,8 +51,12 @@ ul {
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;
+    transition: 0.3s;
 }
 
+.contact-button:hover {
+    background: darkred;
+}
 .nav-menu {
     padding: 10px 20px;
     width: calc(80%);
@@ -75,6 +79,7 @@ ul {
     max-height: 2268px;
     background-image: url('/static/img/home_page_photo.jpg');
 }
+
 .text-header {
     color: white;
     font-weight: 700;
@@ -98,11 +103,13 @@ ul {
     opacity: 0;
     transition: all .09s ease-out;
 }
+
 .modal.show {
     visibility: visible;
     z-index: 1000;
     opacity: 1;
 }
+
 .modal .overlay {
     position: absolute;
     top: 0;
@@ -114,10 +121,39 @@ ul {
     z-index: 0;
 }
 
+.modal h2 {
+    margin-bottom: 15px;
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal .send_mess {
+    width: 100%;
+    padding: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+.modal .send_mess:hover {
+    background: darkred;
+}
+
 .modal-window {
     position: relative;
     z-index: 2;
-    width: 300px;
+    width: 400px;
     border-radius: 10px;
     box-shadow: 0 10px 15px rgba(0, 0, 0, .4);
     background-color: #FFFFFF;
@@ -270,7 +306,7 @@ a {
     padding: 40px;
     background-color: white;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     margin: 0 10px;
     transition: all 0.3s ease;
 }
@@ -299,20 +335,32 @@ a {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     border: none;
     font-size: 24px;
     padding: 15px;
     cursor: pointer;
     border-radius: 50%;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     z-index: 10;
 }
 
+#telephone {
+    outline: 0;
+}
+
+#telephone:valid {
+    border-color: green;
+}
+
+#telephone:focus:invalid {
+    border-color: red;
+}
+
 .nav-button:hover {
     background-color: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .prev {
@@ -380,7 +428,7 @@ a {
         flex-direction: column;
     }
 
-     .about-container {
+    .about-container {
         flex-direction: column;
         align-items: center;
     }
