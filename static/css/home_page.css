@@ -57,6 +57,7 @@ ul {
 .contact-button:hover {
     background: darkred;
 }
+
 .nav-menu {
     padding: 10px 20px;
     width: calc(80%);
@@ -160,7 +161,7 @@ ul {
     padding: 30px;
 }
 
-.btn-close {
+.modal-window .btn-close {
     position: absolute;
     border: none;
     background: none;
@@ -169,10 +170,29 @@ ul {
     top: 20px;
 }
 
-.btn-close:hover {
+.modal-window .btn-close:hover {
     opacity: 1;
 }
 
+.btn-thread-line {
+    left: 30px;
+    top: 20px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #5c6063;
+    border-color: white;
+    border-radius: 6px;
+}
+
+.btn-thread-line:hover {
+    opacity: 0.8;
+}
+
+.offcanvas-body * {
+    color: white;
+    margin: 10px 15px;
+}
 a {
     font-family: Inter, Arial !important;
     font-weight: 500;

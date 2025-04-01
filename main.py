@@ -7,6 +7,10 @@ app = Flask(__name__)
 def home_page():
     return render_template('home.html')
 
+@app.route('/portfolio')
+def portfolio():
+    return render_template('portfolio.html')
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

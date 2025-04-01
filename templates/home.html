@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="background-fill">
-
     <div id="modalWin" class="modal">
         <div class="modal-window">
             <h2>Оставить заявку на заказ</h2>
@@ -10,21 +9,24 @@
             <input type="text" placeholder="Имя" required>
 
             <a><a style="color: red">*</a> Номер телефона</a>
-            <input type="tel" placeholder="Телефон" id="telephone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" value="" required>
+            <input type="tel" placeholder="Телефон" id="telephone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" value=""
+                   required>
 
             <a>Критерии заказа</a>
             <textarea class="form-control" aria-label="With textarea"></textarea>
 
             <button class="send_mess">Отправить заказ</button>
             <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">x</button>
-            <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;">В течении дня наш сотрудник свяжется с вами по WhatsApp</a>
+            <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;">В течении дня наш сотрудник свяжется с
+                вами по WhatsApp</a>
 
         </div>
         <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
     </div>
 
+
     <header class="nav-menu">
-        <a href="/" class="logo"><img width="150px" height="30px" src="/static/img/icon4.png"></a>
+        <a href="/"><img height="40" src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png" border="0" /></a>
         <nav>
             <ul class="ul-nav-menu">
                 <li style="margin: 0 15px;"><a href="#services">Наши услуги</a></li>
@@ -43,6 +45,13 @@
     </header>
 
     <div align="center" class="nav-menu-home">
+        <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                aria-controls="staticBackdrop">
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
+                <path style="fill: white;"
+                      d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"></path>
+            </svg>
+        </button>
         <div style="padding-top: 150px; max-width: 1184px"><a class="text-header">Изготовление корпусной мебели на заказ
             - индивидуальность и качество!</a>
         </div>
