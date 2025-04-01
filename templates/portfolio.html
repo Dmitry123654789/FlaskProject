@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="{{ url_for('static', filename='css/portfolio.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="background-fill">
-    <div style="height: 100%">
+    <div style="height: 100%; padding-top: 25px">
         <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
                 aria-controls="staticBackdrop">
             <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
@@ -13,10 +17,42 @@
     </div>
 
     <div align="center">
-        <a href="/"><img src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png" border="0" /></a>
+        <a href="/"><img
+                src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
+                border="0"/></a>
     </div>
-    <div>
+    <div class="list-block__header">
+        <div class="list-header-filter">
+        <button class="filter-button" data-filter="read" onclick="toggleFilter(this)">
+            Непрочитанные
+        </button>
+        </div>
+        <div class="list-header-filter">
+        <button class="filter-button" data-filter="read" onclick="toggleFilter(this)">
+            Непрочитанные
+        </button>
+        </div>
+        <script>
+                function toggleFilter(button) {
+                    var filter = button.getAttribute('data-filter');
+                    button.classList.toggle('active');
+                    var cards = document.querySelectorAll('.notification-card');
+                    if (filter === 'read') {
+                        if (button.classList.contains('active')) {
+                            cards.forEach(function(card) {
+                                card.style.display = card.classList.contains('unread') ? 'flex' : 'none';
+                            })
+                        } else {
+                            cards.forEach(function(card) {
+                                card.style.display = 'flex';
+                            })
+                        }
+                    } else if (ffilter === 'date') {
 
+                    }
+                }
+
+            </script>
     </div>
 </div>
 {% endblock %}

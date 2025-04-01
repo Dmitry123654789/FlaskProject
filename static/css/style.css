@@ -1,0 +1,29 @@
+a {
+    font-family: Inter, Arial !important;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 140%;
+    letter-spacing: -1px;
+    text-decoration: none;
+    color: black;
+}
+
+.btn-thread-line {
+    left: 30px;
+    top: 20px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #5c6063;
+    border-color: white;
+    border-radius: 6px;
+}
+
+.btn-thread-line:hover {
+    opacity: 0.8;
+}
+
+.background-fill {
+    background: rgba(231, 233, 241, 1);
+}

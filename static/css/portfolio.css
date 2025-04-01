@@ -1,0 +1,37 @@
+.list-header-filter {
+    display: grid;
+    width: 150px;
+    height: 40px;
+    margin: auto 0;
+    padding: 0;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+    text-align: center;
+    margin-right: 20px;
+}
+
+.filter-button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.filter-button.active {
+    background-color: dodgerblue;
+    color: white;
+}
+
+.list-block__header {
+    display: flex;
+    justify-content: start;
+    min-width: max-content;
+    height: 65px;
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin: 30px 35px 30px 15px;
+}
