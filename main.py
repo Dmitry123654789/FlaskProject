@@ -1,7 +1,4 @@
-from Tools.scripts.make_ctype import method
-from flask import Flask, render_template, session
-from flask_login import login_required, LoginManager, current_user, user_unauthorized
-from jinja2.ext import debug
+from flask import Flask, render_template
 
 from user_form import UserForm
 
@@ -24,7 +21,6 @@ def user_info(user_id):
     # if method == 'GET':
     #  TODO: подключение к БД и получение информации о пользователе
     # user = db_session.get(User, user_id)
-    #
     # form.phone_number.data = user.phone_number
     # form.email.data = user.email
     # form.surname.data = user.surname
