@@ -1,58 +1,73 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link href="{{ url_for('static', filename='css/portfolio.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/portfolio.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="background-fill">
-    <div style="height: 100%; padding-top: 25px">
-        <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
-                aria-controls="staticBackdrop">
-            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
-                <path style="fill: white;"
-                      d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"></path>
-            </svg>
-        </button>
-    </div>
-
-    <div align="center">
-        <a href="/"><img
-                src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
-                border="0"/></a>
-    </div>
-    <div class="list-block__header">
-        <div class="list-header-filter">
-        <button class="filter-button" data-filter="read" onclick="toggleFilter(this)">
-            Непрочитанные
-        </button>
+    <div class="background-fill">
+        <div align="center" class="nav-menu-home">
+            <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                    aria-controls="staticBackdrop">
+                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
+                    <path style="fill: white;"
+                          d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"></path>
+                </svg>
+            </button>
         </div>
-        <div class="list-header-filter">
-        <button class="filter-button" data-filter="read" onclick="toggleFilter(this)">
-            Непрочитанные
-        </button>
+
+        <div align="center">
+            <a href="/"><img
+                    src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
+                    border="0"/></a>
         </div>
-        <script>
-                function toggleFilter(button) {
-                    var filter = button.getAttribute('data-filter');
-                    button.classList.toggle('active');
-                    var cards = document.querySelectorAll('.notification-card');
-                    if (filter === 'read') {
-                        if (button.classList.contains('active')) {
-                            cards.forEach(function(card) {
-                                card.style.display = card.classList.contains('unread') ? 'flex' : 'none';
-                            })
-                        } else {
-                            cards.forEach(function(card) {
-                                card.style.display = 'flex';
-                            })
-                        }
-                    } else if (ffilter === 'date') {
+        <div class="list-block__header">
 
-                    }
-                }
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-kichen" checked>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-kichen">Кухни на заказ</label>
 
-            </script>
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-bed" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-bed">Мебель для спальни</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-iving" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-iving">Мебель для гостиной</label>
+
+        </div>
+
+        <div id="modalWin" class="modal">
+            <div class="modal-window">
+                <button class="modal-prev">&#10094;</button>
+                <img src="">
+                <button class="modal-next">&#10095;</button>
+            </div>
+            <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
+        </div>
+
+        <div class="galery-conteiner">
+            <div class="gallery">
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/home_page_photo.jpg" alt="Фото 1"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/abot_company2.jpg" alt="Фото 2"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/mesage.png" alt="Фото 4"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/home_page_photo.jpg" alt="Фото 3"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/home_page_photo.jpg" alt="Фото 5"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/abot_company2.jpg" alt="Фото 6"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/home_page_photo.jpg" alt="Фото 7"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/icon_avatar.png" alt="Фото 8"></a>
+                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
+                        src="/static/img/home_page_photo.jpg" alt="Фото 9"></a>
+
+            </div>
+        </div>
+
+        <script src="/static/js/portfolio.js"></script>
+        <script src="/static/js/easy-togler.js"></script>
     </div>
-</div>
 {% endblock %}

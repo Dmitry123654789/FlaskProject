@@ -9,6 +9,15 @@ a {
     color: black;
 }
 
+div {
+    letter-spacing: 0;
+}
+
+.offcanvas-body * {
+    color: white;
+    margin: 10px 15px;
+}
+
 .btn-thread-line {
     left: 30px;
     top: 20px;

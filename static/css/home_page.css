@@ -171,11 +171,6 @@ ul {
     opacity: 1;
 }
 
-.offcanvas-body * {
-    color: white;
-    margin: 10px 15px;
-}
-
 .card {
     padding: 25px 25px;
     background: #FFFFFF;
