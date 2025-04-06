@@ -1,8 +1,18 @@
+from Tools.scripts.make_ctype import method
 from flask import Flask, render_template
 
 from user_form import UserForm
 
 app = Flask(__name__)
+
+
+@app.route('/registration', methods=['GET', 'POST'])
+def registration():
+    form = UserForm()
+    if form.validate_on_submit():
+        print('validated')
+        return render_template('registration.html', form=form)
+    return render_template('registration.html', form=form)
 
 
 @app.route('/profile/<int:user_id>')
@@ -85,29 +95,6 @@ def order(order_id):
     # if user_unauthorized or current_user.id != user_id and current_user.id not in admin_ids:
     #     return render_template('fail.html', message='У вас нет прав на просмотр этого заказа')
     return render_template('order_page.html', order_id=order_id)
-
-
-@app.route('/profile/<int:user_id>/login')
-def login(user_id):
-    pass
-
-
-@app.route('/profile/<int:user_id>/logout')
-def logout(user_id):
-    pass
-
-
-@app.route('/test')
-def test():
-    notifications = [
-        {
-            'title': 'Новая акция!',
-            'text': 'Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada',
-            'date_short': '29 мар',
-            'date_full': '29 марта 2025',
-            'read': True
-        }]
-    return render_template('notifications.html', notifications=notifications)
 
 
 if __name__ == '__main__':
