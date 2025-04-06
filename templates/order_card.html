@@ -1,6 +1,6 @@
 {% if order %}
 
-<div class="order-card__wrapper">
+<div class="order-card__wrapper {{order.status}}">
     <a href="{{url_for('order', order_id=order.id)}}" class="order-card-link">
         <div class="order-card">
             <div class="order-state">

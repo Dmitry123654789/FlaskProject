@@ -6,7 +6,7 @@
     <div class="list-block__wrapper">
         <div class="list-block__header">
             <div class="list-header-filter">
-                <button class="filter-button" data-filter="completed" onclick="toggleFilter(this)">
+                <button class="filter-button" data-filter="done" onclick="toggleFilter(this)">
                     Завершённые
                 </button>
             </div>
@@ -15,7 +15,7 @@
                     Сортировать по:
                 </div>
                 <div class="list-header-filter">
-                    <button class="filter-button" data-filter="date" onclick="toggleFilter(this)">
+                    <button class="filter-button active" data-filter="date" onclick="toggleFilter(this)">
                         Дате
                     </button>
                 </div>
@@ -28,7 +28,36 @@
             <script>
                 function toggleFilter(button) {
                     var filter = button.getAttribute('data-filter');
-                    button.classList.toggle('active');
+                    if (filter === 'done') {
+                        button.classList.toggle('active');
+                    } else {
+                        var dateFilterButton = document.querySelector('.filter-button[data-filter="date"]');
+                        var priceFilterButton = document.querySelector('.filter-button[data-filter="price"]');
+                        dateFilterButton.classList.remove('active')
+                        priceFilterButton.classList.remove('active')
+                        if (filter === 'date') {
+                            dateFilterButton.classList.add('active');
+                        } else if (filter === 'price') {
+                            priceFilterButton.classList.add('active');
+                        }
+                    }
+
+                    var cards = document.querySelectorAll('.order-card__wrapper');
+                    if (filter === 'done') {
+                        if (button.classList.contains('active')) {
+                            cards.forEach(function(card) {
+                                card.style.display = card.classList.contains('done') ? 'flex' : 'none';
+                            })
+                        } else {
+                            cards.forEach(function(card) {
+                                card.style.display = 'flex';
+                            })
+                        }
+                    } else if (filter === 'date' && button.classList.contains('active')) {
+                        //                        TODO СОРТИРОВКА ПО ДАТЕ
+                    } else if (filter === 'price' && button.classList.contains('active')) {
+                        //                        TODO СОРТИРОВКА ПО ЦЕНЕ
+                    }
                 }
             </script>
         </div>
