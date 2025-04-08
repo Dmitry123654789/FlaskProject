@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 a {
     font-family: Inter, Arial !important;
     font-weight: 500;

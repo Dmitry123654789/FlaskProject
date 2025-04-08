@@ -85,6 +85,7 @@ ul {
     font-size: 72px;
     line-height: 100%;
     letter-spacing: -3px;
+    padding-top: 150px
 }
 
 .modal {
@@ -194,6 +195,7 @@ ul {
     display: flex;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .card-contact {
@@ -253,15 +255,6 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-.card-about {
-    background-color: #FFFFFF;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-    width: 200px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .about-text {
@@ -354,6 +347,79 @@ ul {
     right: 20px;
 }
 
+.about-section {
+    padding: 100px 20px;
+    background-color: #e7eaf6;
+    text-align: center;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: url('/static/img/kitchen_bg.jpg') center/cover no-repeat;
+    border-radius: 30px;
+    padding: 50px 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.about-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 30px;
+}
+
+.about-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    color: white;
+}
+
+.card-about {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 15px;
+    min-width: 200px;
+    flex: 1 1 calc(50% - 30px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-about h3 {
+    font-size: 48px;
+    margin: 0;
+}
+
+.card-about .text-about {
+    font-size: 16px;
+    font-weight: 500;
+    display: block;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.about-text {
+    flex: 1 1 100%;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.nav-min-width {
+    visibility: hidden;
+}
+
 @media (min-width: 768px) {
     .carousel {
         display: flex;
@@ -377,7 +443,56 @@ ul {
 }
 
 @media (max-width: 768px) {
-    /* На узких экранах (<768px) */
+    .nav-menu {
+        visibility: hidden;
+    }
+
+    .nav-min-width {
+        visibility: visible;
+        width: auto;
+        margin: 10px 0 auto 7%;
+    }
+
+    .nav-min-width img {
+        height: 25px;
+        margin-right: 20px;
+    }
+
+    .text-header {
+        font-size: 25px;
+        letter-spacing: 0.2px;
+        padding-top: 80px
+    }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .cards .card {
+        flex: 0 0 calc(50% - 20px);
+        box-sizing: border-box;
+        margin: 25px 0;
+    }
+
+    .cards .card a,
+    .cards .card span {
+        max-width: 280px;
+    }
+
+
+
+
+    .card-about {
+        flex: 1 1 100%;
+    }
+
+    .about-text {
+        margin-top: 40px;
+    }
+
     .cards-contact {
         flex-direction: column; /* Меняем на колонку */
         align-items: center; /* Центрируем */
@@ -393,18 +508,10 @@ ul {
         max-height: 330px;
     }
 
-    .text-header {
-        font-size: 25px;
-        letter-spacing: 0.2px
-    }
 
     a {
         font-size: 13px;
         letter-spacing: 0.1px;
-    }
-
-    .card {
-        min-width: calc(100% / 2);
     }
 
     .cards-contact {

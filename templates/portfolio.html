@@ -16,57 +16,77 @@
             </button>
         </div>
 
-        <div align="center">
+        <div align="center" style="padding-top: 20px">
             <a href="/"><img
                     src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
                     border="0"/></a>
         </div>
         <div class="list-block__header">
 
-            <input type="checkbox" class="btn-check" id="btn-check-outlined-kichen" checked>
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-kichen"
+                   {% if 'kitchen' in active_filters %}checked{% endif %}>
             <label class="btn btn-outline-primary" for="btn-check-outlined-kichen">Кухни на заказ</label>
 
-            <input type="checkbox" class="btn-check" id="btn-check-outlined-bed" autocomplete="off" checked>
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-bed"
+                   {% if 'bed' in active_filters %}checked{% endif %}>
             <label class="btn btn-outline-primary" for="btn-check-outlined-bed">Мебель для спальни</label>
 
-            <input type="checkbox" class="btn-check" id="btn-check-outlined-iving" autocomplete="off" checked>
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-iving"
+                   {% if 'living' in active_filters %}checked{% endif %}>
             <label class="btn btn-outline-primary" for="btn-check-outlined-iving">Мебель для гостиной</label>
+
 
         </div>
 
         <div id="modalWin" class="modal">
+            <button class="modal-prev">&#10094;</button>
+            <button class="modal-next">&#10095;</button>
             <div class="modal-window">
-                <button class="modal-prev">&#10094;</button>
                 <img src="">
-                <button class="modal-next">&#10095;</button>
             </div>
             <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
         </div>
 
         <div class="galery-conteiner">
             <div class="gallery">
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/home_page_photo.jpg" alt="Фото 1"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/abot_company2.jpg" alt="Фото 2"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/mesage.png" alt="Фото 4"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/home_page_photo.jpg" alt="Фото 3"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/home_page_photo.jpg" alt="Фото 5"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/abot_company2.jpg" alt="Фото 6"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/home_page_photo.jpg" alt="Фото 7"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/icon_avatar.png" alt="Фото 8"></a>
-                <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe><img
-                        src="/static/img/home_page_photo.jpg" alt="Фото 9"></a>
-
+                {% for name in images %}
+                    {% set classes = [] %}
+                    {% if '_kitchen' in name %} {% set _ = classes.append('kitchen') %} {% endif %}
+                    {% if '_bed' in name %} {% set _ = classes.append('bed') %} {% endif %}
+                    {% if '_living' in name %} {% set _ = classes.append('living') %} {% endif %}
+                    <a href="#" class="gallery-item {{ classes | join(' ') }}" data-easy-toggle="#modalWin"
+                       data-easy-class="show" data-easy-rcoe>
+                        <img src="{{ name }}" alt="Фото">
+                    </a>
+                {% endfor %}
             </div>
+
         </div>
 
+        <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = {
+            kitchen: document.getElementById("btn-check-outlined-kichen"),
+            bed: document.getElementById("btn-check-outlined-bed"),
+            living: document.getElementById("btn-check-outlined-iving")
+        };
+
+        function updateGallery() {
+            const items = document.querySelectorAll(".gallery-item");
+            items.forEach(item => {
+                const isVisible =
+                    (checkboxes.kitchen.checked && item.classList.contains('kitchen')) ||
+                    (checkboxes.bed.checked && item.classList.contains('bed')) ||
+                    (checkboxes.living.checked && item.classList.contains('living'));
+                item.style.display = isVisible ? "" : "none";
+            });
+        }
+
+        Object.values(checkboxes).forEach(cb => cb.addEventListener("change", updateGallery));
+
+        updateGallery(); // Инициализация при загрузке
+    });
+</script>
         <script src="/static/js/portfolio.js"></script>
         <script src="/static/js/easy-togler.js"></script>
     </div>

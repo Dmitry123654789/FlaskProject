@@ -1,6 +1,10 @@
-from flask import Flask, render_template
+import os
+from random import shuffle
+
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
+my_dir = os.path.dirname(__file__)
 
 
 @app.route('/')
@@ -9,7 +13,20 @@ def home_page():
 
 @app.route('/portfolio')
 def portfolio():
-    return render_template('portfolio.html')
+    filters = request.args.getlist('filters')
+    all_categories = ['kitchen', 'bed', 'living']
+
+    if not filters:
+        filters = all_categories
+
+    direct = os.path.join('static', 'img', 'portfolio')
+    all_files = [os.path.join(direct, x) for x in os.listdir(direct)]
+
+    # Возвращаем всё, но фильтр передаём отдельно
+    shuffle(all_files)
+    return render_template('portfolio.html', images=all_files, active_filters=filters)
+
+
 
 
 if __name__ == '__main__':
