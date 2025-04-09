@@ -1,18 +1,40 @@
 from Tools.scripts.make_ctype import method
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, session
 
 from user_form import UserForm
 
 app = Flask(__name__)
 
 
-@app.route('/registration', methods=['GET', 'POST'])
-def registration():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     form = UserForm()
-    if form.validate_on_submit():
-        print('validated')
-        return render_template('registration.html', form=form)
-    return render_template('registration.html', form=form)
+    if request.method == 'POST':
+        #  TODO: подключение к БД и запись пользователя с валидацией данных
+        if form.validate():
+            return render_template('register.html', form=form)
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = UserForm()
+    if request.method == 'POST':
+        if request.form.get('verif_code', False):
+            #  TODO: регистрация пользователя
+            if request.form.get('verif_code', False) == session.get('verification_code', '00000'):
+                return redirect('/')
+            return render_template('login.html', form=form, log_status='waiting_for_code', verif_error='Неверный код')
+        else:
+            if form.phone_number.validate(form):
+                session['verification_code'] = '12345'
+                return render_template('login.html', form=form, log_status='waiting_for_code')
+    return render_template('login.html', form=form, log_status='password')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    redirect('/')
 
 
 @app.route('/profile/<int:user_id>')
@@ -40,18 +62,20 @@ def user_info(user_id):
     # form.sex.data = user.sex
     # form.address.data = user.address
 
-    # if form.validate_on_submit():
-    #     #  TODO: подключение к БД и получение информации о пользователе
-    #     # user = db_session.get(User, user_id)
-    #     if user:
-    #         user.phone_number = form.phone_number.data
-    #         user.email = form.email.data
-    #         user.surname = form.surname.data
-    #         user.name = form.name.data
-    #         user.patronymic = form.patronymic.data
-    #         user.birth_date = form.birth_date.data
-    #         user.sex = form.sex.data
-    #         user.address = form.address.data
+    if request.method == 'POST':
+        print('validated')
+        #  TODO: подключение к БД и получение информации о пользователе
+        # user = db_session.get(User, user_id)
+        # if user:
+        #     user.phone_number = form.phone_number.data
+        #     user.email = form.email.data
+        #     user.surname = form.surname.data
+        #     user.name = form.name.data
+        #     user.patronymic = form.patronymic.data
+        #     user.birth_date = form.birth_date.data
+        #     user.sex = form.sex.data
+        #     user.address = form.address.data
+        redirect('/logout')
     return render_template('profile_info.html', user_id=user_id, form=form)
 
 

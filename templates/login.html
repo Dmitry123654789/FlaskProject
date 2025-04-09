@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+    body {
+        background-color: #bebebe;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .register-form {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        min-width: 350px;
+        max-width: 700px;
+        width: 100%;
+    }
+    .form-control::placeholder {
+        color: #888;
+    }
+    .btn-register {
+        background-color: #888;
+        color: white;
+        border: none;
+    }
+    .btn-register:hover {
+        color: white;
+        background-color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-form">
+    <h2 class="text-center mb-4">{% if log_status == "password" %}Вход{% elif log_status == "waiting_for_code" %}Подтверждение{% endif %}</h2>
+    <form id="registerForm" method="post">
+        {% if log_status == "password" %}
+        <div class="form-group mb-2">
+            {{ form.phone_number(class="form-control", placeholder="Номер телефона") }}
+            {% for error in form.phone_number.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% elif log_status == "waiting_for_code" %}
+        <div class="mb-2">Мы отправили на ваш номер телефона код подтверждения</div>
+        <div class="form-group mb-2">
+            <input type="text" name="verif_code" id="verif_code" class="form-control" placeholder="Код подтверждения">
+            {% if verif_error %}
+            <div class="invalid-feedback d-block">{{ verif_error }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-block btn-register">Вход</button>
+    </form>
+</div>
+{% endblock %}

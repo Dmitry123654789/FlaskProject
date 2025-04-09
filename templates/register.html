@@ -9,7 +9,7 @@
         height: 100vh;
         margin: 0;
     }
-    .registration-form {
+    .register-form {
         background-color: white;
         padding: 30px;
         border-radius: 8px;
@@ -33,9 +33,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="registration-form">
+<div class="register-form">
     <h2 class="text-center mb-4">Новый профиль</h2>
-    <form id="registrationForm">
+    <form id="registerForm" method="post">
         <div class="form-group mb-2">
             {{ form.phone_number(class="form-control", placeholder="Номер телефона") }}
             {% for error in form.phone_number.errors %}
@@ -54,8 +54,7 @@
             <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>
-        {{ form.submit(class="btn btn-block btn-register")}}
-        <button type="submit" class="btn btn-block btn-register">{{form.phone_number.errors}}</button>
+        <button type="submit" class="btn btn-block btn-register">Зарегистрироваться</button>
     </form>
 </div>
 {% endblock %}

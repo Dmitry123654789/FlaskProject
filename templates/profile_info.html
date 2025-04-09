@@ -3,6 +3,7 @@
 {% block profile_content %}
 <div class="profile-main-section__wrapper">
     <div class="content-label">Профиль</div>
+    <form id="profileForm" method="post">
     <div class="profile-info-group">
         <span class="profile-info-group__text">Контактные данные</span>
         <div class="input-group mb-3">
@@ -47,8 +48,9 @@
         </div>
     </div>
     <div class="submit__wrapper">
-        {{form.submit(class='btn btn-secondary save-btn input-group')}}
+        <input class="btn btn-secondary save-btn input-group" type="submit" value="Сохранить">
         <span id="save-status-text">{{status_text}}</span>
     </div>
+    </form>
 </div>
 {% endblock%}
