@@ -1,7 +1,8 @@
-from flask import Flask, make_response, jsonify
+from flask import Flask, jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
 from api.resource_order import OrdersListResource, OrdersResource
+from api.resource_product import ProductsListResource, ProductsResource
 from data import db_session
 
 app = Flask(__name__)
@@ -9,8 +10,13 @@ api = Api(app)
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
+# api заказов
 api.add_resource(OrdersListResource, '/api/orders')
 api.add_resource(OrdersResource, '/api/orders/<int:orders_id>')
+
+# api товаров
+api.add_resource(ProductsListResource, '/api/products')
+api.add_resource(ProductsResource, '/api/products/<int:products_id>')
 
 
 @app.errorhandler(HTTPException)

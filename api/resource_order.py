@@ -22,7 +22,7 @@ class OrdersResource(Resource):
         session = db_session.create_session()
         orders = session.get(Order, orders_id)
         if not orders:
-            raise NotFound('Не найден заказ ддля удаления')
+            raise NotFound('Не найден заказ для удаления')
         session.delete(orders)
         session.commit()
         return jsonify({'success': 'OK'})
@@ -32,10 +32,10 @@ class OrdersResource(Resource):
         db_sess = db_session.create_session()
         order = db_sess.get(Order, orders_id)
         if not order:
-            raise NotFound('Не найден заказ ддля изменения')
+            raise NotFound('Не найден заказ для изменения')
 
         elif all(key in args for key in
-                 ['id_product', 'id_user', 'status', 'price', 'create_date']) and len(args) == 5:
+                 ['id_product', 'id_user', 'status', 'price', 'create_date']):
             for key, value in args.items():
                 if key == 'create_date':
                     setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
@@ -60,7 +60,7 @@ class OrdersListResource(Resource):
             raise BadRequest('Empty request')
 
         elif all(key in args for key in
-                 ['id_product', 'id_user', 'status', 'price', 'create_date']) and len(args) == 5:
+                 ['id_product', 'id_user', 'status', 'price', 'create_date']):
             db_sess = db_session.create_session()
             orders = Order(
                 id_product=args['id_product'],
