@@ -46,7 +46,7 @@ class ProductsListResource(Resource):
         session = db_session.create_session()
         products = session.query(Product).all()
         return jsonify({'products': [item.to_dict(
-            only=('price', 'discount', 'title')) for item in products]})
+            only=('id', 'price', 'discount', 'title')) for item in products]})
 
     def post(self):
         args = parser.parse_args()
@@ -58,7 +58,7 @@ class ProductsListResource(Resource):
             products = Product(
                 title=args['title'],
                 discount=args['discount'],
-                price=args['price'],
+                price=args['price']
             )
             db_sess.add(products)
             db_sess.commit()

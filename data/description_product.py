@@ -5,7 +5,7 @@ from sqlalchemy import orm
 
 
 class DescriptionProduct(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'descriptions'
+    __tablename__ = 'description_product'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
