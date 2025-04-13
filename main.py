@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, make_response, jsonify
 from flask_restful import Api
-
+from werkzeug.exceptions import HTTPException
 from api.resource_order import OrdersListResource, OrdersResource
 from data import db_session
 
@@ -10,7 +10,29 @@ api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 api.add_resource(OrdersListResource, '/api/orders')
-api.add_resource(OrdersResource, '/api/users/<int:orders_id>')
+api.add_resource(OrdersResource, '/api/orders/<int:orders_id>')
+
+
+@app.errorhandler(HTTPException)
+def handle_http_exception(error):
+    """Обрабатывает стандартные HTTP-исключения Flask"""
+    response = jsonify({
+        'error': error.description,
+        'status_code': error.code
+    })
+    response.status_code = error.code
+    return response
+
+
+@app.errorhandler(Exception)
+def handle_generic_exception(error):
+    """Обрабатывает все остальные исключения (базовые Exception)"""
+    response = jsonify({
+        'error': 'Internal Server Error',
+        'message': str(error)
+    })
+    response.status_code = 500
+    return response
 
 
 def main():
