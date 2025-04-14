@@ -1,7 +1,7 @@
 from flask import make_response, jsonify
 
 
-def bad_request(*fields):
+def bad_request_response(*fields):
     if fields:
         return make_response(jsonify({'message': f'Неверно переданы аргументы запроса. Поля {", ".join(fields)}'}), 400)
     else:
