@@ -1,5 +1,6 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_restful import Api
+from requests import get
 from werkzeug.exceptions import HTTPException
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
@@ -45,11 +46,17 @@ def handle_generic_exception(error):
     response.status_code = 500
     return response
 
+@app.route('/catalog')
+def catalog():
+    products = get('http://localhost:8080/api/products').json()
+    return (render_template('catalog.html', products=products)
 
-def main():
-    db_session.global_init('db/dynasty.db')
-    app.run(port=8080, host='127.0.0.1')
+@app.route('/catalog/<product_id:int>'))
+def product(product_id):
+    products = get(f'http://localhost:8080/api/products/{product_id}').json()
+    return render_template('product.html', products=products)
 
 
 if __name__ == '__main__':
-    main()
+    db_session.global_init('db/dynasty.db')
+    app.run(port=8080, host='127.0.0.1')

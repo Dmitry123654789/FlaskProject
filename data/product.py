@@ -10,6 +10,7 @@ class Product(SqlAlchemyBase, SerializerMixin):
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     discount = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    path_images = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     def __repr__(self):
         return self.to_dict()
