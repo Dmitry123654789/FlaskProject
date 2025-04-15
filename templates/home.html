@@ -52,8 +52,9 @@
         </header>
 
         <header class="nav-menu nav-min-width">
-            <a href="/"><img src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
-                             border="0"/></a>
+            <a href="/"><img
+                    src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
+                    border="0"/></a>
             <div>
                 <a href="#" class="contact-button" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe>
                     Связаться
@@ -71,14 +72,14 @@
 
         <div align="center" class="nav-menu-home">
             <div>
-            <div style="max-width: 1184px"><a class="text-header">Изготовление корпусной мебели на
-                заказ
-                - индивидуальность и качество!</a>
-            </div>
-            <div style="padding-top: 20px; padding-bottom: 60px; max-width: 572px"><a style="color: white">Изготавливаем
-                уникальную корпусную
-                мебель на заказ по индивидуальным проектам.</a></div>
+                <div style="max-width: 1184px"><a class="text-header">Изготовление корпусной мебели на
+                    заказ
+                    - индивидуальность и качество!</a>
                 </div>
+                <div style="padding-top: 20px; padding-bottom: 60px; max-width: 572px"><a style="color: white">Изготавливаем
+                    уникальную корпусную
+                    мебель на заказ по индивидуальным проектам.</a></div>
+            </div>
         </div>
 
         <div align="center" class="background-fill" style="padding-top: 100px;">
@@ -208,9 +209,19 @@
                     </div>
                 </div>
             </div>
-            <script type="text/javascript" charset="utf-8" async
-                    src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A40d4db7fcb7fa95321f367bee4f27dcb51bb6e52e224fdedb729d0a3e81f2ada&amp;width=1220&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+            <div id="map-container">
+                <script>
+                    window.addEventListener('DOMContentLoaded', () => {
+                        const width = window.innerWidth * 0.7;
+                        const height = window.innerHeight * 0.5;
+                        const script = document.createElement('script');
 
+                        script.src = `https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A40d4db7fcb7fa95321f367bee4f27dcb51bb6e52e224fdedb729d0a3e81f2ada&width=${width}&height=${height}&lang=ru_RU&scroll=true`;
+
+                        document.getElementById('map-container').appendChild(script);
+                    });
+                </script>
+            </div>
         </div>
         <div align="center" style="padding: 35px 0 5px; height: max-content;">
             <a>ООО "Династия" </a>

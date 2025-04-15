@@ -21,9 +21,9 @@ def portfolio():
 
     direct = os.path.join('static', 'img', 'portfolio')
     all_files = [os.path.join(direct, x) for x in os.listdir(direct)]
+    shuffle(all_files)
 
     # Возвращаем всё, но фильтр передаём отдельно
-    shuffle(all_files)
     return render_template('portfolio.html', images=all_files, active_filters=filters)
 
 
