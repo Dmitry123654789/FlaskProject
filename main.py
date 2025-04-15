@@ -1,17 +1,15 @@
-from flask import Flask
+from flask import Flask, render_template, redirect, request, session
 from flask_restful import Api
 
 from api import users_api
 from data.db_session import global_init
-from Tools.scripts.make_ctype import method
-from flask import Flask, render_template, redirect, request, session
-
 from user_form import UserForm
 
 app = Flask(__name__)
 api = Api(app)
 api.add_resource(users_api.UserListResource, '/api/users')
 api.add_resource(users_api.UserResource, '/api/users/<int:user_id>')
+
 
 # @app.errorhandler(404)
 # def not_found(error):
@@ -21,7 +19,6 @@ api.add_resource(users_api.UserResource, '/api/users/<int:user_id>')
 # @app.errorhandler(400)
 # def bad_request(_):
 #     return make_response(jsonify({'error': 'Bad Request'}), 400)
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
