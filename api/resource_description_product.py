@@ -14,7 +14,7 @@ class DescriptionProductsResource(Resource):
         if not description_products:
             raise NotFound('Заказ не найден')
         return jsonify({'description_products': description_products.to_dict(
-            only=('id', 'id_product', 'description'))})
+            only=('id', 'description', 'size', 'type', 'material', 'color', 'style', 'features'))})
 
     def delete(self, description_products_id):
         session = db_session.create_session()
@@ -32,7 +32,7 @@ class DescriptionProductsResource(Resource):
         if not description_product:
             raise NotFound('Не найден описание товара для изменения')
 
-        elif all(key in args for key in ['id_product', 'description']):
+        elif all(key in args for key in ['description', 'size', 'type', 'material', 'color', 'style', 'features']):
             for key, value in args.items():
                 setattr(description_product, key, value)
             db_sess.commit()
@@ -46,18 +46,24 @@ class DescriptionProductsListResource(Resource):
         session = db_session.create_session()
         description_products = session.query(DescriptionProduct).all()
         return jsonify({'description_products': [item.to_dict(
-            only=('id', 'id_product', 'description')) for item in description_products]})
+            only=('id', 'description', 'size', 'type', 'material', 'color', 'style', 'features')) for item in
+            description_products]})
 
     def post(self):
         args = parser.parse_args()
         if not args:
             raise BadRequest('Empty request')
 
-        elif all(key in args for key in ['id_product', 'description']):
+        elif all(key in args for key in ['description', 'size', 'type', 'material', 'color', 'style', 'features']):
             db_sess = db_session.create_session()
             description_products = DescriptionProduct(
-                id_product=args['id_product'],
-                description=args['description']
+                description=args['description'],
+                size=args['size'],
+                type=args['type'],
+                material=args['material'],
+                color=args['color'],
+                style=args['style'],
+                features=args['features']
             )
             db_sess.add(description_products)
             db_sess.commit()

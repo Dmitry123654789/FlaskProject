@@ -49,12 +49,14 @@ def handle_generic_exception(error):
 @app.route('/catalog')
 def catalog():
     products = get('http://localhost:8080/api/products').json()
-    return (render_template('catalog.html', products=products)
+    return render_template('catalog.html', products=products)
 
-@app.route('/catalog/<product_id:int>'))
+@app.route('/catalog/<int:product_id>')
 def product(product_id):
-    products = get(f'http://localhost:8080/api/products/{product_id}').json()
-    return render_template('product.html', products=products)
+    prod = get(f'http://localhost:8080/api/products/{product_id}').json()['products']
+    descript = get(f'http://localhost:8080/api/descriptionproducts/{prod["id_description"]}').json()
+    print(descript)
+    return render_template('product.html', prod=prod)
 
 
 if __name__ == '__main__':

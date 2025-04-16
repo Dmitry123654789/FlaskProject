@@ -1,0 +1,87 @@
+.container {
+    padding: 60px 20px 20px;
+    margin: 0;
+}
+
+.content {
+    display: flex;
+    padding: 20px;
+    gap: 40px;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.left-block {
+    flex: 1;
+    position: relative;
+    display: flex;
+}
+
+.back-button {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    padding: 5px 10px;
+}
+
+.main-img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+.right-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    left: 100px;
+    position: relative;
+}
+
+.price, .order-button, .link-a {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.order-button {
+    cursor: pointer;
+}
+
+.link-a {
+    display: block;
+    color: black;
+}
+
+.card-title {
+    letter-spacing: inherit;
+}
+
+.discount-card::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+    display: inline-block;
+    background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22none%22%3E%3Cpath%20fill%3D%22%23F44%22%20fill-rule%3D%22evenodd%22%20d%3D%22m1.522%209.147-.74-.477a1.71%201.71%200%200%201-.53-2.33l.48-.785c.197-.322.282-.7.24-1.076L.875%203.57a1.71%201.71%200%200%201%201.501-1.883l.816-.095a1.71%201.71%200%200%200%201.022-.502L4.78.513a1.71%201.71%200%200%201%202.442%200l.566.577a1.71%201.71%200%200%200%201.022.502l.816.095a1.71%201.71%200%200%201%201.5%201.883l-.098.909c-.04.375.044.754.241%201.076l.48.786a1.71%201.71%200%200%201-.53%202.329l-.74.477a1.71%201.71%200%200%200-.69.88l-.28.818a1.71%201.71%200%200%201-2.19%201.055l-.744-.265a1.71%201.71%200%200%200-1.148%200l-.743.265a1.71%201.71%200%200%201-2.19-1.055l-.282-.817a1.71%201.71%200%200%200-.69-.881ZM8.398%204.69a.572.572%200%200%200-.807-.808l-3.995%204a.572.572%200%200%200%20.807.81L8.398%204.69ZM6.853%207.716c0-.474.384-.858.856-.858h.006a.857.857%200%200%201%200%201.715H7.71a.857.857%200%200%201-.856-.857ZM4.285%204a.857.857%200%200%200%200%201.715h.006A.857.857%200%200%200%204.29%204h-.006Z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E);
+    font-weight: 400;
+    font-variation-settings: "wght" 650;
+    font-size: 18px;
+    line-height: 24px;
+    color: #f44;
+}
+
+.previous {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f1f1f1;
+    color: black;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border-radius: 5px;
+}
+

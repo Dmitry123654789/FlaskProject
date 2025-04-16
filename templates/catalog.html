@@ -17,8 +17,8 @@
         <div class="card-container">
             {% for prod in products['products'] %}
                 <div class="card" style="width: 18rem;">
-                    <a href="{{ prod['id'] }}"><img
-                            src="{{ url_for('static', filename='img/catalog/' + prod['path_images']) }}"
+                    <a href="catalog/{{ prod['id'] }}"><img
+                            src="{{ url_for('static', filename='img/catalog/' + prod['path_images'].split(', ')[0]) }}"
                             class="card-img-top" alt="Изображение не найдено"></a>
                     <div class="card-body">
                         <h5 class="card-title">{{ prod['title'] }}</h5>
