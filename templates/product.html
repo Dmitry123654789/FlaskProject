@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="background-fill">
-{# стрелочка назад #}
+        {# стрелочка назад #}
         <a href="/catalog" class="previous">&laquo; Назад</a>
 
         <div class="container">
@@ -52,11 +52,11 @@
                     {# end carousel#}
                 </div>
                 <div class="right-block">
-                    <h5 class="card-title">{{ prod['title'] }}</h5>
+                    <h5 class="card-title" style="font-size: 35px;">{{ prod['title'] }}</h5>
                     {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
-                        <h5 style="font-size: 35px;" class="card-title">{{ prod['price'] }}₽</h5>
+                        <h5 style="font-size: 25px;" class="card-title">{{ prod['price'] }}₽</h5>
                     {% else %}
-                        <a class="card-title discount-card" style="color: red; font-size: 20px">{{ prod['price'] }}₽
+                        <a class="card-title discount-card" style="color: red; font-size: 25px">{{ prod['price'] }}₽
                             <s style="color: #9f9f9f;">{{ prod['discount'] }}₽</s>
                         </a>
 
@@ -66,7 +66,22 @@
                             корзину
                         </button>
                     </div>
-                    <a href="#" class="link-a">A</a>
+                    <div class="descript">
+                        {% set param = ['', 'Размеры', 'Тип', 'Материал', 'Цвет', 'Стиль', 'Особености'] %}
+                        {% for des in ['description', 'size', 'type', 'material', 'color', 'style', 'features'] %}
+                            {% if not descript[des] is none %}
+                                <div class="descript-row">
+                                    {% if des == 'description' %}
+                                        <div class="descript-key">Описание</div>
+                                        <div class="descript-value">{{ descript[des] }}</div>
+                                    {% else %}
+                                        <div class="descript-key">{{ param[loop.index - 1] }}</div>
+                                        <div class="descript-value">{{ descript[des] }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
