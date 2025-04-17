@@ -34,8 +34,14 @@
 
 {% block content %}
 <div class="register-form">
-    <h2 class="text-center mb-4">Новый профиль</h2>
+    {% if success %}
+    <h2 class="text-center mb-4">Успешно!</h2>
+    <p class="text-center">Вы успешно зарегистрировались.</p>
+    <a href="/"><button type="submit" class="btn btn-block btn-register">Вернуться на главный экран</button></a>
+    {% else %}
+    <h2 class="text-center mb-4">Новый профиль{{ form.csrf_token}}</h2>
     <form id="registerForm" method="post">
+        {{ form.hidden_tag() }}
         <div class="form-group mb-2">
             {{ form.phone_number(class="form-control", placeholder="Номер телефона") }}
             {% for error in form.phone_number.errors %}
@@ -56,5 +62,6 @@
         </div>
         <button type="submit" class="btn btn-block btn-register">Зарегистрироваться</button>
     </form>
+    {% endif %}
 </div>
 {% endblock %}

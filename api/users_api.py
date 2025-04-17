@@ -18,6 +18,8 @@ class UserListResource(Resource):
             filters.append(User.sex == request.args.get('sex'))
         if 'birthday' in request.args.keys() and request.args.get('birthday') == 'true':
             filters.append(User.birth_date == ddt.now())
+        if 'phone' in request.args.keys():
+            filters.append(User.phone == request.args.get('phone'))
         try:
             users = session.query(User).filter(*filters)
         except Exception as e:
@@ -36,7 +38,7 @@ class UserListResource(Resource):
         try:
             new_user = User(phone=args['phone'], surname=args['surname'], name=args['name'])
             sess = db_session.create_session()
-            if sess.get(User, args['phone']):
+            if sess.query(User).filter(User.phone == args['phone']).first():
                 return make_response(jsonify({'message': 'Пользователь с таким номером уже существует'}), 400)
             sess.add(new_user)
             sess.commit()
