@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/catalog.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+    <div class="background-fill">
+        <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                aria-controls="staticBackdrop">
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
+                <path style="fill: white;"
+                      d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"></path>
+            </svg>
+        </button>
+        <div class="card-container">
+            {% for prod in products['products'] %}
+                <div class="card" style="width: 18rem;">
+                    <a href="catalog/{{ prod['id'] }}"><img
+                            src="{{ url_for('static', filename='img/catalog/' + prod['path_images'].split(', ')[0]) }}"
+                            class="card-img-top" alt="Изображение не найдено"></a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ prod['title'] }}</h5>
+                        {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
+                            <h5 class="card-title">{{ prod['price'] }}₽</h5>
+                        {% else %}
+                            <a class="card-title discount-card"
+                               style="color: red">{{ prod['price'] }}₽</a>
+                            <s style="color: #9f9f9f;">{{ prod['discount'] }}₽</s>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

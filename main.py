@@ -7,6 +7,14 @@ from flask_login import current_user, user_unauthorized, login_manager
 from flask_restful import Api
 from flask_wtf.csrf import CSRFProtect
 from requests import post
+from flask import Flask, jsonify, render_template
+from flask_restful import Api
+from requests import get
+from werkzeug.exceptions import HTTPException
+from api.resource_order import OrdersListResource, OrdersResource
+from api.resource_product import ProductsListResource, ProductsResource
+from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
+from data import db_session
 
 from api import users_api
 from data.__all_models import *
@@ -23,6 +31,23 @@ api = Api(app)
 api.add_resource(users_api.UserListResource, '/api/users')
 api.add_resource(users_api.UserResource, '/api/users/<int:user_id>')
 
+# api заказов
+api.add_resource(OrdersListResource, '/api/orders')
+api.add_resource(OrdersResource, '/api/orders/<int:orders_id>')
+
+# api товаров
+api.add_resource(ProductsListResource, '/api/products')
+api.add_resource(ProductsResource, '/api/products/<int:products_id>')
+
+# api описания товаров
+api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
+api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:description_products_id>')
+
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     sess = create_session()
+#     return sess.get(users.User, int(user_id))
 
 @app.route('/')
 def home_page():
@@ -45,10 +70,43 @@ def portfolio():
     return render_template('portfolio.html', images=all_files, active_filters=filters)
 
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     sess = create_session()
-#     return sess.get(users.User, int(user_id))
+@app.errorhandler(HTTPException)
+def handle_http_exception(error):
+    """Обрабатывает стандартные HTTP-исключения Flask"""
+    response = jsonify({
+        'error': error.description,
+        'status_code': error.code
+    })
+    response.status_code = error.code
+    return response
+
+
+@app.errorhandler(Exception)
+def handle_generic_exception(error):
+    """Обрабатывает все остальные исключения (базовые Exception)"""
+    response = jsonify({
+        'error': 'Internal Server Error',
+        'message': str(error)
+    })
+    response.status_code = 500
+    return response
+
+
+@app.route('/catalog')
+def catalog():
+    products = get('http://localhost:8080/api/products').json()
+    return render_template('catalog.html', products=products)
+
+
+@app.route('/catalog/<int:product_id>')
+def product(product_id):
+    prod = get(f'http://localhost:8080/api/products/{product_id}').json()['products']
+    descript = get(f'http://localhost:8080/api/descriptionproducts/{prod["id_description"]}').json()[
+        'description_products']
+    products = get('http://localhost:8080/api/products').json()
+    return render_template('product.html', prod=prod, descript=descript, products=products)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = UserForm()
