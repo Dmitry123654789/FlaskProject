@@ -1,3 +1,7 @@
+import os
+from random import shuffle
+
+from flask import Flask, render_template, request
 from flask import Flask, render_template, redirect, request, session, url_for
 from flask_login import current_user, user_unauthorized, login_manager
 from flask_restful import Api
@@ -10,6 +14,7 @@ from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from user_form import UserForm
 
+my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 # csrf = CSRFProtect(app)
@@ -19,21 +24,31 @@ api.add_resource(users_api.UserListResource, '/api/users')
 api.add_resource(users_api.UserResource, '/api/users/<int:user_id>')
 
 
-# @app.errorhandler(404)
-# def not_found(error):
-#     return make_response(jsonify({'error': 'Not found'}), 404)
-#
-#
-# @app.errorhandler(400)
-# def bad_request(_):
-#     return make_response(jsonify({'error': 'Bad Request'}), 400)
+@app.route('/')
+def home_page():
+    return render_template('home.html')
+
+
+@app.route('/portfolio')
+def portfolio():
+    filters = request.args.getlist('filters')
+    all_categories = ['kitchen', 'bed', 'living']
+
+    if not filters:
+        filters = all_categories
+
+    direct = os.path.join('static', 'img', 'portfolio')
+    all_files = [os.path.join(direct, x) for x in os.listdir(direct)]
+    shuffle(all_files)
+
+    # Возвращаем всё, но фильтр передаём отдельно
+    return render_template('portfolio.html', images=all_files, active_filters=filters)
+
 
 # @login_manager.user_loader
 # def load_user(user_id):
 #     sess = create_session()
 #     return sess.get(users.User, int(user_id))
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = UserForm()
@@ -133,7 +148,7 @@ def user_notifications(user_id):
         {
             'title': 'Новая акция!',
             'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. 
-            
+
                 Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
             'date_short': '29 мар',
             'date_full': '29 марта 2025',
@@ -158,6 +173,5 @@ def order(order_id):
 
 
 if __name__ == '__main__':
-    ses = global_init('db/dynasty.sqlite')
-
+    global_init('db/dynasty.sqlite')
     app.run(port=8080, host='127.0.0.1')

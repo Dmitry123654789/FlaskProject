@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/portfolio.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="background-fill">
+        <div align="center" class="nav-menu-home">
+            <button class="btn-thread-line" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                    aria-controls="staticBackdrop">
+                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
+                    <path style="fill: white;"
+                          d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div align="center" style="padding-top: 20px">
+            <a href="/"><img
+                    src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
+                    border="0"/></a>
+        </div>
+        <div class="list-block__header">
+
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-kichen"
+                   {% if 'kitchen' in active_filters %}checked{% endif %}>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-kichen">Кухни на заказ</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-bed"
+                   {% if 'bed' in active_filters %}checked{% endif %}>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-bed">Мебель для спальни</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-outlined-iving"
+                   {% if 'living' in active_filters %}checked{% endif %}>
+            <label class="btn btn-outline-primary" for="btn-check-outlined-iving">Мебель для гостиной</label>
+
+
+        </div>
+
+        <div id="modalWin" class="modal">
+            <button class="modal-prev">&#10094;</button>
+            <button class="modal-next">&#10095;</button>
+            <div class="modal-window">
+                <img src="">
+            </div>
+            <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
+        </div>
+
+        <div class="galery-conteiner">
+            <div class="gallery">
+                {% for name in images %}
+                    {% set classes = [] %}
+                    {% if '_kitchen' in name %} {% set _ = classes.append('kitchen') %} {% endif %}
+                    {% if '_bed' in name %} {% set _ = classes.append('bed') %} {% endif %}
+                    {% if '_living' in name %} {% set _ = classes.append('living') %} {% endif %}
+                    <a href="#" class="gallery-item {{ classes | join(' ') }}" data-easy-toggle="#modalWin"
+                       data-easy-class="show" data-easy-rcoe>
+                        <img src="{{ name }}" alt="Фото">
+                    </a>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const checkboxes = {
+                    kitchen: document.getElementById("btn-check-outlined-kichen"),
+                    bed: document.getElementById("btn-check-outlined-bed"),
+                    living: document.getElementById("btn-check-outlined-iving")
+                };
+
+                function updateGallery() {
+                    const items = document.querySelectorAll(".gallery-item");
+                    items.forEach(item => {
+                        const isVisible =
+                            (checkboxes.kitchen.checked && item.classList.contains('kitchen')) ||
+                            (checkboxes.bed.checked && item.classList.contains('bed')) ||
+                            (checkboxes.living.checked && item.classList.contains('living'));
+                        item.style.display = isVisible ? "" : "none";
+                    });
+                }
+
+                Object.values(checkboxes).forEach(cb => cb.addEventListener("change", updateGallery));
+
+                updateGallery(); // Инициализация при загрузке
+            });
+        </script>
+        <script src="/static/js/portfolio.js"></script>
+        <script src="/static/js/easy-togler.js"></script>
+    </div>
+{% endblock %}
