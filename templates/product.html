@@ -12,7 +12,7 @@
 
         <div class="container">
             <div class="content">
-                <div class="left-block" style="left: 50px;">
+                <div class="left-block">
                     {# carousel #}
                     <div id="carouselExampleIndicators" class="carousel slide">
                         {% set img = prod['path_images'].split(', ') %}
@@ -29,12 +29,14 @@
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <img src="{{ url_for('static', filename='img/catalog/' + img[0]) }}"
-                                     class="d-block w-100" alt="Фото потерялось оп пути к вам">
+                                     class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                     style="height: 50%; max-height: 600px;">
                             </div>
                             {% for path in img[1:] %}
                                 <div class="carousel-item">
                                     <img src="{{ url_for('static', filename='img/catalog/' + path) }}"
-                                         class="d-block w-100" alt="Фото потерялось оп пути к вам">
+                                         class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                         style="height: 50%;  max-height: 600px;">
                                 </div>
                             {% endfor %}
                         </div>
@@ -83,6 +85,29 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div style="padding: 0 20px">
+            <h2 style="display: flex;  justify-content: center;">Посмотрите так же наши другие товары</h2>
+            <div class="card-container">
+                {% for prod in products['products'] %}
+                    <div class="card" style="width: 18rem;">
+                        <a href="catalog/{{ prod['id'] }}" style="padding: 10px;"><img
+                                src="{{ url_for('static', filename='img/catalog/' + prod['path_images'].split(', ')[0]) }}"
+                                class="card-img-top" alt="Изображение не найдено"></a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ prod['title'] }}</h5>
+                            {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
+                                <h5 class="card-title">{{ prod['price'] }}₽</h5>
+                            {% else %}
+                                <a class="card-title discount-card"
+                                   style="color: red">{{ prod['price'] }}₽</a>
+                                <s style="color: #9f9f9f;">{{ prod['discount'] }}₽</s>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>

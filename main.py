@@ -55,7 +55,8 @@ def catalog():
 def product(product_id):
     prod = get(f'http://localhost:8080/api/products/{product_id}').json()['products']
     descript = get(f'http://localhost:8080/api/descriptionproducts/{prod["id_description"]}').json()['description_products']
-    return render_template('product.html', prod=prod, descript=descript)
+    products = get('http://localhost:8080/api/products').json()
+    return render_template('product.html', prod=prod, descript=descript, products=products)
 
 
 if __name__ == '__main__':
