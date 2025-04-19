@@ -64,29 +64,29 @@
         </div>
 
         <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const checkboxes = {
-            kitchen: document.getElementById("btn-check-outlined-kichen"),
-            bed: document.getElementById("btn-check-outlined-bed"),
-            living: document.getElementById("btn-check-outlined-iving")
-        };
+            document.addEventListener("DOMContentLoaded", function () {
+                const checkboxes = {
+                    kitchen: document.getElementById("btn-check-outlined-kichen"),
+                    bed: document.getElementById("btn-check-outlined-bed"),
+                    living: document.getElementById("btn-check-outlined-iving")
+                };
 
-        function updateGallery() {
-            const items = document.querySelectorAll(".gallery-item");
-            items.forEach(item => {
-                const isVisible =
-                    (checkboxes.kitchen.checked && item.classList.contains('kitchen')) ||
-                    (checkboxes.bed.checked && item.classList.contains('bed')) ||
-                    (checkboxes.living.checked && item.classList.contains('living'));
-                item.style.display = isVisible ? "" : "none";
+                function updateGallery() {
+                    const items = document.querySelectorAll(".gallery-item");
+                    items.forEach(item => {
+                        const isVisible =
+                            (checkboxes.kitchen.checked && item.classList.contains('kitchen')) ||
+                            (checkboxes.bed.checked && item.classList.contains('bed')) ||
+                            (checkboxes.living.checked && item.classList.contains('living'));
+                        item.style.display = isVisible ? "" : "none";
+                    });
+                }
+
+                Object.values(checkboxes).forEach(cb => cb.addEventListener("change", updateGallery));
+
+                updateGallery(); // Инициализация при загрузке
             });
-        }
-
-        Object.values(checkboxes).forEach(cb => cb.addEventListener("change", updateGallery));
-
-        updateGallery(); // Инициализация при загрузке
-    });
-</script>
+        </script>
         <script src="/static/js/portfolio.js"></script>
         <script src="/static/js/easy-togler.js"></script>
     </div>

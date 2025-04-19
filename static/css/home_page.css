@@ -200,8 +200,8 @@ ul {
 
 .card-contact {
     border-radius: 15px;
-    min-width: 600px;
     margin: 10px;
+    width: 35%;
 }
 
 .cards-contact {
@@ -221,7 +221,7 @@ ul {
     border-radius: 15px;
     background-size: cover;
     background-position: center;
-    padding: 0px;
+    padding: 0;
 }
 
 .text-card {
