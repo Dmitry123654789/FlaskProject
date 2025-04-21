@@ -1,10 +1,11 @@
 from datetime import datetime as ddt, datetime
 
 from flask import request, jsonify, make_response
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, abort
 
 from data import db_session
 from data.users import User
+from .parser_user import user_parser
 from .responses import bad_request_response
 
 
@@ -18,28 +19,32 @@ class UserListResource(Resource):
             filters.append(User.sex == request.args.get('sex'))
         if 'birthday' in request.args.keys() and request.args.get('birthday') == 'true':
             filters.append(User.birth_date == ddt.now())
-        if 'phone' in request.args.keys():
-            filters.append(User.phone == request.args.get('phone'))
+        if 'email' in request.args.keys():
+            user = session.query(User).filter(User.phone == request.args.get('phone')).first()
+            if not user:
+                abort(404, message=f'Пользователь с email={request.args.get("phone")} не найден.')
+            return jsonify({'user': user.to_dict(
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
         try:
             users = session.query(User).filter(*filters)
         except Exception as e:
             return make_response(jsonify({'message': f'Ошибка на стороне БД.'}), 500)
-        return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'phone')) for item in users]})
+        return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'email')) for item in users]})
 
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('surname', type=str, required=True, help="Surname cannot be blank!")
-        parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
-        parser.add_argument('phone', type=str, required=True, help="Phone cannot be blank!")
         try:
-            args = parser.parse_args()
+            args = user_parser.parse_args()
         except Exception:
             return bad_request_response()
         try:
-            new_user = User(phone=args['phone'], surname=args['surname'], name=args['name'])
+            new_user = User(**args)
+            new_user.set_password(new_user.password)
+            if 'birth_date' in args:
+                brth = datetime(*map(int, args['birth_date'].split('-')))
+                new_user.birth_date = brth
             sess = db_session.create_session()
             if sess.query(User).filter(User.phone == args['phone']).first():
-                return make_response(jsonify({'message': 'Пользователь с таким номером уже существует'}), 400)
+                return make_response(jsonify({'message': 'Пользователь с таким email уже существует'}), 400)
             sess.add(new_user)
             sess.commit()
         except Exception as e:
@@ -55,20 +60,16 @@ class UserResource(Resource):
             user = sess.get(User, user_id)
         except Exception:
             return make_response(jsonify({'message': f'Ошибка на стороне БД.'}), 500)
+
         if not user:
-            return make_response(jsonify({'message': f'Пользователь с id={user_id} не найден'}), 404)
-        return jsonify({'user': user.to_dict(only=('id', 'surname', 'name', 'phone', 'birth_date', 'sex', 'email'))})
+            return abort(404, message=f'Пользователь с id={user_id} не найден')
+        if user.birth_date:
+            user.birth_date = datetime.strftime(user.birth_date, '%Y-%m-%d')
+        return jsonify(
+            {'user': user.to_dict(only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
 
     def put(self, user_id):
-        parser = reqparse.RequestParser()
-        parser.add_argument('surname', type=str, required=True, help="Surname cannot be blank!")
-        parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
-        parser.add_argument('phone', type=str, required=True, help="Phone cannot be blank!")
-        parser.add_argument('patronymic', type=str)
-        parser.add_argument('birth_date', type=str)
-        parser.add_argument('sex', type=str)
-
-        args = parser.parse_args()
+        args = user_parser.parse_args()
 
         sess = db_session.create_session()
         user = sess.get(User, user_id)
@@ -76,23 +77,26 @@ class UserResource(Resource):
             return make_response(jsonify({'message': f'Пользователь с id={user_id} не найден'}))
         user.surname = args['surname']
         user.name = args['name']
-        user.phone = args['phone']
+        if 'phone' in args:
+            user.phone = args['phone']
         if 'patronymic' in args:
             user.patronymic = args['patronymic']
         if 'birth_date' in args:
             brth = datetime(*map(int, args['birth_date'].split('-')))
             user.birth_date = brth
+
+        user.email = args['email']
         if 'sex' in args:
             user.sex = args['sex']
-
+        print(args)
         sess.commit()
-        return jsonify({'message': f'Пользователь с id={user_id} изменен.'}, 200)
+        return jsonify({'message': f'Пользователь с id={user_id} изменен.'}, 201)
 
     def delete(self, user_id):
         sess = db_session.create_session()
         user = sess.get(User, user_id)
         if not user:
-            return jsonify({'message': f'Пользователь с id={user_id} не найден..'}, 404)
+            return abort(404, message=f'Пользователь с id={user_id} не найден.')
         sess.delete(user)
         sess.commit()
-        return jsonify({'message': f'Пользователь с id={user_id} удалён.'}, 200)
+        return make_response({'message': f'Пользователь с id={user_id} удалён.'}, 200)

@@ -16,5 +16,5 @@ class Admin(SqlAlchemyBase, UserMixin, SerializerMixin):
 
 def check_if_admin(user_id):
     sess = create_session()
-    admin = sess.get(Admin, user_id)
+    admin = sess.query(Admin).filter(Admin.user_id == user_id).first()
     return bool(admin)

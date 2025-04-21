@@ -35,25 +35,23 @@
 
 {% block content %}
 <div class="register-form">
-    <h2 class="text-center mb-4">{% if log_status == "password" %}Вход{% elif log_status == "waiting_for_code" %}Подтверждение{% endif %}</h2>
+    <h2 class="text-center mb-4">Вход</h2>
     <form id="registerForm" method="post">
-        {% if log_status == "password" %}
         <div class="form-group mb-2">
-            {{ form.phone_number(class="form-control", placeholder="Номер телефона") }}
-            {% for error in form.phone_number.errors %}
+            {{ form.email(class="form-control", placeholder="your-email@example.com") }}
+            {% for error in form.email.errors %}
             <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>
-        {% elif log_status == "waiting_for_code" %}
-        <div class="mb-2">Мы отправили на ваш номер телефона код подтверждения</div>
         <div class="form-group mb-2">
-            <input type="text" name="verif_code" id="verif_code" class="form-control" placeholder="Код подтверждения">
-            {% if verif_error %}
-            <div class="invalid-feedback d-block">{{ verif_error }}</div>
-            {% endif %}
+            {{ form.password(class="form-control", placeholder="Пароль") }}
+            {% for error in form.password.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
         </div>
-        {% endif %}
+        <p><a href="/reset_password" style="font-size: 14px; margin-left: 5px">Восстановить пароль</a></p>
         <button type="submit" class="btn btn-block btn-register">Вход</button>
+        <div class="invalid-feedback d-block">{{ enter_error }}</div>
     </form>
 </div>
 {% endblock %}

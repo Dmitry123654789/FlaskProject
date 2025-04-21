@@ -37,14 +37,22 @@
     {% if success %}
     <h2 class="text-center mb-4">Успешно!</h2>
     <p class="text-center">Вы успешно зарегистрировались.</p>
-    <a href="/"><button type="submit" class="btn btn-block btn-register">Вернуться на главный экран</button></a>
+    <a href="/">
+        <button type="submit" class="btn btn-block btn-register">Вернуться на главный экран</button>
+    </a>
     {% else %}
     <h2 class="text-center mb-4">Новый профиль{{ form.csrf_token}}</h2>
     <form id="registerForm" method="post">
         {{ form.hidden_tag() }}
         <div class="form-group mb-2">
-            {{ form.phone_number(class="form-control", placeholder="Номер телефона") }}
-            {% for error in form.phone_number.errors %}
+            {{ form.email(class="form-control", placeholder="your-email@example.com") }}
+            {% for error in form.email.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-2">
+            {{ form.password(class="form-control", placeholder="Пароль") }}
+            {% for error in form.password.errors %}
             <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>

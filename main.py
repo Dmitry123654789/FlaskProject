@@ -1,35 +1,35 @@
 import os
+from datetime import datetime
 from random import shuffle
 
-from flask import Flask, render_template, request
-from flask import Flask, render_template, redirect, request, session, url_for
-from flask_login import current_user, user_unauthorized, login_manager
-from flask_restful import Api
-from flask_wtf.csrf import CSRFProtect
-from requests import post
 from flask import Flask, jsonify, render_template
+from flask import redirect, request, session, url_for
+from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
-from requests import get
+from requests import get, put
+from requests import post
 from werkzeug.exceptions import HTTPException
+
+from api import resource_users
+from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
-from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
-from data import db_session
-
-from api import users_api
-from data.__all_models import *
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
+from data.users import User
 from user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 # csrf = CSRFProtect(app)
 
 api = Api(app)
-api.add_resource(users_api.UserListResource, '/api/users')
-api.add_resource(users_api.UserResource, '/api/users/<int:user_id>')
+api.add_resource(resource_users.UserListResource, '/api/users')
+api.add_resource(resource_users.UserResource, '/api/users/<int:user_id>')
 
 # api заказов
 api.add_resource(OrdersListResource, '/api/orders')
@@ -44,10 +44,13 @@ api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
 api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:description_products_id>')
 
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     sess = create_session()
-#     return sess.get(users.User, int(user_id))
+@login_manager.user_loader
+def load_user(user_id):
+    sess = create_session()
+    user = sess.get(User, user_id)
+    user.birth_date = str(user.birth_date).split(' ')[0]
+    return user
+
 
 @app.route('/')
 def home_page():
@@ -113,11 +116,11 @@ def register():
     if request.method == 'POST':
         if form.validate():
             try_post = post('http://localhost:8080/api/users',
-                            json={'phone': form.phone_number.data, 'surname': form.surname.data,
+                            json={'email': form.email.data, 'password': form.password.data,
+                                  'surname': form.surname.data,
                                   'name': form.name.data})
-            print(try_post.json())
             if try_post.status_code == 400:
-                form.phone_number.errors = ['Данный номер телефона уже используется']
+                form.phone.errors = ['Данный email уже используется']
                 return render_template('register.html', form=form)
             elif try_post.status_code == 500:
                 return redirect(url_for('server_error'))
@@ -129,68 +132,86 @@ def register():
 def login():
     form = UserForm()
     if request.method == 'POST':
-        if request.form.get('verif_code', False):
-            #  TODO: регистрация пользователя
-            if request.form.get('verif_code', False) == session.get('verification_code', '00000'):
-                return redirect('/')
-            return render_template('login.html', form=form, log_status='waiting_for_code', verif_error='Неверный код')
-        else:
-            if form.phone_number.validate(form):
-                session['verification_code'] = '12345'
-                return render_template('login.html', form=form, log_status='waiting_for_code')
-    return render_template('login.html', form=form, log_status='password')
+        login_post = post(f'http://localhost:8080/api/login',
+                          json=jsonify({'email': form.email.data, 'password': form.password.data}))
+        if login_post.status_code == 200:
+            user = login_post.json()['user']
+            login_user(user, remember=True)
+            return redirect('/')
+        elif login_post.status_code == 401:
+            return render_template('login.html', form=form, enter_error='Неверный пароль')
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
+    logout_user()
     redirect('/')
 
 
 @app.route('/profile/<int:user_id>')
+@login_required
 def profile(user_id):
-    if user_unauthorized or current_user.id != user_id and not check_if_admin(user_id):
+    print(current_user.id)
+    if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     order = {'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}
     return render_template('profile.html', user_id=user_id, order=order)
 
 
 @app.route('/profile/<int:user_id>/info', methods=['GET', 'POST'])
+@login_required
 def user_info(user_id):
-    if user_unauthorized or current_user.id != user_id and not check_if_admin(user_id):
+    if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     form = UserForm()
-    sess = create_session()
-    user = sess.get(users.User, user_id)
-
     if request.method == 'GET':
-        if not user:
-            return render_template('fail.html', message='Пользователя не существует.')
+        if current_user.id != user_id:
+            user = get(f'http://localhost:8080/api/users/{user_id}')
+            print(user.json())
+            if user.status_code == 200:
+                user = user.json()['user']
+                form.phone.data = user['phone']
+                form.email.data = user['email']
+                form.surname.data = user['surname']
+                form.name.data = user['name']
+                form.patronymic.data = user['patronymic']
+                if user['birth_date']:
+                    form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
+                form.sex.data = user['sex']
+            elif user.status_code == 404:
+                return render_template('fail.html', message='Пользователь не найден')
 
-        form.phone_number.data = user.phone_number
-        form.email.data = user.email
-        form.surname.data = user.surname
-        form.name.data = user.name
-        form.patronymic.data = user.patronymic
-        form.birth_date.data = user.birth_date
-        form.sex.data = user.sex
-        form.address.data = user.address
+        else:
+            form.phone.data = current_user.phone
+            form.email.data = current_user.email
+            form.surname.data = current_user.surname
+            form.name.data = current_user.name
+            form.patronymic.data = current_user.patronymic
+            form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
+            form.sex.data = current_user.sex
 
     if request.method == 'POST':
-        if user:
-            user.phone_number = form.phone_number.data
-            user.email = form.email.data
-            user.surname = form.surname.data
-            user.name = form.name.data
-            user.patronymic = form.patronymic.data
-            user.birth_date = form.birth_date.data
-            user.sex = form.sex.data
-            user.address = form.address.data
+        user_json = {
+            'phone': form.phone.data,
+            'email': form.email.data,
+            'surname': form.surname.data,
+            'name': form.name.data,
+            'patronymic': form.patronymic.data,
+            'birth_date': str(form.birth_date.data),
+            'sex': form.sex.data,
+            'address': form.address.data
+        }
+        post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
+        if post_status.status_code == 200:
+            return render_template('profile_info.html', user_id=user_id, form=form, status_text='Успешно!')
     return render_template('profile_info.html', user_id=user_id, form=form)
 
 
 @app.route('/profile/<int:user_id>/orders')
+@login_required
 def user_orders(user_id):
-    if user_unauthorized or current_user.id != user_id and not check_if_admin(user_id):
+    if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
               {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
@@ -199,8 +220,9 @@ def user_orders(user_id):
 
 
 @app.route('/profile/<int:user_id>/notifications')
+@login_required
 def user_notifications(user_id):
-    if user_unauthorized or current_user.id != user_id and not check_if_admin(user_id):
+    if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     notifications = [
         {

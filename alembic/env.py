@@ -21,6 +21,7 @@ import sys
 
 sys.path.insert(0, '../')
 from data.db_session import SqlAlchemyBase
+from data import __all_models
 
 target_metadata = SqlAlchemyBase.metadata
 

@@ -5,9 +5,10 @@ from wtforms.validators import DataRequired, Email, Regexp, Optional
 
 
 class UserForm(FlaskForm):
-    phone_number = TelField('Номер телефона', validators=[DataRequired(), Regexp(r'^\+?[0-9]{10,15}$',
+    phone = TelField('Номер телефона', validators=[Regexp(r'^\+?[0-9]{10,15}$',
                                                                                  message='Введите корректный номер телефона')])
-    email = EmailField('Ваш e-mail', validators=[Optional() ,Email()])
+    email = EmailField('Ваш e-mail', validators=[DataRequired() ,Email()])
+    password = StringField('Пароль', validators=[DataRequired()])
     surname = StringField('Фамилия', validators=[])
     name = StringField('Имя', validators=[])
     patronymic = StringField('Отчество')
