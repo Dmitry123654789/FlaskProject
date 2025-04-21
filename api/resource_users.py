@@ -38,16 +38,18 @@ class UserListResource(Resource):
             return bad_request_response()
         try:
             new_user = User(**args)
+            print(args)
             new_user.set_password(new_user.password)
-            if 'birth_date' in args:
+            if args['birth_date']:
                 brth = datetime(*map(int, args['birth_date'].split('-')))
                 new_user.birth_date = brth
             sess = db_session.create_session()
-            if sess.query(User).filter(User.phone == args['phone']).first():
+            if sess.query(User).filter(User.email == args['email']).first():
                 return make_response(jsonify({'message': 'Пользователь с таким email уже существует'}), 400)
             sess.add(new_user)
             sess.commit()
         except Exception as e:
+            print(e, new_user.password)
             return make_response(jsonify({'message': f'Ошибка на стороне БД.'}), 500)
 
         return jsonify({'id': new_user.id})

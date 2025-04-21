@@ -8,12 +8,14 @@ from flask_login import current_user, logout_user, login_user, LoginManager, log
 from flask_restful import Api
 from requests import get, put
 from requests import post
+from six import print_
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
 from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
+from api.resource_login import LoginResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
@@ -27,9 +29,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 # csrf = CSRFProtect(app)
 
+# api пользователей
 api = Api(app)
 api.add_resource(resource_users.UserListResource, '/api/users')
 api.add_resource(resource_users.UserResource, '/api/users/<int:user_id>')
+api.add_resource(LoginResource, '/api/login')
 
 # api заказов
 api.add_resource(OrdersListResource, '/api/orders')
@@ -114,6 +118,7 @@ def product(product_id):
 def register():
     form = UserForm()
     if request.method == 'POST':
+        print(form.password.errors)
         if form.validate():
             try_post = post('http://localhost:8080/api/users',
                             json={'email': form.email.data, 'password': form.password.data,
@@ -132,10 +137,11 @@ def register():
 def login():
     form = UserForm()
     if request.method == 'POST':
+        print('postik')
         login_post = post(f'http://localhost:8080/api/login',
-                          json=jsonify({'email': form.email.data, 'password': form.password.data}))
+                          json={'email': form.email.data, 'password': form.password.data})
         if login_post.status_code == 200:
-            user = login_post.json()['user']
+            user = User(**login_post.json()['user'])
             login_user(user, remember=True)
             return redirect('/')
         elif login_post.status_code == 401:
@@ -155,8 +161,8 @@ def profile(user_id):
     print(current_user.id)
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    order = {'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}
-    return render_template('profile.html', user_id=user_id, order=order)
+    # order = {'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}
+    return render_template('profile.html', user_id=user_id)
 
 
 @app.route('/profile/<int:user_id>/info', methods=['GET', 'POST'])
@@ -165,10 +171,10 @@ def user_info(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     form = UserForm()
+
     if request.method == 'GET':
         if current_user.id != user_id:
             user = get(f'http://localhost:8080/api/users/{user_id}')
-            print(user.json())
             if user.status_code == 200:
                 user = user.json()['user']
                 form.phone.data = user['phone']
@@ -188,7 +194,8 @@ def user_info(user_id):
             form.surname.data = current_user.surname
             form.name.data = current_user.name
             form.patronymic.data = current_user.patronymic
-            form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
+            if current_user.birth_date != 'None':
+                form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
             form.sex.data = current_user.sex
 
     if request.method == 'POST':
@@ -213,10 +220,10 @@ def user_info(user_id):
 def user_orders(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
-              {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
-              {'status': 'construction', 'name': 'Шкаф-купе 175x75', 'price': 210000, 'id': 3}]
-    return render_template('profile_orders.html', user_id=user_id, orders=orders)
+    # orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
+    #           {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
+    #           {'status': 'construction', 'name': 'Шкаф-купе 175x75', 'price': 210000, 'id': 3}]
+    return render_template('profile_orders.html', user_id=user_id)
 
 
 @app.route('/profile/<int:user_id>/notifications')
@@ -224,25 +231,25 @@ def user_orders(user_id):
 def user_notifications(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    notifications = [
-        {
-            'title': 'Новая акция!',
-            'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. 
-
-                Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
-            'date_short': '29 мар',
-            'date_full': '29 марта 2025',
-            'read': True
-        },
-        {
-            'title': 'Новая акция!',
-            'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
-            'date_short': '29 мар',
-            'date_full': '29 марта 2025',
-            'read': False
-        },
-    ]
-    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
+    # notifications = [
+    #     {
+    #         'title': 'Новая акция!',
+    #         'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.
+    #
+    #             Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
+    #         'date_short': '29 мар',
+    #         'date_full': '29 марта 2025',
+    #         'read': True
+    #     },
+    #     {
+    #         'title': 'Новая акция!',
+    #         'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
+    #         'date_short': '29 мар',
+    #         'date_full': '29 марта 2025',
+    #         'read': False
+    #     },
+    # ]
+    return render_template('profile_notifications.html', user_id=user_id)
 
 
 @app.route('/order/<int:order_id>')
