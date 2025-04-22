@@ -12,7 +12,7 @@
                 <div class="profile-sidebar-info__wrapper">
                     <img src="{{ url_for('static', filename='svg/user-default-avatar.svg')}}" alt="Аватар профиля"
                          class="user-avatar">
-                    <div class="profile-username">Воронцова Ольга</div>
+                    <div class="profile-username">{{ current_user.name }} {{ current_user.surname }}</div>
                 </div>
             </a>
             <nav class="profile-menu">

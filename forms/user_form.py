@@ -11,9 +11,9 @@ class UserForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     surname = StringField('Фамилия', validators=[DataRequired()])
     name = StringField('Имя', validators=[DataRequired()])
-    # patronymic = StringField('Отчество', validators=[DataRequired()])
-    # birth_date = DateField('Дата рождения', format='%Y-%m-%d')
-    # sex = RadioField('Пол', choices=[('male', 'Мужской'), ('female', 'Женский')], default='male')
-    # address = StringField('Адрес доставки')
+    patronymic = StringField('Отчество', validators=[DataRequired()])
+    birth_date = DateField('Дата рождения', format='%Y-%m-%d', validators=[DataRequired()])
+    sex = RadioField('Пол', choices=[('male', 'Мужской'), ('female', 'Женский')], default='male', validators=[DataRequired()])
+    address = StringField('Адрес доставки', validators=[DataRequired()])
 
     submit = SubmitField('Зарегистрироваться')

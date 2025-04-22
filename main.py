@@ -19,7 +19,7 @@ from api.resource_login import LoginResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
-from user_form import UserForm
+from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
