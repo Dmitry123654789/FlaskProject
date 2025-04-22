@@ -15,9 +15,8 @@ class Order(SqlAlchemyBase, SerializerMixin):
     id_product = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("products.id"), nullable=True)
     product = orm.relationship('Product')
 
-    id_user = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    # id_user = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=True)
-    # user = orm.relationship('User')
+    id_user = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=True)
+    user = orm.relationship('User')
 
     def __repr__(self):
         return self.to_dict()

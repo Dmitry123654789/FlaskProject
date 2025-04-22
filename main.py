@@ -152,7 +152,7 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
-    redirect('/')
+    return redirect('/')
 
 
 @app.route('/profile/<int:user_id>')

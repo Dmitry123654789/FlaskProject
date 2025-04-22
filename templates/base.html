@@ -13,14 +13,13 @@
     {% block head %}{% endblock %}
 
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-    <title>{{title}}</title>
+    <title>{{ title }}</title>
 
 </head>
 <body>
 
 <!-- Begin page content -->
 <main role="main" class="contener">
-
     <div class="offcanvas offcanvas-start text-bg-dark" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
          aria-labelledby="staticBackdropLabel">
         <div class="offcanvas-header">
@@ -32,6 +31,12 @@
             <a><a href="/portfolio">Портфолио</a><br></a>
             <a><a href="/">О компании</a><br></a>
             <a><a href="/catalog">Католог</a><br></a>
+            {% if current_user.is_authenticated %}
+                <a><a href="/profile/{{ current_user.id }}">Профиль</a><br></a>
+            {% else %}
+                <a><a href="/register">Зарегистрироваться</a><br></a>
+                <a><a href="/login">Войти</a><br></a>
+            {% endif %}
         </div>
     </div>
     {% block content %}{% endblock %}
