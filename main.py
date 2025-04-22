@@ -3,13 +3,18 @@ from random import shuffle
 
 from flask import Flask, render_template, request
 
+from forms.add_appeal import AddAppealForm
+
 app = Flask(__name__)
 my_dir = os.path.dirname(__file__)
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home_page():
-    return render_template('home.html')
+    form = AddAppealForm()
+    if form.validate_on_submit():
+        ...
+    return render_template('home.html', form=form)
 
 @app.route('/portfolio')
 def portfolio():
