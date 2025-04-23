@@ -2,12 +2,18 @@ import os
 from random import shuffle
 
 from flask import Flask, render_template, request
-
+from flask_restful import Api
 from forms.add_appeal import AddAppealForm
+from
 
 app = Flask(__name__)
 my_dir = os.path.dirname(__file__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
+# api обращения пользователя
+api = Api(app)
+api.add_resource(, '/api/users')
+api.add_resource(, '/api/users/<int:user_id>')
 
 @app.route('/', methods=['GET', 'POST'])
 def home_page():
@@ -35,4 +41,5 @@ def portfolio():
 
 
 if __name__ == '__main__':
+    global_init('db/dynasty.sqlite')
     app.run(port=8080, host='127.0.0.1')
