@@ -1,25 +1,34 @@
 import os
 from random import shuffle
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_restful import Api
+from requests import post
+from flask_login import current_user
+from data.db_session import global_init
 from forms.add_appeal import AddAppealForm
-from
+from api.resource_appeal import AppealsListResource, AppealsResource
 
 app = Flask(__name__)
 my_dir = os.path.dirname(__file__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-# api обращения пользователя
+# api обращений пользователей
 api = Api(app)
-api.add_resource(, '/api/users')
-api.add_resource(, '/api/users/<int:user_id>')
+api.add_resource(AppealsListResource, '/api/appeal')
+api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
 
 @app.route('/', methods=['GET', 'POST'])
 def home_page():
     form = AddAppealForm()
     if form.validate_on_submit():
-        ...
+        appeal_data = {
+            'id_user': current_user.id,
+            'question': form.question.data,
+            'theme': form.theme.data
+        }
+        post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
+        return redirect('/profile')
     return render_template('home.html', form=form)
 
 @app.route('/portfolio')
