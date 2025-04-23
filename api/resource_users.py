@@ -32,7 +32,7 @@ class UserListResource(Resource):
     def post(self):
         args = user_parser.parse_args()
         new_user = User(**args)
-        # print(args)
+
         new_user.set_password(new_user.password)
         if args['birth_date']:
             brth = datetime(*map(int, args['birth_date'].split('-')))
@@ -43,7 +43,8 @@ class UserListResource(Resource):
         sess.add(new_user)
         sess.commit()
 
-        return jsonify({'id': new_user.id})
+        return jsonify({'id': new_user.id, 'user': new_user.to_dict(
+            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
 
 
 class UserResource(Resource):

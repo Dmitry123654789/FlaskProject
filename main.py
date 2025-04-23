@@ -118,17 +118,18 @@ def product(product_id):
 def register():
     form = UserForm()
     if request.method == 'POST':
-        print(form.password.errors)
+        print(form.validate(), form.errors)
         if form.validate():
             try_post = post('http://localhost:8080/api/users',
                             json={'email': form.email.data, 'password': form.password.data,
                                   'surname': form.surname.data,
                                   'name': form.name.data})
             if try_post.status_code == 400:
-                form.phone.errors = ['Данный email уже используется']
+                form.email.errors = ['Данный email уже используется']
                 return render_template('register.html', form=form)
             elif try_post.status_code == 500:
                 return redirect(url_for('server_error'))
+            login_user(User(**try_post.json()['user']), remember=True)
             return render_template('register.html', form=form, success=True)
     return render_template('register.html', form=form)
 
@@ -137,7 +138,6 @@ def register():
 def login():
     form = UserForm()
     if request.method == 'POST':
-        print('postik')
         login_post = post(f'http://localhost:8080/api/login',
                           json={'email': form.email.data, 'password': form.password.data})
         if login_post.status_code == 200:
@@ -145,7 +145,9 @@ def login():
             login_user(user, remember=True)
             return redirect('/')
         elif login_post.status_code == 401:
-            return render_template('login.html', form=form, enter_error='Неверный пароль')
+            form.password.errors = ['Неверный пароль']
+        elif login_post.status_code == 404:
+            form.email.errors = ['Пользователь не найден']
     return render_template('login.html', form=form)
 
 
