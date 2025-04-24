@@ -18,6 +18,7 @@ a {
     padding: 15px 20px;
     border-radius: 25px;
     min-width: max-content;
+    min-height: 200px;
     height: max-content;
 }
 

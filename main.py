@@ -56,6 +56,53 @@ def load_user(user_id):
     return user
 
 
+# Декоратор для проверки, админ ли пользователь
+def admin_required(func):
+    @login_required
+    def wrapper(*args, **kwargs):
+        if not check_if_admin(current_user.id):
+            return redirect(url_for('index'))
+        return func(*args, **kwargs)
+
+    wrapper.__name__ = func.__name__  # чтобы Flask не ругался
+    return wrapper
+
+
+@app.route('/admin')
+def admin_page():
+    return render_template('admin/admin_base.html')
+
+
+@app.route('/admin/users')
+def admin_users():
+    return render_template('admin/users_page.html')
+
+
+@app.route('/admin/users/<int:user_id>')
+def admin_user_page(user_id):
+    return render_template('admin/user.html')
+
+
+@app.route('/admin/products')
+def admin_products():
+    return render_template('admin/products_page.html')
+
+
+@app.route('/admin/products/<int:product_id>')
+def admin_product_page(product_id):
+    return render_template('admin/product.html')
+
+
+@app.route('/admin/orders')
+def admin_orders():
+    return render_template('admin/admin_base.html')
+
+
+@app.route('/admin/notifications')
+def admin_notifications():
+    return render_template('admin/notifications_page.html')
+
+
 @app.route('/')
 def home_page():
     return render_template('home.html')

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link href="{{ url_for('static', filename='css/profile_page.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="profile-page__wrapper">
+    <div class="profile-container">
+        <div class="profile-sidebar__wrapper">
+            <nav class="profile-menu">
+                <ul class="list-group">
+                    <li class="profile-menu-item {% if '/users' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('admin_users') }}">Пользователи</a></li>
+                    <li class="profile-menu-item {% if '/products' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('admin_products') }}">Товары</a></li>
+                    <li class="profile-menu-item {% if '/orders' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('admin_orders') }}">Заказы</a></li>
+                    <li class="profile-menu-item {% if '/notifications' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('admin_notifications') }}">Уведомления</a></li>
+                    <li class="profile-menu-item {% if '/admins' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('admin_page') }}">Админы</a></li>
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="profile-container">
+        <div class="profile-main__wrapper">
+            {% block admin_content %}
+
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

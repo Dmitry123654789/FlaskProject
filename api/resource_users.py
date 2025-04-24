@@ -27,6 +27,10 @@ class UserListResource(Resource):
                 only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
 
         users = session.query(User).filter(*filters)
+        if 'full' in request.args.keys():
+            return jsonify({'users': [item.to_dict(
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email')) for item in
+                users]})
         return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'email')) for item in users]})
 
     def post(self):

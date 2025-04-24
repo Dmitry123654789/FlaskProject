@@ -1,0 +1,39 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+<div class="table-container" id="table-container">
+    <div class="table-controls">
+        <span class="table-control-group">
+            <p>Количество элементов</p>
+            <select class="form-select mb-3" id="table-page-limit">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+        </span>
+        <span class="table-control-group">
+            <input type="text" class="form-control" placeholder="Поиск" id="search">
+        </span>
+    </div>
+    <table class="table table-striped" id="content-table">
+        <thead>
+        <tr>
+            <th scope="col" data-column="id" data-order="desc">ID</th>
+            <th scope="col" data-column="surname" data-order="desc">Фамилия</th>
+            <th scope="col" data-column="name" data-order="desc">Имя</th>
+            <th scope="col" data-column="email" data-order="desc">Email</th>
+            <th scope="col" data-column="phone" data-order="desc">Телефон</th>
+            <th scope="col" data-column="sex" data-order="desc">Пол</th>
+            <th scope="col" data-column="role" data-order="desc">Роль</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+
+    </table>
+
+    <div id="pagination-container" class="d-flex justify-content-center"></div>
+    <script type="module" src="../../static/js/users_page.js"></script>
+</div>
+{% endblock %}
