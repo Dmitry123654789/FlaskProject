@@ -2,39 +2,22 @@ import { TableManager } from './table-manager.js'
 
 function applySearch() {
     const searchValue = document.getElementById('search').value.toLowerCase();
-
-    filteredUsers = allUsers.filter(user =>
+    console.log('searching', searchValue, document.getElementById('search').value)
+    this.filteredData = [...this.data].filter(user =>
     user.surname.toLowerCase().includes(searchValue) ||
     user.name.toLowerCase().includes(searchValue) ||
     user.email.toLowerCase().includes(searchValue) ||
     user.phone.toLowerCase().includes(searchValue)
     );
 
-    currentPage = 1;
-//    setData_func(filteredUsers);
-}
-let allUsers = [];
-
-function loadUsers() {
-    fetch('/api/users?full=true')
-        .then(response => response.json())
-        .then(data => {
-
-        allUsers = data['users'].map(user => {
-            const cleanedUser = {};
-            for (const key in user) {
-                if (user.hasOwnProperty(key)) {
-                    cleanedUser[key] = user[key] == null ? '-' : user[key];
-                }
-            }
-            return cleanedUser;
-        });
-        console.log(allUsers);
-    })
-        .catch(err => console.error('Ошибка загрузки:', err));
+    this.updatePage(1);
 }
 
-loadUsers();
+function onRowClck(user) {
+    window.location.href = "/profile/" + user.id;
+};
+
+let data = [];
 
 const userTable = new TableManager({
     containerId: "table-container",
@@ -47,7 +30,34 @@ const userTable = new TableManager({
         { field: "sex", label: "Пол" },
         { field: "role", label: "Роль" },
     ],
-    data: allUsers,
-    applySearch_func: applySearch
+    data: data,
+    applySearch_func: applySearch,
+    onRowClick: onRowClck
 });
+
+function loadUsers() {
+    fetch('/api/users?full=true')
+        .then(response => response.json())
+        .then(data => {
+
+        let allUsers = data['users'].map(user => {
+            const cleanedUser = {};
+            for (const key in user) {
+                if (user.hasOwnProperty(key)) {
+                    cleanedUser[key] = user[key] == null ? '-' : user[key];
+                }
+            }
+            return cleanedUser;
+        });
+        userTable.setData(allUsers);
+
+    })
+        .catch(err => console.error('Ошибка загрузки:', err));
+}
+
+
+
+loadUsers();
+
+
 

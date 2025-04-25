@@ -25,18 +25,26 @@ a {
     width: 80px;
 }
 
+.table-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
 
 .table-control-group {
-    display: inline-block;
-    grid-template-columns: auto auto;
-    column-gap: 10px;
+    display: flex;
+    align-items: center;
     width: max-content;
     margin-right: 15px;
+    height: 40px;
 }
 
 .table-control-group p {
-    display: inline-block;
-    width: max-content;
+    margin: 0;
+    margin-right: 10px;
+    font-size: 1rem;
+    line-height: 1;
 }
 
 .table-control-group select {

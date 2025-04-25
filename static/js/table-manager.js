@@ -1,14 +1,16 @@
 export class TableManager {
-    constructor({ containerId, columns, data, applySearch_func=null}) {
+    constructor({ containerId, columns, data, applySearch_func=null, onRowClick=null}) {
         this.container = document.getElementById(containerId);
         this.columns = columns;
-        this.data = data;
-        console.log(this.data);
-        this.filteredData = data;
+        this.data = [...data];
+        this.filteredData = [...data];
         this.applySearch = applySearch_func;
+        this.onRowClick = onRowClick;
 
-        this.current_page = 1;
+        this.currentPage = 1;
         this.limit = 10;
+        this.maxVisiblePages = 1;
+        this.totalPages = Math.floor(this.data.length / this.limit);
 
         this.createTable();
     }
@@ -25,7 +27,7 @@ export class TableManager {
         span1.appendChild(p);
 
         const select = document.createElement('select');
-        select.className = 'form-select mb-3';
+        select.className = 'form-select';
         select.id = 'table-page-limit';
 
         const options = [10, 25, 50];
@@ -38,7 +40,9 @@ export class TableManager {
 
         select.addEventListener('change', () => {
             this.limit = parseInt(document.getElementById('table-page-limit').value);
-            renderTable(this.current_page);
+            this.totalPages = Math.floor(this.data.length / this.limit);
+            this.updateTable(this.currentPage);
+            this.renderPagination();
         });
 
         span1.appendChild(select);
@@ -51,7 +55,7 @@ export class TableManager {
         input.className = 'form-control';
         input.placeholder = 'Поиск';
         input.id = 'search';
-        input.addEventListener('input', this.applySearch);
+        input.addEventListener('input', this.applySearch.bind(this));
 
         span2.appendChild(input);
 
@@ -68,9 +72,10 @@ export class TableManager {
         this.columns.forEach(col => {
             const th = document.createElement("th");
             th.textContent = col.label;
+            th.setAttribute("scope", 'col');
             th.setAttribute("data-column", col.field);
-            th.setAttribute("data-order", 'desc')
-            th.addEventListener('click', this.handleSort)
+            th.setAttribute("data-order", 'asc')
+            th.addEventListener('click', this.handleSort.bind(this));
             headRow.appendChild(th);
         });
         thead.appendChild(headRow);
@@ -81,7 +86,78 @@ export class TableManager {
         table.appendChild(tbody);
 
         this.container.appendChild(table);
-        this.updateTable(1);
+
+        this.paginationContainer = document.createElement('div');
+        this.paginationContainer.id = 'pagination-container';
+        this.paginationContainer.className = 'd-flex justify-content-center';
+        this.container.appendChild(this.paginationContainer);
+
+        this.updatePage(1);
+    }
+
+    renderPagination() {
+
+        this.paginationContainer.innerHTML = ''; // Очищаем
+
+        const createBtn = (text, page, disabled = false, active = false) => {
+            const li = document.createElement('li');
+            li.classList.add('page-item');
+            if (disabled) li.classList.add('disabled');
+            if (active) li.classList.add('active');
+
+            const a = document.createElement('a');
+            a.classList.add('page-link');
+            a.href = '#';
+            a.textContent = text;
+            if (!disabled) {
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    this.updatePage(page);
+                });
+            }
+
+            li.appendChild(a);
+            return li;
+        };
+
+        const ul = document.createElement('ul');
+        ul.classList.add('pagination');
+
+        // Кнопки: Первая и Назад
+        ul.appendChild(createBtn('«', 1, this.currentPage === 1));
+        ul.appendChild(createBtn('‹', this.currentPage - 1, this.currentPage === 1));
+
+        // Видимые номера
+        const start = Math.max(2, this.currentPage - this.maxVisiblePages);
+        const end = Math.min(this.totalPages - 1, this.currentPage + this.maxVisiblePages);
+
+        if (start > 2) {
+            ul.appendChild(createBtn('1', 1));
+            ul.appendChild(createBtn('...', null, true));
+        } else {
+            for (let i = 1; i < start; i++) {
+                ul.appendChild(createBtn(i, i));
+            }
+        }
+
+        for (let i = start; i <= end; i++) {
+            ul.appendChild(createBtn(i, i, false, i === this.currentPage));
+        }
+
+        if (end < this.totalPages - 1) {
+            ul.appendChild(createBtn('...', null, true));
+            ul.appendChild(createBtn(this.totalPages, this.totalPages));
+        } else {
+            for (let i = end + 1; i <= this.totalPages; i++) {
+                ul.appendChild(createBtn(i, i));
+            }
+        }
+
+        // Кнопки: Вперёд и Последняя
+        ul.appendChild(createBtn('›', this.currentPage + 1, this.currentPage === this.totalPages));
+        ul.appendChild(createBtn('»', this.totalPages, this.currentPage === this.totalPages));
+
+        this.paginationContainer.appendChild(ul);
     }
 
     updateTable(page) {
@@ -89,33 +165,47 @@ export class TableManager {
         tbody.innerHTML = '';
 
         const start = (page - 1) * this.limit;
-        const paginatedUsers = this.filteredData.slice(start, start + this.limit);
+//        console.log('update', this.data);
+
+        const paginatedUsers = [...this.filteredData].slice(start, start + this.limit);
+
 
         paginatedUsers.forEach(user => {
             const row = document.createElement('tr');
             this.columns.forEach(col => {
                 const td = document.createElement("td");
                 td.textContent = user[col.field] ?? "-";
-                tr.appendChild(td);
+                row.appendChild(td);
             });
+            if (this.onRowClick) {
+                row.style.cursor = 'pointer';
+                row.addEventListener("click", () => this.onRowClick(user));
+            }
             tbody.appendChild(row);
         });
+
     }
 
     setData(newData) {
-        this.data = newData;
-        this.filteredData = newData;
-        this.updateTable(1);
+        this.data = [...newData];
+        this.filteredData = [...newData];
+        this.updatePage(1);
+
     }
 
-    updatePage(new_page){
-        this.current_page = new_page;
+    updatePage(newPage){
+        this.currentPage = newPage;
+        this.updateTable(this.currentPage);
+        this.renderPagination();
     }
 
     handleSort(event) {
+
         const header = event.target;
 
+        const headers = document.querySelectorAll('th')
         headers.forEach(h => h.classList.remove('active'));
+
         header.classList.add('active');
 
         const column = header.getAttribute('data-column');
@@ -124,8 +214,7 @@ export class TableManager {
         const newOrder = order === 'desc' ? 'asc' : 'desc';
 
         header.setAttribute('data-order', newOrder);
-
-        filteredUsers = [...filteredUsers].sort((a, b) => {
+        this.filteredData = [...this.data].sort((a, b) => {
             if (a[column] > b[column]) {
                 return newOrder === 'asc' ? 1 : -1;
             } else if (a[column] < b[column]) {
@@ -135,7 +224,7 @@ export class TableManager {
             }
         });
 
-        updateTable(this.current_page);
+        this.updatePage(1)
     }
 
 }
