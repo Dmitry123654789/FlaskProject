@@ -2,20 +2,23 @@ import os
 from datetime import datetime
 from random import shuffle
 
-from flask import Flask, jsonify, render_template
-from flask import redirect, request, session, url_for
-from flask_login import current_user, logout_user, login_user, LoginManager, login_required
+from api.resource_appeal import AppealsListResource, AppealsResource
+from flask import Flask, redirect
+from flask import request, jsonify, render_template
+from flask import url_for
+from flask_login import current_user
+from flask_login import logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
+from forms.add_appeal import AddAppealForm
 from requests import get, put
 from requests import post
-from six import print_
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
 from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
+from api.resource_login import LoginResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
-from api.resource_login import LoginResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
@@ -47,6 +50,11 @@ api.add_resource(ProductsResource, '/api/products/<int:products_id>')
 api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
 api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:description_products_id>')
 
+# api обращений пользователей
+api = Api(app)
+api.add_resource(AppealsListResource, '/api/appeal')
+api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -56,9 +64,18 @@ def load_user(user_id):
     return user
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home_page():
-    return render_template('home.html')
+    form = AddAppealForm()
+    if form.validate_on_submit():
+        appeal_data = {
+            'id_user': current_user.id,
+            'question': form.question.data,
+            'theme': form.theme.data
+        }
+        post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
+        return redirect('/profile')
+    return render_template('home.html', form=form)
 
 
 @app.route('/portfolio')
@@ -77,9 +94,6 @@ def portfolio():
     return render_template('portfolio.html', images=all_files, active_filters=filters)
 
 
-from flask import request, jsonify, render_template
-from werkzeug.exceptions import HTTPException
-
 @app.errorhandler(HTTPException)
 def handle_http_exception(error):
     """Обрабатывает HTTP-исключения: возвращает JSON или HTML"""
@@ -95,8 +109,7 @@ def handle_http_exception(error):
         response.status_code = error.code
         return response
     else:
-        return render_template('fail.html', errr_code=error.code,  message=error.description)
-
+        return render_template('fail.html', errr_code=error.code, message=error.description)
 
 
 @app.errorhandler(Exception)
@@ -113,7 +126,8 @@ def handle_generic_exception(error):
         response.status_code = 500
         return response
     else:
-        return render_template('fail.html', errr_code=500,  message=str(error))
+        return render_template('fail.html', errr_code=500, message=str(error))
+
 
 @app.route('/catalog')
 def catalog():

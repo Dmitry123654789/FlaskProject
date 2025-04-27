@@ -9,23 +9,29 @@
     <div class="background-fill">
         <div id="modalWin" class="modal">
             <div class="modal-window">
-                <h2>Оставить заявку на заказ</h2>
-                <label for="name"><span style="color: red">*</span> Имя</label>
-                <input type="text" id="name" required>
+                <h2>Здесь вы можете задать любой вопрос, касающийся работы нашего сайта</h2>
+                <form method="post">
+                    {{ form.hidden_tag() }}
 
-                <label for="name"><span style="color: red">*</span> Номер телефона</label>
-                <input type="tel" placeholder="Телефон" id="telephone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" value=""
-                       required>
-
-                <a>Критерии заказа</a>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
-
-                <button class="send_mess">Отправить заказ</button>
-                <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">x</button>
-                <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;">В течении дня наш сотрудник свяжется
-                    с
-                    вами по WhatsApp</a>
-
+                    <div class="form-group mb-2">
+                        <label>{{ form.theme.label }}</label>
+                        {{ form.theme(class="form-control") }}
+                        {% for error in form.theme.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>{{ form.question.label }}</label>
+                        {{ form.question(class="form-control") }}
+                        {% for error in form.question.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <p>{{ form.submit(type="submit", class="send_mess") }}</p>
+                    <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;"><span style="color: red">*</span>
+                        В течение дня наш сотрудник ответит вам, оставив уведомление в личном кабинете</a>
+                </form>
+                <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">X</button>
             </div>
             <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
         </div>
@@ -74,28 +80,28 @@
             </div>
         </div>
 
-        <div align="center" class="background-fill" style="padding-top: 100px;">
+        <div align="center" style="padding-top: 100px;">
             <div class="cards">
                 <div class="card" style="max-width: 280px">
-                    <img width="100px" src="/static/img/xit.png">
+                    <img width="100px" src="/static/img/home_page/xit.png">
                     <span class="card-span">Изготовление мебели на заказ – быстро и качественно!<br></span>
                     <a class="card-a">Изготавливаем мебель на заказ быстро, чтобы ваш интерьер стал идеальным
                         раньше.</a>
                 </div>
                 <div class="card" style="max-width: 280px">
-                    <img width="100px" src="/static/img/strelka.png">
+                    <img width="100px" src="/static/img/home_page/strelka.png">
                     <span class="card-span">Гарантия качества на заказную мебель<br></span>
                     <a class="card-a">Мы уверены в качестве своей работы, поэтому предоставляем гарантию на все
                         изделия.</a>
                 </div>
                 <div class="card" style="max-width: 280px">
-                    <img width="100px" src="/static/img/cemodan.png">
+                    <img width="100px" src="/static/img/home_page/cemodan.png">
                     <span class="card-span">Инновационные решения в производстве мебели на заказ<br></span>
                     <a class="card-a">Индивидуальный подход к каждому проекту с использованием передовых технологий
                         производства.</a>
                 </div>
                 <div class="card" style="max-width: 280px">
-                    <img width="100px" src="/static/img/mesage.png">
+                    <img width="100px" src="/static/img/home_page/mesage.png">
                     <span class="card-span">Изготовление корпусной мебели под ваши потребности<br></span>
                     <a class="card-a">Мы предлагаем персонализированный подход к каждому клиенту, помогая создать
                         уникальную
@@ -105,22 +111,22 @@
         </div>
 
         <h2 align="center" style="padding-top: 100px">Наши товары</h2>
-        <div align="center" class="background-fill"
+        <div align="center"
              style="width: calc(100% - 20px);  display: flex;  justify-content: center;" id="services">
 
             <div class="cards-contact" style="flex-wrap: wrap;">
                 <a href="/portfolio?filters=kitchen">
-                    <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="card card-service" style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
                         <div class="text-card" style="width: max-content">Кухни на заказ</div>
                     </div>
                 </a>
                 <a href="/portfolio?filters=bed">
-                    <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="card card-service" style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
                         <div class="text-card" style="width: max-content">Мебель для спальни</div>
                     </div>
                 </a>
                 <a href="/portfolio?filters=living">
-                    <div class="card card-service" style="background-image: url(/static/img/home_page_photo.jpg)">
+                    <div class="card card-service" style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
                         <div class="text-card" style="width: max-content">Мебель для гостиной</div>
                     </div>
                 </a>
@@ -173,7 +179,7 @@
         </div>
         <script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
 
-        <div class="background-fill" align="center" style="padding-top: 100px;" id="contacts">
+        <div align="center" style="padding-top: 100px;" id="contacts">
             <h2>Контакты</h2>
             <div class="cards-contact">
                 <div class="card card-contact" align="left">
@@ -190,10 +196,10 @@
                     <a class="card-a">Адрес:</a>
                     <h4>г. Краснодар, ул. Важная, 99</h4>
                 </div>
-                    <div class="card card-contact" align="left">
-                        <a class="card-a">Часы работы:</a>
-                        <h4>C 10:00 до 20:00 Без выходных</h4>
-                    </div>
+                <div class="card card-contact" align="left">
+                    <a class="card-a">Часы работы:</a>
+                    <h4>C 10:00 до 20:00 Без выходных</h4>
+                </div>
             </div>
             <div id="map-container">
                 <script>

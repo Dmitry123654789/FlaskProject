@@ -75,7 +75,7 @@ ul {
     background-position: center;
     background-repeat: no-repeat;
     max-height: 2268px;
-    background-image: url('/static/img/home_page_photo.jpg');
+    background-image: url('/static/img/home_page/home_page_photo.jpg');
 }
 
 .text-header {
@@ -238,7 +238,6 @@ ul {
 }
 
 .about-container {
-    background-image: url("/static/img/abot_company2.jpg");
     background-size: 100% auto;
     background-position: center;
     display: flex;
@@ -349,14 +348,13 @@ ul {
 
 .about-section {
     padding: 100px 20px;
-    background-color: #e7eaf6;
     text-align: center;
 }
 
 .about-container {
     max-width: 1200px;
     margin: 0 auto;
-    background: url('/static/img/kitchen_bg.jpg') center/cover no-repeat;
+    background: url('/static/img/home_page/abot_company2.jpg') center/cover no-repeat;
     border-radius: 30px;
     padding: 50px 30px;
     display: flex;

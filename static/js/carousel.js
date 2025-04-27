@@ -31,7 +31,7 @@ function createTestimonialElement(testimonial, index) {
     const div = document.createElement('div');
     div.className = 'testimonial';
     div.innerHTML = `
-        <img src="/static/img/icon_avatar.png">
+        <img src="/static/img/home_page/icon_avatar.png">
         <h3>${testimonial.name}</h3>
         <p>${testimonial.text}</p>
     `;
