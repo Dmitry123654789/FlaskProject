@@ -8,7 +8,7 @@ class Order(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'orders'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    status = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
+    status = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     create_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
 

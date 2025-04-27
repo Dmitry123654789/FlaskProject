@@ -38,7 +38,7 @@ class OrdersResource(Resource):
                  ['id_product', 'id_user', 'status', 'price', 'create_date']):
             for key, value in args.items():
                 if key == 'create_date':
-                    setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
+                    setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
                 else:
                     setattr(order, key, value)
             db_sess.commit()
@@ -67,7 +67,7 @@ class OrdersListResource(Resource):
                 id_user=args['id_user'],
                 status=args['status'],
                 price=args['price'],
-                create_date=datetime.strptime(args['create_date'], '%Y-%m-%d %H:%M:%S')
+                create_date=datetime.strptime(args['create_date'], '%Y-%m-%d %H:%M')
             )
             db_sess.add(orders)
             db_sess.commit()

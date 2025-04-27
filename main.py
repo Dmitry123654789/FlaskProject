@@ -135,12 +135,23 @@ def catalog():
     return render_template('catalog.html', products=products)
 
 
-@app.route('/catalog/<int:product_id>')
+@app.route('/catalog/<int:product_id>', methods=['GET', 'POST'])
 def product(product_id):
     prod = get(f'http://localhost:8080/api/products/{product_id}').json()['products']
     descript = get(f'http://localhost:8080/api/descriptionproducts/{prod["id_description"]}').json()[
         'description_products']
     products = get('http://localhost:8080/api/products').json()
+    if request.method == 'POST':
+        if not current_user.is_authenticated:
+            return redirect('/login')
+
+        json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'accepted',
+                      'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
+        response_order = post('http://localhost:8080/api/orders', json=json_order).json()
+
+        # Добавить уведомление о добавленом заказе
+
+
     return render_template('product.html', prod=prod, descript=descript, products=products)
 
 

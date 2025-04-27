@@ -7,8 +7,6 @@
 
 {% block content %}
     <div class="background-fill">
-        {# стрелочка назад #}
-        <a href="/catalog" class="previous">&laquo; Назад</a>
 
         <div class="container">
             <div class="content">
@@ -63,11 +61,11 @@
                         </a>
 
                     {% endif %}
-                    <div class="d-grid gap-2 col-6 mx-auto" style="margin: 0 !important">
-                        <button class="btn btn-primary" type="button" style="width: max-content;">Добавить товар в
-                            корзину
+                    <form class="d-grid gap-2 col-6 mx-auto" style="margin: 0 !important" method="post">
+                        <button class="btn btn-primary" type="submit" style="width: max-content;">
+                            Добавить товар в корзину
                         </button>
-                    </div>
+                    </form>
                     <div class="descript">
                         {% set param = ['', 'Размеры', 'Тип', 'Материал', 'Цвет', 'Стиль', 'Особености'] %}
                         {% for des in ['description', 'size', 'type', 'material', 'color', 'style', 'features'] %}

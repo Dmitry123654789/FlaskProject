@@ -14,12 +14,10 @@
 .left-block {
     flex: 1;
     position: relative;
-    display: flex;
-    width: 60%;
-  max-width: 60%;
+    max-width: 60%;
     height: 50%;
-  max-height: 600px;
-  justify-content: center;
+    max-height: 600px;
+    margin-left: 5%;
 }
 
 .back-button {
