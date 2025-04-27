@@ -77,27 +77,43 @@ def portfolio():
     return render_template('portfolio.html', images=all_files, active_filters=filters)
 
 
+from flask import request, jsonify, render_template
+from werkzeug.exceptions import HTTPException
+
 @app.errorhandler(HTTPException)
 def handle_http_exception(error):
-    """Обрабатывает стандартные HTTP-исключения Flask"""
-    response = jsonify({
-        'error': error.description,
-        'status_code': error.code
-    })
-    response.status_code = error.code
-    return response
+    """Обрабатывает HTTP-исключения: возвращает JSON или HTML"""
+
+    accept = request.accept_mimetypes
+    # Если клиент явно просит JSON или не указал предпочтения
+    if accept.accept_json and not accept.accept_html or \
+            accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
+        response = jsonify({
+            'error': error.description,
+            'status_code': error.code
+        })
+        response.status_code = error.code
+        return response
+    else:
+        return render_template('fail.html', errr_code=error.code,  message=error.description)
+
 
 
 @app.errorhandler(Exception)
 def handle_generic_exception(error):
     """Обрабатывает все остальные исключения (базовые Exception)"""
-    response = jsonify({
-        'error': 'Internal Server Error',
-        'message': str(error)
-    })
-    response.status_code = 500
-    return response
 
+    accept = request.accept_mimetypes
+    if accept.accept_json and not accept.accept_html or \
+            accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
+        response = jsonify({
+            'error': 'Internal Server Error',
+            'message': str(error)
+        })
+        response.status_code = 500
+        return response
+    else:
+        return render_template('fail.html', errr_code=500,  message=str(error))
 
 @app.route('/catalog')
 def catalog():

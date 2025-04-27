@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container text-center w-50 allign-center mx-auto my-3">
-    <h2 class="mb-4">{{ message }}</h2>
-    <a href="/"><button class="btn btn-primary">Вернуться на главную страницу</button></a>
-</div>
+    <div class="container mx-auto my-3" style="margin-left: 80px !important;">
+        <h2 class="mb-4">ERROR {{ errr_code }}</h2>
+        <p>
+            <a href="/">
+                <button class="btn btn-primary">Вернуться на главную страницу</button>
+            </a>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                Ошибка
+            </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
