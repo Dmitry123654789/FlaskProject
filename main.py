@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from random import shuffle
+from traceback import print_exc
 
 from flask import Flask, jsonify, render_template
 from flask import redirect, request, session, url_for
@@ -16,9 +17,11 @@ from api.resource_description_product import DescriptionProductsListResource, De
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
 from api.resource_login import LoginResource
+from api.resource_full_product import FullProductResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
+from forms.product_form import ProductForm
 from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
@@ -42,6 +45,7 @@ api.add_resource(OrdersResource, '/api/orders/<int:orders_id>')
 # api товаров
 api.add_resource(ProductsListResource, '/api/products')
 api.add_resource(ProductsResource, '/api/products/<int:products_id>')
+api.add_resource(FullProductResource, '/api/create_full_product')
 
 # api описания товаров
 api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
@@ -87,6 +91,15 @@ def admin_user_page(user_id):
 def admin_products():
     return render_template('admin/products_page.html')
 
+@app.route('/admin/products/create', methods=['GET', 'POST'])
+def admin_product_create():
+    form = ProductForm()
+    if request.method == 'POST':
+        images = [('images', (x.filename, x, 'image/jpeg')) for x in form.images.data]
+        print(type(form.to_dict()), form, form.data)
+        post('http://localhost:8080/api/create_full_product', json=form.to_dict(), files=images)
+    return render_template('admin/product_create.html', form=form)
+
 
 @app.route('/admin/products/<int:product_id>')
 def admin_product_page(product_id):
@@ -95,7 +108,7 @@ def admin_product_page(product_id):
 
 @app.route('/admin/orders')
 def admin_orders():
-    return render_template('admin/admin_base.html')
+    return render_template('admin/orders_page.html')
 
 
 @app.route('/admin/notifications')

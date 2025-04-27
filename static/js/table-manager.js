@@ -9,8 +9,9 @@ export class TableManager {
 
         this.currentPage = 1;
         this.limit = 10;
-        this.maxVisiblePages = 1;
-        this.totalPages = Math.floor(this.data.length / this.limit);
+        this.maxVisiblePages = 2;
+        this.totalPages = Math.ceil(this.data.length / this.limit);
+
 
         this.createTable();
     }
@@ -40,7 +41,7 @@ export class TableManager {
 
         select.addEventListener('change', () => {
             this.limit = parseInt(document.getElementById('table-page-limit').value);
-            this.totalPages = Math.floor(this.data.length / this.limit);
+            this.totalPages = Math.ceil(this.data.length / this.limit);
             this.updateTable(this.currentPage);
             this.renderPagination();
         });
@@ -136,7 +137,7 @@ export class TableManager {
             ul.appendChild(createBtn('...', null, true));
         } else {
             for (let i = 1; i < start; i++) {
-                ul.appendChild(createBtn(i, i));
+                ul.appendChild(createBtn(i, i, this.currentPage === i));
             }
         }
 
@@ -149,7 +150,7 @@ export class TableManager {
             ul.appendChild(createBtn(this.totalPages, this.totalPages));
         } else {
             for (let i = end + 1; i <= this.totalPages; i++) {
-                ul.appendChild(createBtn(i, i));
+                ul.appendChild(createBtn(i, i, i === this.currentPage));
             }
         }
 
@@ -189,6 +190,7 @@ export class TableManager {
     setData(newData) {
         this.data = [...newData];
         this.filteredData = [...newData];
+        this.totalPages = Math.ceil(this.data.length / this.limit);
         this.updatePage(1);
 
     }

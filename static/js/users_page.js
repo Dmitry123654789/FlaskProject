@@ -2,8 +2,8 @@ import { TableManager } from './table-manager.js'
 
 function applySearch() {
     const searchValue = document.getElementById('search').value.toLowerCase();
-    console.log('searching', searchValue, document.getElementById('search').value)
     this.filteredData = [...this.data].filter(user =>
+    String(user.id).includes(searchValue) ||
     user.surname.toLowerCase().includes(searchValue) ||
     user.name.toLowerCase().includes(searchValue) ||
     user.email.toLowerCase().includes(searchValue) ||
