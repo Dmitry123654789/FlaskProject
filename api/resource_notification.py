@@ -14,7 +14,7 @@ class NotificationsResource(Resource):
         if not notifications:
             raise NotFound('Уведомление не найдено')
         return jsonify({'notifications': notifications.to_dict(
-            only=('id', 'title', 'text', 'public', 'id_user'))})
+            only=('id', 'title', 'text', 'public', 'read', 'id_user'))})
 
     def delete(self, notifications_id):
         session = db_session.create_session()
@@ -32,7 +32,7 @@ class NotificationsResource(Resource):
         if not notification:
             raise NotFound('Не найдено уведомление для изменения')
 
-        elif all(key in args for key in ['title', 'text', 'public', 'id_user']):
+        elif all(key in args for key in ['title', 'text',  'read','public', 'id_user']):
             for key, value in args.items():
                 setattr(notification, key, value)
             db_sess.commit()
@@ -51,19 +51,20 @@ class NotificationsListResource(Resource):
             filters.append(Notification.public == request.args.get('public'))
         notifications = session.query(Notification).filter(*filters)
         return jsonify({'notifications': [item.to_dict(
-            only=('id', 'title', 'text', 'public', 'id_user')) for item in notifications]})
+            only=('id', 'title', 'text', 'public', 'read', 'id_user')) for item in notifications]})
 
     def post(self):
         args = parser.parse_args()
         if not args:
             raise BadRequest('Empty request')
 
-        elif all(key in args for key in ['title', 'text', 'public', 'id_user']):
+        elif all(key in args for key in ['title', 'text', 'public',  'read', 'id_user']):
             db_sess = db_session.create_session()
             notifications = Notification(
                 title=args['title'],
                 text=args['text'],
                 public=args['public'],
+                read=args['read'],
                 id_user=args['id_user']
             )
             db_sess.add(notifications)
