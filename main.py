@@ -1,15 +1,19 @@
 import os
 from datetime import datetime
-from random import shuffle
-
 from api.resource_appeal import AppealsListResource, AppealsResource
 from flask import Flask, redirect
 from flask import request, jsonify, render_template
 from flask import url_for
 from flask_login import current_user
 from flask_login import logout_user, login_user, LoginManager, login_required
+from random import shuffle
+
+from flask import Flask, render_template, request, redirect
+from flask import jsonify
+from flask import url_for
+from flask_login import current_user
+from flask_login import logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
-from forms.add_appeal import AddAppealForm
 from requests import get, put
 from requests import post
 from werkzeug.exceptions import HTTPException
@@ -22,10 +26,12 @@ from api.resource_product import ProductsListResource, ProductsResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
+from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
+my_dir = os.path.dirname(__file__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
@@ -54,6 +60,11 @@ api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:des
 api = Api(app)
 api.add_resource(AppealsListResource, '/api/appeal')
 api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
+
+# api уведомление пользователей
+api = Api(app)
+api.add_resource(AppealsListResource, '/api/notification')
+api.add_resource(AppealsResource, '/api/notification/<int:appeal_id>')
 
 
 @login_manager.user_loader
@@ -150,7 +161,6 @@ def product(product_id):
         response_order = post('http://localhost:8080/api/orders', json=json_order).json()
 
         # Добавить уведомление о добавленом заказе
-
 
     return render_template('product.html', prod=prod, descript=descript, products=products)
 
