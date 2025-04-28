@@ -1,11 +1,5 @@
 import os
 from datetime import datetime
-from api.resource_appeal import AppealsListResource, AppealsResource
-from flask import Flask, redirect
-from flask import request, jsonify, render_template
-from flask import url_for
-from flask_login import current_user
-from flask_login import logout_user, login_user, LoginManager, login_required
 from random import shuffle
 
 from flask import Flask, render_template, request, redirect
@@ -19,10 +13,12 @@ from requests import post
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
+from api.resource_appeal import AppealsListResource, AppealsResource
 from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
 from api.resource_login import LoginResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
+from api.resource_notification import NotificationsListResource, NotificationsResource
 from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
@@ -31,7 +27,6 @@ from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
-my_dir = os.path.dirname(__file__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
@@ -63,8 +58,8 @@ api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
 
 # api уведомление пользователей
 api = Api(app)
-api.add_resource(AppealsListResource, '/api/notification')
-api.add_resource(AppealsResource, '/api/notification/<int:appeal_id>')
+api.add_resource(NotificationsListResource, '/api/notification')
+api.add_resource(NotificationsResource, '/api/notification/<int:appeal_id>')
 
 
 @login_manager.user_loader
