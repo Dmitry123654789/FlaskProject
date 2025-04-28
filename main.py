@@ -18,6 +18,11 @@ api = Api(app)
 api.add_resource(AppealsListResource, '/api/appeal')
 api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
 
+# api уведомление пользователей
+api = Api(app)
+api.add_resource(AppealsListResource, '/api/notification')
+api.add_resource(AppealsResource, '/api/notification/<int:appeal_id>')
+
 @app.route('/', methods=['GET', 'POST'])
 def home_page():
     form = AddAppealForm()
