@@ -12,6 +12,7 @@ class Notification(SqlAlchemyBase, SerializerMixin):
     text = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     public = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
     read = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
+    create_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
 
     id_user = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=True)
     user = orm.relationship('User')

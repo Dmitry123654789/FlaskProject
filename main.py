@@ -279,25 +279,8 @@ def user_orders(user_id):
 def user_notifications(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    # notifications = [
-    #     {
-    #         'title': 'Новая акция!',
-    #         'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.
-    #
-    #             Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
-    #         'date_short': '29 мар',
-    #         'date_full': '29 марта 2025',
-    #         'read': True
-    #     },
-    #     {
-    #         'title': 'Новая акция!',
-    #         'text': '''Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada. Скидка 20% на все товары до конца недели.dddcfg hhyy. hhyy. dassww! ddwwr? dada daaaad dddda w wwerrr fada.''',
-    #         'date_short': '29 мар',
-    #         'date_full': '29 марта 2025',
-    #         'read': False
-    #     },
-    # ]
-    return render_template('profile_notifications.html', user_id=user_id)
+    notifications = get('http://localhost:8080/api/notification', json={'user_id': user_id}).json()
+    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 
 @app.route('/order/<int:order_id>')
