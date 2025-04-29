@@ -1,15 +1,12 @@
 import os
 from datetime import datetime
 from random import shuffle
-from traceback import print_exc
 
 from flask import Flask, jsonify, render_template
 from flask import redirect, request, session, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
-from requests import get, put
-from requests import post
-from six import print_
+from requests import get, put, post
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
@@ -72,45 +69,59 @@ def admin_required(func):
     return wrapper
 
 
+@admin_required
 @app.route('/admin')
 def admin_page():
     return render_template('admin/admin_base.html')
 
 
+@admin_required
 @app.route('/admin/users')
 def admin_users():
     return render_template('admin/users_page.html')
 
 
+@admin_required
 @app.route('/admin/users/<int:user_id>')
 def admin_user_page(user_id):
     return render_template('admin/user.html')
 
 
+@admin_required
 @app.route('/admin/products')
 def admin_products():
     return render_template('admin/products_page.html')
 
+
+@admin_required
 @app.route('/admin/products/create', methods=['GET', 'POST'])
 def admin_product_create():
     form = ProductForm()
     if request.method == 'POST':
-        images = [('images', (x.filename, x, 'image/jpeg')) for x in form.images.data]
-        print(type(form.to_dict()), form, form.data)
-        post('http://localhost:8080/api/create_full_product', json=form.to_dict(), files=images)
+        files = {
+            f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type) for
+            i in range(len(form.images.data))}
+
+        resp = post('http://localhost:8080/api/create_full_product', data=form.to_dict(), files=files)
+        if resp.status_code == 200:
+
+            return render_template('admin/product_create.html', form=form, success=True, product_id=resp.json()[0]['id'])
     return render_template('admin/product_create.html', form=form)
 
 
+@admin_required
 @app.route('/admin/products/<int:product_id>')
 def admin_product_page(product_id):
     return render_template('admin/product.html')
 
 
+@admin_required
 @app.route('/admin/orders')
 def admin_orders():
     return render_template('admin/orders_page.html')
 
 
+@admin_required
 @app.route('/admin/notifications')
 def admin_notifications():
     return render_template('admin/notifications_page.html')

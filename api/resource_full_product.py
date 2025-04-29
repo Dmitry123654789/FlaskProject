@@ -19,9 +19,13 @@ def allowed_file(filename):
 
 class FullProductResource(Resource):
     def post(self):
-        print('huh?', request.files, request.files.getlist('images'))
-        args = product_parser.parse_args()
+        # print('huh?', request.form, request.data, request.form.to_dict())
+        try:
+            args = request.form.to_dict()
+        except Exception as e:
+            print('error', e)
 
+        print(type(args))
         sess = db_session.create_session()
 
         new_description = DescriptionProduct(
@@ -33,29 +37,24 @@ class FullProductResource(Resource):
             style=args['style'],
             features=args['features']
         )
-
+        print('arged')
         sess.add(new_description)
+        sess.commit()
 
         desc_id = new_description.id
-        print('yo!')
+
         product_folder = os.path.join('static/img/products/', f'product_{desc_id}')
         os.makedirs(product_folder, exist_ok=True)
 
-        try:
-
-            files = request.files.getlist('images')
-        except Exception as e:
-            print(e)
-
-
-        for idx, file in enumerate(files):
+        files = request.files
+        file_num = 1
+        for key, file in files.items():
             if file and allowed_file(file.filename):
-                ext = file.filename.rsplit('.', 1)[1].lower()
-                filename = f"{idx}.{ext}"
-                filepath = os.path.join(product_folder, filename)
-                file.save(filepath)
+                fileext = file.filename.split('.')[-1]
+                file_path = os.path.join(product_folder, f'{file_num}.{fileext}')
+                file_num += 1
+                file.save(file_path)
 
-        print(product_folder)
         new_product = Product(
             price=args['price'],
             discount=args['discount'],
@@ -64,3 +63,5 @@ class FullProductResource(Resource):
             path_images=product_folder
         )
         sess.add(new_product)
+        sess.commit()
+        return jsonify({'message': 'success', 'id': new_product.id}, 200)

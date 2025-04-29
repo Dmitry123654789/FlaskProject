@@ -2,7 +2,14 @@
 
 {% block admin_content %}
 <div class="profile-main-section__wrapper">
+
     <div class="content-label">Создание товара</div>
+    {% if success == True %}
+    <h2 class="align-center">Успешно!</h2>
+
+    <button class="btn btn-secondary"><a href="/admin/products/{{ product_id }}">Перейти к товару</a></button>
+
+    {% else %}
     <form id="productForm" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div class="profile-info-group">
@@ -102,5 +109,6 @@
 
         <input type="submit" class="btn btn-primary" value="Создать">
     </form>
+    {% endif %}
 </div>
 {% endblock %}
