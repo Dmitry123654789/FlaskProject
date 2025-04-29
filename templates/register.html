@@ -1,90 +1,118 @@
 {% extends "base.html" %}
 {% block head %}
-    <style>
-        body {
-            background-color: #bebebe;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+<style>
+    body {
+        background-color: #bebebe;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-        .register-form {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 700px;
-            width: 100%;
-        }
+    .register-form {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        width: 100%;
+    }
 
-        .form-control::placeholder {
-            color: #888;
-        }
+    .form-control::placeholder {
+        color: #888;
+    }
 
-        .btn-register {
-            background-color: #888;
-            color: white;
-            border: none;
-        }
+    .btn-register {
+        background-color: #888;
+        color: white;
+        border: none;
+    }
 
-        .btn-register:hover {
-            color: white;
-            background-color: #666;
-        }
-    </style>
+    .btn-register:hover {
+        color: white;
+        background-color: #666;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <div class="register-form">
-        {% if success %}
-            <h2 class="text-center mb-4">Успешно!</h2>
-            <p class="text-center">Вы успешно зарегистрировались.</p>
-            <a href="/">
-                <button type="submit" class="btn btn-block btn-register">Вернуться на главный экран</button>
-            </a>
-        {% else %}
-            <h2 class="text-center mb-4">Новый профиль{{ form.csrf_token }}</h2>
-            <form id="registerForm" method="post">
-                {{ form.hidden_tag() }}
-                <div class="form-group mb-2">
-                    {{ form.name(class="form-control", placeholder="Имя") }}
-                    {% for error in form.name.errors %}
-                        <div class="invalid-feedback d-block">{{ error }}</div>
-                    {% endfor %}
+<div class="register-form">
+    {% if success %}
+    <h2 class="text-center mb-4">Успешно!</h2>
+    <p class="text-center">Вы успешно зарегистрировались.</p>
+    <a href="/">
+        <button type="submit" class="btn btn-block btn-register">Вернуться на главный экран</button>
+    </a>
+    {% else %}
+    <h2 class="text-center mb-4">Новый профиль{{ form.csrf_token }}</h2>
+    <form id="registerForm" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-2">
+            {{ form.name(class="form-control", placeholder="Имя") }}
+            {% for error in form.name.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-2">
+            {{ form.surname(class="form-control", placeholder="Фамилия") }}
+            {% for error in form.surname.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-3"></div>
+        <div class="form-group mb-2">
+            {{ form.email(class="form-control", placeholder="your-email@example.com", type="email") }}
+            {% for error in form.email.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-3"></div>
+        <div class="form-group mb-2">
+            {{ form.password(class="form-control", placeholder="Пароль", type="password") }}
+            {% for error in form.password.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-2">
+            {{ form.repeat_password(class="form-control", placeholder="Повторите пароль", type="password") }}
+            {% for error in form.repeat_password.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-3"></div>
+        <div class="form-group mb-2">
+            <div class="mb-2">Дата роджения:</div>
+            {{ form.birth_date(class="form-control") }}
+            {% for error in form.birth_date.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group mb-3">
+            <div class="mb-2">Ваш пол</div>
+            <div class="input-group"
+                 style="display: grid; grid-template-rows: 100%; grid-template-columns: 100px auto; column-gap: 20px">
+                {% for subfield in form.sex %}
+                <div class="radio-group">
+                    <span class="radio-checkbox">{{ subfield }}</span>
+                    <span>{{ subfield.label }}</span>
                 </div>
-                <div class="form-group mb-2">
-                    {{ form.surname(class="form-control", placeholder="Фамилия") }}
-                    {% for error in form.surname.errors %}
-                        <div class="invalid-feedback d-block">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="form-group mb-2">
-                    {{ form.email(class="form-control", placeholder="your-email@example.com", type="email") }}
-                    {% for error in form.email.errors %}
-                        <div class="invalid-feedback d-block">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="form-group mb-2">
-                    {{ form.password(class="form-control", placeholder="Пароль", type="password") }}
-                    {% for error in form.password.errors %}
-                        <div class="invalid-feedback d-block">{{ error }}</div>
-                    {% endfor %}
-                </div>
+                {% endfor %}
+            </div>
+        </div>
 
-                <div style="display: flex;">
-                    <p>{{ form.submit(type="submit", class="btn btn-block btn-register") }}</p>
-                    <a class="icon-link icon-link-hover"
-                       style="--bs-link-hover-color-rgb: 25, 135, 84; margin-left: 25px;  font-size: 19px;"
-                       href="/login">
-                        Войти
-                        <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
-                            <path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                        </svg>
-                    </a>
-                </div>
-            </form>
-        {% endif %}
-    </div>
+        <div style="display: flex;">
+            <p>{{ form.submit(type="submit", class="btn btn-block btn-register") }}</p>
+            <a class="icon-link icon-link-hover"
+               style="--bs-link-hover-color-rgb: 25, 135, 84; margin-left: 25px;  font-size: 19px;"
+               href="/login">
+                Войти
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                </svg>
+            </a>
+        </div>
+    </form>
+    {% endif %}
+</div>
 {% endblock %}

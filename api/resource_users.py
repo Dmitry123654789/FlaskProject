@@ -38,7 +38,7 @@ class UserListResource(Resource):
         args = user_parser.parse_args()
         new_user = User(**args)
 
-        new_user.role = 1
+        new_user.role_id = 1
         new_user.set_password(new_user.password)
         if args['birth_date']:
             brth = datetime(*map(int, args['birth_date'].split('-')))

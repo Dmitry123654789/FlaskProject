@@ -22,6 +22,7 @@ from data.users import User
 from forms.product_form import ProductForm
 from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
+from forms.register_form import RegisterForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -67,6 +68,7 @@ def load_user(user_id):
     user = sess.get(User, user_id)
     user.birth_date = str(user.birth_date).split(' ')[0]
     return user
+
 
 def check_if_admin(user):
     return user.role_id > 2
@@ -235,14 +237,14 @@ def product(product_id):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = UserForm()
+    form = RegisterForm()
     if request.method == 'POST':
-        print(form.validate(), form.errors)
         if form.validate():
             try_post = post('http://localhost:8080/api/users',
                             json={'email': form.email.data, 'password': form.password.data,
                                   'surname': form.surname.data,
-                                  'name': form.name.data})
+                                  'name': form.name.data, 'sex': form.sex.data,
+                                  'birth_date': str(form.birth_date.data)})
             if try_post.status_code == 400:
                 form.email.errors = ['Данный email уже используется']
                 return render_template('register.html', form=form)
@@ -293,31 +295,31 @@ def user_info(user_id):
     form = UserForm()
 
     # if request.method == 'GET':
-        # if current_user.id != user_id:
-        #     user = get(f'http://localhost:8080/api/users/{user_id}')
-        #
-        #     if user.status_code == 200:
-        #         user = user.json()['user']
-        #         form.phone.data = user['phone']
-        #         form.email.data = user['email']
-        #         form.surname.data = user['surname']
-        #         form.name.data = user['name']
-        #         form.patronymic.data = user['patronymic']
-        #         if user['birth_date']:
-        #             form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
-        #         form.sex.data = user['sex']
-        #     elif user.status_code == 404:
-        #         return render_template('fail.html', message='Пользователь не найден')
-        #
-        # else:
-        #     form.phone.data = current_user.phone
-        #     form.email.data = current_user.email
-        #     form.surname.data = current_user.surname
-        #     form.name.data = current_user.name
-        #     form.patronymic.data = current_user.patronymic
-        #     if current_user.birth_date != 'None':
-        #         form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
-        #     form.sex.data = current_user.sex
+    # if current_user.id != user_id:
+    #     user = get(f'http://localhost:8080/api/users/{user_id}')
+    #
+    #     if user.status_code == 200:
+    #         user = user.json()['user']
+    #         form.phone.data = user['phone']
+    #         form.email.data = user['email']
+    #         form.surname.data = user['surname']
+    #         form.name.data = user['name']
+    #         form.patronymic.data = user['patronymic']
+    #         if user['birth_date']:
+    #             form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
+    #         form.sex.data = user['sex']
+    #     elif user.status_code == 404:
+    #         return render_template('fail.html', message='Пользователь не найден')
+    #
+    # else:
+    #     form.phone.data = current_user.phone
+    #     form.email.data = current_user.email
+    #     form.surname.data = current_user.surname
+    #     form.name.data = current_user.name
+    #     form.patronymic.data = current_user.patronymic
+    #     if current_user.birth_date != 'None':
+    #         form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
+    #     form.sex.data = current_user.sex
 
     if request.method == 'POST':
         user_json = {
