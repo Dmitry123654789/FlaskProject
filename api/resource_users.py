@@ -1,6 +1,6 @@
 from datetime import datetime as ddt, datetime
 
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, abort
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 import werkzeug.exceptions
@@ -38,14 +38,14 @@ class UserListResource(Resource):
         args = user_parser.parse_args()
         new_user = User(**args)
 
-        new_user.role_id = 1
+        # new_user.role_id = 1
         new_user.set_password(new_user.password)
         if args['birth_date']:
             brth = datetime(*map(int, args['birth_date'].split('-')))
             new_user.birth_date = brth
         sess = db_session.create_session()
         if sess.query(User).filter(User.email == args['email']).first():
-            return BadRequest('Пользователь с таким email уже существует')
+            return abort(400,{'message': 'Пользователь с таким email уже существует'})
         sess.add(new_user)
         sess.commit()
 
