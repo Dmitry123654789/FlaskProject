@@ -25,7 +25,6 @@ from data.db_session import global_init, create_session
 from data.users import User
 from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
-from forms.notification import NotificationForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -281,7 +280,6 @@ def user_orders(user_id):
 def user_notifications(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    form = NotificationForm()
     if request.method == 'POST':
         if 'delete_submit' in request.form:
             id = request.form.get('delete_submit')
@@ -293,7 +291,7 @@ def user_notifications(user_id):
         return redirect(f'/profile/{user_id}/notifications')
 
     notifications = get('http://localhost:8080/api/notification', json={'id_user': user_id}).json()
-    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications, form=form)
+    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 
 @app.route('/order/<int:order_id>')
