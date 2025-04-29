@@ -8,6 +8,7 @@ from flask import url_for
 from flask_login import current_user
 from flask_login import logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
+from httpx import delete
 from requests import get, put
 from requests import post
 from werkzeug.exceptions import HTTPException
@@ -24,6 +25,7 @@ from data.db_session import global_init, create_session
 from data.users import User
 from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
+from forms.notification import NotificationForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -54,12 +56,12 @@ api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:des
 # api обращений пользователей
 api = Api(app)
 api.add_resource(AppealsListResource, '/api/appeal')
-api.add_resource(AppealsResource, '/api/appeal/<int:appeal_id>')
+api.add_resource(AppealsResource, '/api/appeal/<int:appeals_id>')
 
 # api уведомление пользователей
 api = Api(app)
 api.add_resource(NotificationsListResource, '/api/notification')
-api.add_resource(NotificationsResource, '/api/notification/<int:appeal_id>')
+api.add_resource(NotificationsResource, '/api/notification/<int:notifications_id>')
 
 
 @login_manager.user_loader
@@ -274,13 +276,24 @@ def user_orders(user_id):
     return render_template('profile_orders.html', user_id=user_id)
 
 
-@app.route('/profile/<int:user_id>/notifications')
+@app.route('/profile/<int:user_id>/notifications', methods=['GET', 'POST'])
 @login_required
 def user_notifications(user_id):
     if current_user.id != user_id and not check_if_admin(current_user.id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    notifications = get('http://localhost:8080/api/notification', json={'user_id': user_id}).json()
-    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
+    form = NotificationForm()
+    if request.method == 'POST':
+        if 'delete_submit' in request.form:
+            id = request.form.get('delete_submit')
+            res = delete(f'http://localhost:8080/api/notification/{id}')
+
+        if 'read_submit' in request.form:
+            id = request.form.get('read_submit')
+            res = put(f'http://localhost:8080/api/notification/{id}', json={'read': True})
+            print(res.json())
+            print(res.status_code)
+    notifications = get('http://localhost:8080/api/notification', json={'id_user': user_id}).json()
+    return render_template('profile_notifications.html', user_id=user_id, notifications=notifications, form=form)
 
 
 @app.route('/order/<int:order_id>')

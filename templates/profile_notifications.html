@@ -40,7 +40,7 @@
             <div class="list-block__body">
                 {% if notifications %}
                     {% for notification in notifications['notifications'] %}
-                        <div class="notification-card {% if not notification.read %}unread{% endif %}"
+                        <div class="notification-card {% if not notification['read'] %}unread{% endif %}"
                              onclick="toggleNotification(this)">
                             <div class="notification-header">
                                 {% if not notification['read'] %}
@@ -52,6 +52,16 @@
                             <p class="notification-preview">{{ notification['text'] }}</p>
                             <div class="notification-full-content">
                                 <p class="notification-full-text text-break">{{ notification['text'] }}</p>
+                                <form method="post">
+                                    {% if not notification['read'] %}
+                                        <button type="submit" name="read_submit" value="{{ notification['id'] }}"
+                                                class="btn btn-outline-success">Прочитать
+                                        </button>
+                                    {% endif %}
+                                    <button type="submit" name="delete_submit" value="{{ notification['id'] }}"
+                                            class="btn btn-outline-danger">Удалить
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% endfor %}
