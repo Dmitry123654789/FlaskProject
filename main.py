@@ -6,19 +6,17 @@ from flask import Flask, jsonify, render_template
 from flask import redirect, request, session, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
-from requests import get, put, post
+from requests import get, put, post, delete
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
 from api.resource_appeal import AppealsListResource, AppealsResource
 from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
-from api.resource_login import LoginResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
 from api.resource_notification import NotificationsListResource, NotificationsResource
 from api.resource_login import LoginResource
 from api.resource_full_product import FullProductResource
-from data.admins import check_if_admin
 from data.db_session import global_init, create_session
 from data.users import User
 from forms.product_form import ProductForm
@@ -31,12 +29,12 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-# csrf = CSRFProtect(app)
 
 # api пользователей
 api = Api(app)
 api.add_resource(resource_users.UserListResource, '/api/users')
 api.add_resource(resource_users.UserResource, '/api/users/<int:user_id>')
+api.add_resource(resource_users.RoleResource, '/api/roles')
 api.add_resource(LoginResource, '/api/login')
 
 # api заказов
@@ -70,12 +68,16 @@ def load_user(user_id):
     user.birth_date = str(user.birth_date).split(' ')[0]
     return user
 
+def check_if_admin(user):
+    return user.role_id > 2
+
 
 # Декоратор для проверки, админ ли пользователь
 def admin_required(func):
     @login_required
     def wrapper(*args, **kwargs):
-        if not check_if_admin(current_user.id):
+        print(current_user.role_id, 'check', current_user)
+        if current_user.role_id <= 2:
             return redirect(url_for('index'))
         return func(*args, **kwargs)
 
@@ -277,8 +279,7 @@ def logout():
 @app.route('/profile/<int:user_id>')
 @login_required
 def profile(user_id):
-    print(current_user.id)
-    if current_user.id != user_id and not check_if_admin(current_user.id):
+    if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     # order = {'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}
     return render_template('profile.html', user_id=user_id)
@@ -287,35 +288,36 @@ def profile(user_id):
 @app.route('/profile/<int:user_id>/info', methods=['GET', 'POST'])
 @login_required
 def user_info(user_id):
-    if current_user.id != user_id and not check_if_admin(current_user.id):
+    if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     form = UserForm()
 
-    if request.method == 'GET':
-        if current_user.id != user_id:
-            user = get(f'http://localhost:8080/api/users/{user_id}')
-            if user.status_code == 200:
-                user = user.json()['user']
-                form.phone.data = user['phone']
-                form.email.data = user['email']
-                form.surname.data = user['surname']
-                form.name.data = user['name']
-                form.patronymic.data = user['patronymic']
-                if user['birth_date']:
-                    form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
-                form.sex.data = user['sex']
-            elif user.status_code == 404:
-                return render_template('fail.html', message='Пользователь не найден')
-
-        else:
-            form.phone.data = current_user.phone
-            form.email.data = current_user.email
-            form.surname.data = current_user.surname
-            form.name.data = current_user.name
-            form.patronymic.data = current_user.patronymic
-            if current_user.birth_date != 'None':
-                form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
-            form.sex.data = current_user.sex
+    # if request.method == 'GET':
+        # if current_user.id != user_id:
+        #     user = get(f'http://localhost:8080/api/users/{user_id}')
+        #
+        #     if user.status_code == 200:
+        #         user = user.json()['user']
+        #         form.phone.data = user['phone']
+        #         form.email.data = user['email']
+        #         form.surname.data = user['surname']
+        #         form.name.data = user['name']
+        #         form.patronymic.data = user['patronymic']
+        #         if user['birth_date']:
+        #             form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
+        #         form.sex.data = user['sex']
+        #     elif user.status_code == 404:
+        #         return render_template('fail.html', message='Пользователь не найден')
+        #
+        # else:
+        #     form.phone.data = current_user.phone
+        #     form.email.data = current_user.email
+        #     form.surname.data = current_user.surname
+        #     form.name.data = current_user.name
+        #     form.patronymic.data = current_user.patronymic
+        #     if current_user.birth_date != 'None':
+        #         form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
+        #     form.sex.data = current_user.sex
 
     if request.method == 'POST':
         user_json = {
@@ -337,7 +339,7 @@ def user_info(user_id):
 @app.route('/profile/<int:user_id>/orders')
 @login_required
 def user_orders(user_id):
-    if current_user.id != user_id and not check_if_admin(current_user.id):
+    if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     # orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
     #           {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
@@ -348,7 +350,7 @@ def user_orders(user_id):
 @app.route('/profile/<int:user_id>/notifications', methods=['GET', 'POST'])
 @login_required
 def user_notifications(user_id):
-    if current_user.id != user_id and not check_if_admin(current_user.id):
+    if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     if request.method == 'POST':
         if 'delete_submit' in request.form:

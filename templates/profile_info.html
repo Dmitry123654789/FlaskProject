@@ -53,4 +53,39 @@
     </div>
     </form>
 </div>
+<script>
+    const user_id = {{user_id|tojson}}
+
+    loadUser(user_id).then(data => {
+        const user = data['user']
+        localStorage.setItem("cached_user", JSON.stringify(user));
+    });
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const cached = localStorage.getItem("cached_user");
+        if (!cached) return;
+
+        const data = JSON.parse(cached);
+
+        const fillIfExists = (id, value) => {
+            const el = document.getElementById(id);
+            if (el && value !== undefined) el.value = value;
+        };
+
+        fillIfExists("phone", data.phone);
+        fillIfExists("email", data.email);
+        fillIfExists("surname", data.surname);
+        fillIfExists("name", data.name);
+        fillIfExists("patronymic", data.patronymic);
+        fillIfExists("birth_date", data.birth_date);
+
+        // Пол: выбираем radio с нужным value
+        if (data.sex) {
+            const sexRadio = document.querySelector(`input[name="sex"][value="${data.sex}"]`);
+            if (sexRadio) sexRadio.checked = true;
+        }
+    });
+</script>
 {% endblock%}

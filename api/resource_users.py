@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 import werkzeug.exceptions
 from data import db_session
 from data.users import User
+from data.roles import Role
 from .parser_user import user_parser
 
 
@@ -24,12 +25,12 @@ class UserListResource(Resource):
             if not user:
                 NotFound(f'Пользователь с email={request.args.get("phone")} не найден.')
             return jsonify({'user': user.to_dict(
-                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
 
         users = session.query(User).filter(*filters)
         if 'full' in request.args.keys():
             return jsonify({'users': [item.to_dict(
-                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email')) for item in
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role')) for item in
                 users]})
         return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'email')) for item in users]})
 
@@ -37,6 +38,7 @@ class UserListResource(Resource):
         args = user_parser.parse_args()
         new_user = User(**args)
 
+        new_user.role = 1
         new_user.set_password(new_user.password)
         if args['birth_date']:
             brth = datetime(*map(int, args['birth_date'].split('-')))
@@ -48,7 +50,7 @@ class UserListResource(Resource):
         sess.commit()
 
         return jsonify({'id': new_user.id, 'user': new_user.to_dict(
-            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
+            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
 
 
 class UserResource(Resource):
@@ -61,7 +63,7 @@ class UserResource(Resource):
         if user.birth_date:
             user.birth_date = datetime.strftime(user.birth_date, '%Y-%m-%d')
         return jsonify(
-            {'user': user.to_dict(only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email'))})
+            {'user': user.to_dict(only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
 
     def put(self, user_id):
         args = user_parser.parse_args()
@@ -95,3 +97,10 @@ class UserResource(Resource):
         sess.delete(user)
         sess.commit()
         return make_response({'message': f'Пользователь с id={user_id} удалён.'}, 200)
+
+
+class RoleResource(Resource):
+    def get(self):
+        sess = db_session.create_session()
+        roles = sess.query(Role).all()
+        return jsonify({'roles': [item.to_dict(only=('id', 'role_name')) for item in roles]})

@@ -19,7 +19,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     birth_date = sqlalchemy.Column(sqlalchemy.DateTime, default=None)
     sex = sqlalchemy.Column(sqlalchemy.String, default='male')
 
-    admin = orm.relationship('Admin', back_populates='user')
+    role_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('roles.id'))
+
+    role = orm.relationship("Role", back_populates="users")
+
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

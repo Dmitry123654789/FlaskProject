@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content %}
+<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
+
 <div class="profile-page__wrapper">
     <div class="profile-container">
         <div class="profile-sidebar__wrapper">
@@ -12,7 +14,7 @@
                 <div class="profile-sidebar-info__wrapper">
                     <img src="{{ url_for('static', filename='svg/user-default-avatar.svg')}}" alt="Аватар профиля"
                          class="user-avatar">
-                    <div class="profile-username">{{ current_user.name }} {{ current_user.surname }}</div>
+                    <div class="profile-username" id="user_avatar_info">{{ current_user.name }} {{ current_user.surname }}</div>
                 </div>
             </a>
             <nav class="profile-menu">
@@ -55,4 +57,14 @@
         </div>
     </div>
 </div>
+<script>
+    const userId = {{user_id|tojson}}
+
+    loadUser(userId).then(data => {
+        const user = data['user']
+        document.getElementById('user_avatar_info').innerText = user['name'] + " " + user['surname']
+    });
+
+
+</script>
 {% endblock %}
