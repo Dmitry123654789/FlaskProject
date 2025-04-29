@@ -1,0 +1,114 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block admin_content %}
+<div class="profile-main-section__wrapper">
+
+    <div class="content-label">Создание товара</div>
+    {% if success == True %}
+    <h2 class="align-center">Успешно!</h2>
+
+    <button class="btn btn-secondary"><a href="/admin/products/{{ product_id }}">Перейти к товару</a></button>
+
+    {% else %}
+    <form id="productForm" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Название и описание</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Название</span>
+                {{ form.title(class='form-control', required=True) }}
+            </div>
+            {% for error in form.title.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+            <div class="input-group mb-3">
+                <span class="input-group-text">Описание</span>
+                {{ form.description(class='form-control', required=True) }}
+                {% for error in form.description.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Характеристики</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Размер (XxYxZ)</span>
+                {{ form.size(class='form-control', required=True) }}
+            </div>
+            {% for error in form.size.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Тип</span>
+                {{ form.type(class='form-control', required=True) }}
+            </div>
+            {% for error in form.type.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Материал</span>
+                {{ form.material(class='form-control', required=True) }}
+            </div>
+            {% for error in form.material.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Цвет</span>
+                {{ form.color(class='form-control', required=True) }}
+            </div>
+            {% for error in form.color.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Стиль</span>
+                {{ form.style(class='form-control', required=True) }}
+            </div>
+            {% for error in form.style.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Особенности</span>
+                {{ form.features(class='form-control', required=True) }}
+            </div>
+            {% for error in form.features.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Цена</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Цена</span>
+                {{ form.price(class='form-control', required=True) }}
+            </div>
+            {% for error in form.price.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+            <div class="input-group mb-3">
+                <span class="input-group-text">Скидка</span>
+                {{ form.discount(class='form-control') }}
+            </div>
+            {% for error in form.discount.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Изображения</span>
+            <div class="input-group mb-3">
+                {{ form.images(class='form-control', required=True) }}
+            </div>
+            {% for error in form.images.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Создать">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

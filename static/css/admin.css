@@ -1,0 +1,76 @@
+:root {
+    --text-color: #000;
+}
+
+* {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.main-container {
+    padding: 15px 30px;
+}
+
+.main-container {
+    padding: 15px 30px;
+}
+
+#users-page-limit {
+    width: 80px;
+}
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.table-control-group {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    margin-right: 15px;
+    height: 40px;
+}
+
+.table-control-group p {
+    margin: 0;
+    margin-right: 10px;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.table-control-group select {
+    display: inline-block;
+}
+
+thead th {
+    cursor: pointer;
+    user-select: none;
+}
+
+thead th::after {
+    content: '';
+    position: relative;
+    right: 20px;
+    border: 6px solid transparent; /* Create an arrow using borders */
+    border-top-color: #000000; /* White arrow pointing upwards */
+    transform: translateY(-50%);
+    top: 50%;
+    opacity: 0; /* Hide the arrow by default */
+    transition: opacity 0.2s ease; /* Smooth transition for arrow visibility */
+}
+
+thead th:hover::after {
+    opacity: 1; /* Make the arrow visible on hover */
+}
+th.active {
+    background-color: #f2f2f2;
+}
