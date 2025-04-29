@@ -290,8 +290,8 @@ def user_notifications(user_id):
         if 'read_submit' in request.form:
             id = request.form.get('read_submit')
             res = put(f'http://localhost:8080/api/notification/{id}', json={'read': True})
-            print(res.json())
-            print(res.status_code)
+        return redirect(f'/profile/{user_id}/notifications')
+
     notifications = get('http://localhost:8080/api/notification', json={'id_user': user_id}).json()
     return render_template('profile_notifications.html', user_id=user_id, notifications=notifications, form=form)
 

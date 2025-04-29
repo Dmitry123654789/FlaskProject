@@ -15,32 +15,12 @@
                         Сначала новые
                     </button>
                 </div>
-                <script>
-                    function toggleFilter(button) {
-                        var filter = button.getAttribute('data-filter');
-                        button.classList.toggle('active');
-                        var cards = document.querySelectorAll('.notification-card');
-                        if (filter === 'read') {
-                            if (button.classList.contains('active')) {
-                                cards.forEach(function (card) {
-                                    card.style.display = card.classList.contains('unread') ? 'flex' : 'none';
-                                })
-                            } else {
-                                cards.forEach(function (card) {
-                                    card.style.display = 'flex';
-                                })
-                            }
-                        } else if (filter === 'date') {
-                            //                        TODO СОРТИРОВКА ПО ДАТЕ
-                        }
-                    }
-
-                </script>
             </div>
             <div class="list-block__body">
                 {% if notifications %}
                     {% for notification in notifications['notifications'] %}
                         <div class="notification-card {% if not notification['read'] %}unread{% endif %}"
+                             data-date="{{ notification['create_date'] }}"
                              onclick="toggleNotification(this)">
                             <div class="notification-header">
                                 {% if not notification['read'] %}
@@ -65,17 +45,11 @@
                             </div>
                         </div>
                     {% endfor %}
-                    <script>
-                        function toggleNotification(card) {
-                            card.classList.toggle('expanded');
-                            //                      TODO ПРОВЕРКА НА НЕПРОЧИТАННОСТЬ И ОБНОВЛЕНИЕ В БД
-                        }
-                    </script>
                 {% else %}
                 {% endif %}
+
             </div>
         </div>
-
-    </div>
+        <script src="/static/js/profile_notification.js"></script>
     </div>
 {% endblock %}
