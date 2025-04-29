@@ -50,7 +50,11 @@ class OrdersResource(Resource):
 class OrdersListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        orders = session.query(Order).all()
+        args = parser.parse_args()
+        filters = []
+        if not args['id_user'] is None:
+            filters.append(Order.id_user == args['id_user'])
+        orders = session.query(Order).filter(*filters)
         return jsonify({'orders': [item.to_dict(
             only=('id', 'id_product', 'id_user', 'status', 'price', 'create_date')) for item in orders]})
 

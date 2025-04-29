@@ -343,10 +343,13 @@ def user_info(user_id):
 def user_orders(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    # orders = [{'status': 'sent', 'name': 'Шкаф-купе 175x100', 'price': 120000, 'id': 1},
-    #           {'status': 'done', 'name': 'Шкаф-купе 50x75', 'price': 43900, 'id': 2},
-    #           {'status': 'construction', 'name': 'Шкаф-купе 175x75', 'price': 210000, 'id': 3}]
-    return render_template('profile_orders.html', user_id=user_id)
+    orders_api = get(f'http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders']
+    products_api = get(f'http://localhost:8080/api/products').json()['products']
+    orders = [{'status': x['status'],
+               'name': get(f'http://localhost:8080/api/products/{x['id_product']}').json()['products']['title'],
+               'price': x['price'], 'create_date': x['create_date'], 'id': x['id'], 'id_product': x['id_product']} for x
+              in orders_api]
+    return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
 
 @app.route('/profile/<int:user_id>/notifications', methods=['GET', 'POST'])
@@ -366,13 +369,6 @@ def user_notifications(user_id):
 
     notifications = get('http://localhost:8080/api/notification', json={'id_user': user_id}).json()
     return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
-
-
-@app.route('/order/<int:order_id>')
-def order(order_id):
-    # if user_unauthorized or current_user.id != user_id and current_user.id not in admin_ids:
-    #     return render_template('fail.html', message='У вас нет прав на просмотр этого заказа')
-    return render_template('order_page.html', order_id=order_id)
 
 
 if __name__ == '__main__':
