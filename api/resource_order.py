@@ -64,7 +64,13 @@ class OrdersListResource(Resource):
 
         dict_resp = {'orders': []}
         for order in orders:
-            dict_resp['orders'].append(order.to_dict(only=('id', 'id_user', 'status', 'price', 'create_date')))
+            dict_resp['orders'].append(order.to_dict(only=('id', 'id_user', 'status', 'price')))
+            date_create = order.create_date
+            if date_create is None:
+                dict_resp['orders'][-1]['create_date'] = date_create
+            else:
+                print(type(date_create))
+                dict_resp['orders'][-1]['create_date'] = date_create.strftime('%Y-%m-%d')
             products = session.get(Product, order.id_product)
             if not products:
                 dict_resp['orders'][-1]['product'] = {}

@@ -43,7 +43,7 @@ a {
     padding: 0;
 }
 
-.profile-menu-item{
+.profile-menu-item {
     paddig: 10px 5px;
     height: 40px;
     margin-bottom: 8px;
@@ -99,7 +99,7 @@ a {
     margin-left: 20px;
     padding: 10px 15px;
     min-width: max-content;
-    width:  80%;
+    width: 80%;
     background-color: lightgray;
     border-radius: 10px;
     border: none;
@@ -128,8 +128,9 @@ a {
 
 .form-control:focus {
     border-color: #000;
-    box-shadow: 0 0 0 .25rem rgba(25,25,25,.25);
+    box-shadow: 0 0 0 .25rem rgba(25, 25, 25, .25);
 }
+
 .radio-group {
     width: 100px;
     display: grid;
@@ -200,6 +201,7 @@ a {
     background-color: dodgerblue;
     color: white;
 }
+
 .list-header-sortby__wrapper {
     display: grid;
     grid-template-columns: auto 150px 150px;
@@ -229,7 +231,7 @@ a {
 .order-card__wrapper {
     margin-left: 20px;
     min-width: max-content;
-    width:  80%;
+    width: 80%;
     background-color: lightgray;
     border-radius: 10px;
 }
@@ -240,6 +242,7 @@ a {
 
     padding: 10px 15px;
     min-width: max-content;
+    position: relative;
 }
 
 .order-card-link {
@@ -256,6 +259,7 @@ a {
     height: 50px;
     margin-bottom: 5px;
 }
+
 .order-state__text {
     font-size: 18px;
 }
@@ -287,6 +291,7 @@ a {
     flex-direction: column;
     position: relative;
 }
+
 .notification-card .notification-header {
     display: flex;
     align-items: center;
@@ -352,15 +357,24 @@ a {
     margin-top: 5px;
 }
 
+.date-order {
+    right: 15px;
+    top: 5px;
+    position: absolute;
+    font-size: 13px;
+    color: gray;
+}
 
 @media (max-width: 1050px) {
     .order-card__wrapper {
         margin-left: 0;
     }
+
     .order-card {
         grid-template-columns: auto;
         grid-template-rows: 80px 30px 30px;
     }
+
     .order-name {
         margin: 8px 0;
     }

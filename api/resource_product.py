@@ -2,6 +2,7 @@ from flask import jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
+from data.description_product import DescriptionProduct
 from .parser_product import parser
 from data import db_session
 from data.product import Product
@@ -10,11 +11,17 @@ from data.product import Product
 class ProductsResource(Resource):
     def get(self, products_id):
         session = db_session.create_session()
-        products = session.get(Product, products_id)
-        if not products:
+        product = session.get(Product, products_id)
+        if not product:
             raise NotFound('Заказ не найден')
-        return jsonify({'products': products.to_dict(
-            only=('id', 'price', 'discount', 'title', 'path_images', 'id_description'))})
+
+        dict_product = {'products': product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images'))}
+        description_product = session.get(DescriptionProduct, product.id_description)
+        if not description_product:
+            dict_product['products']['description_products'] = {}
+        else:
+            dict_product['products']['description_products'] = description_product.to_dict()
+        return jsonify(dict_product)
 
     def delete(self, products_id):
         session = db_session.create_session()
@@ -45,8 +52,15 @@ class ProductsListResource(Resource):
     def get(self):
         session = db_session.create_session()
         products = session.query(Product).all()
-        return jsonify({'products': [item.to_dict(
-            only=('id', 'price', 'discount', 'title', 'path_images', 'id_description')) for item in products]})
+        dict_products = {'products': []}
+        for product in products:
+            dict_products['products'].append(product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images')))
+            description_product = session.get(DescriptionProduct, product.id_description)
+            if not description_product:
+                dict_products['products'][-1]['description_products'] = {}
+            else:
+                dict_products['products'][-1]['description_products'] = description_product.to_dict()
+        return jsonify(dict_products)
 
     def post(self):
         args = parser.parse_args()

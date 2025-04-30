@@ -69,14 +69,14 @@
                     <div class="descript">
                         {% set param = ['', 'Размеры', 'Тип', 'Материал', 'Цвет', 'Стиль', 'Особености'] %}
                         {% for des in ['description', 'size', 'type', 'material', 'color', 'style', 'features'] %}
-                            {% if not descript[des] is none %}
+                            {% if not prod.description_products[des] is none %}
                                 <div class="descript-row">
                                     {% if des == 'description' %}
                                         <div class="descript-key">Описание</div>
-                                        <div class="descript-value">{{ descript[des] }}</div>
+                                        <div class="descript-value">{{ prod.description_products[des] }}</div>
                                     {% else %}
                                         <div class="descript-key">{{ param[loop.index - 1] }}</div>
-                                        <div class="descript-value">{{ descript[des] }}</div>
+                                        <div class="descript-value">{{ prod.description_products[des] }}</div>
                                     {% endif %}
                                 </div>
                             {% endif %}

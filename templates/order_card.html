@@ -3,6 +3,7 @@
     <div class="order-card__wrapper {{ order.status }}" data-date="{{ order.create_date }}" data-price="{{ order.price }}">
         <a href="/catalog/{{ order.product.id }}" class="order-card-link">
             <div class="order-card">
+            <span class="date date-order">Заказ сделан: {{ order.create_date }}</span>
                 <div class="order-state">
                     {% if order.status == 'construction' %}
                         <img src="{{ url_for('static', filename='svg/order-wait.svg') }}" alt="собирается">
