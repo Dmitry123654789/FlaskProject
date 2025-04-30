@@ -53,7 +53,7 @@
                             </button>
                         </a>
                     </div>
-
+                    {% include 'form_appeal.html' %}
                 {% endblock %}
             </div>
         </div>
@@ -66,5 +66,5 @@
             document.getElementById('user_avatar_info').innerText = user['name'] + " " + user['surname']
         });
     </script>
-    {% include 'form_appeal.html' %}
+
 {% endblock %}

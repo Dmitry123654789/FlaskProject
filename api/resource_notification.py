@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask import jsonify, request
 from flask_restful import Resource
+from sqlalchemy.sql.operators import or_
 from werkzeug.exceptions import NotFound, BadRequest
 
 from .parser_notification import parser
@@ -52,9 +53,7 @@ class NotificationsListResource(Resource):
         filters = []
         if not args['id_user'] is None:
             filters.append(Notification.id_user == args['id_user'])
-        if not args['public'] is None:
-            filters.append(Notification.public == args['public'])
-        notifications = session.query(Notification).filter(*filters)
+        notifications = session.query(Notification).filter(or_(*filters, Notification.public == 1))
         return jsonify({'notifications': [item.to_dict(
             only=('id', 'title', 'text', 'public', 'read', 'create_date', 'id_user')) for item in notifications]})
 

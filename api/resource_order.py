@@ -13,11 +13,16 @@ from data.order import Order
 class OrdersResource(Resource):
     def get(self, orders_id):
         session = db_session.create_session()
-        orders = session.get(Order, orders_id)
-        if not orders:
+        order = session.get(Order, orders_id)
+        if not order:
             raise NotFound('Заказ не найден')
-        return jsonify({'orders': orders.to_dict(
-            only=('id', 'id_product', 'id_user', 'status', 'price', 'create_date'))})
+        dict_answer = {'orders': order.to_dict(only=('id', 'id_user', 'status', 'price', 'create_date'))}
+        products = session.get(Product, order.id_product)
+        if not products:
+            dict_answer['orders']['product'] = {}
+        else:
+            dict_answer['orders']['product'] = products.to_dict()
+        return jsonify(dict_answer)
 
     def delete(self, orders_id):
         session = db_session.create_session()
@@ -66,7 +71,6 @@ class OrdersListResource(Resource):
             else:
                 dict_resp['orders'][-1]['product'] = products.to_dict()
         return jsonify(dict_resp)
-        # return jsonify({'orders': [item.to_dict() for item in orders]})
 
     def post(self):
         args = parser.parse_args()

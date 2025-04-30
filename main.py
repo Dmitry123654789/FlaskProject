@@ -292,8 +292,9 @@ def profile(user_id):
         }
         post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
         return redirect(f'/profile/{user_id}')
-    # order = [{'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}]
-    return render_template('profile.html', user_id=user_id, form=form)
+    order = max(get('http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders'],
+                key=lambda x: datetime.strptime(x['create_date'], '%Y-%m-%d %H:%M:%S'))
+    return render_template('profile.html', user_id=user_id, form=form, order=order)
 
 
 @app.route('/profile/<int:user_id>/info', methods=['GET', 'POST'])
