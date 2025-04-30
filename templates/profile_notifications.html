@@ -18,27 +18,27 @@
             </div>
             <div class="list-block__body">
                 {% if notifications %}
-                    {% for notification in notifications['notifications'] %}
-                        <div class="notification-card {% if not notification['read'] %}unread{% endif %}"
-                             data-date="{{ notification['create_date'] }}"
+                    {% for notification in notifications.notifications %}
+                        <div class="notification-card {% if not notification.read %}unread{% endif %}"
+                             data-date="{{ notification.create_date }}"
                              onclick="toggleNotification(this)">
                             <div class="notification-header">
-                                {% if not notification['read'] %}
+                                {% if not notification.read %}
                                     <div class="status-dot"></div>
                                 {% endif %}
-                                <strong class="notification-title">{{ notification['title'] }}</strong>
-                                <span class="date short-date">{{ notification['create_date'] }}</span>
+                                <strong class="notification-title">{{ notification.title }}</strong>
+                                <span class="date short-date">{{ notification.create_date }}</span>
                             </div>
-                            <p class="notification-preview">{{ notification['text'] }}</p>
+                            <p class="notification-preview">{{ notification.text }}</p>
                             <div class="notification-full-content">
-                                <p class="notification-full-text text-break">{{ notification['text'] }}</p>
+                                <p class="notification-full-text text-break">{{ notification.text }}</p>
                                 <form method="post">
-                                    {% if not notification['read'] %}
-                                        <button type="submit" name="read_submit" value="{{ notification['id'] }}"
+                                    {% if not notification.read %}
+                                        <button type="submit" name="read_submit" value="{{ notification.id }}"
                                                 class="btn btn-outline-success">Прочитать
                                         </button>
                                     {% endif %}
-                                    <button type="submit" name="delete_submit" value="{{ notification['id'] }}"
+                                    <button type="submit" name="delete_submit" value="{{ notification.id }}"
                                             class="btn btn-outline-danger">Удалить
                                     </button>
                                 </form>

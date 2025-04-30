@@ -278,12 +278,12 @@ def logout():
     return redirect('/')
 
 
-@app.route('/profile/<int:user_id>')
+@app.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def profile(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    # order = {'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}
+    # order = [{'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}]
     return render_template('profile.html', user_id=user_id)
 
 
@@ -343,12 +343,7 @@ def user_info(user_id):
 def user_orders(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    orders_api = get(f'http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders']
-    products_api = get(f'http://localhost:8080/api/products').json()['products']
-    orders = [{'status': x['status'],
-               'name': get(f'http://localhost:8080/api/products/{x['id_product']}').json()['products']['title'],
-               'price': x['price'], 'create_date': x['create_date'], 'id': x['id'], 'id_product': x['id_product']} for x
-              in orders_api]
+    orders = get(f'http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders']
     return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
 

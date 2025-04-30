@@ -1,76 +1,101 @@
 {% extends 'profile.html' %}
 
 {% block profile_content %}
-<div class="profile-main-section__wrapper">
-    <div class="content-label">Заказы</div>
-    <div class="list-block__wrapper">
-        <div class="list-block__header">
-            <div class="list-header-filter">
-                <button class="filter-button" data-filter="done" onclick="toggleFilter(this)">
-                    Завершённые
-                </button>
-            </div>
-            <div class="list-header-sortby__wrapper">
-                <div class="list-header-subtext">
-                    Сортировать по:
-                </div>
+    <div class="profile-main-section__wrapper">
+        <div class="content-label">Заказы</div>
+        <div class="list-block__wrapper">
+            <div class="list-block__header">
                 <div class="list-header-filter">
-                    <button class="filter-button active" data-filter="date" onclick="toggleFilter(this)">
-                        Дате
+                    <button class="filter-button" data-filter="done" onclick="toggleFilter(this)">
+                        Завершённые
                     </button>
                 </div>
-                <div class="list-header-filter">
-                    <button class="filter-button" data-filter="price" onclick="toggleFilter(this)">
-                        Цене
-                    </button>
+                <div class="list-header-sortby__wrapper">
+                    <div class="list-header-subtext">
+                        Сортировать по:
+                    </div>
+                    <div class="list-header-filter">
+                        <button class="filter-button active" data-filter="date" onclick="toggleFilter(this)">
+                            Дате
+                        </button>
+                    </div>
+                    <div class="list-header-filter">
+                        <button class="filter-button" data-filter="price" onclick="toggleFilter(this)">
+                            Цене
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <script>
-                function toggleFilter(button) {
-                    var filter = button.getAttribute('data-filter');
-                    if (filter === 'done') {
-                        button.classList.toggle('active');
-                    } else {
-                        var dateFilterButton = document.querySelector('.filter-button[data-filter="date"]');
-                        var priceFilterButton = document.querySelector('.filter-button[data-filter="price"]');
-                        dateFilterButton.classList.remove('active')
-                        priceFilterButton.classList.remove('active')
-                        if (filter === 'date') {
-                            dateFilterButton.classList.add('active');
-                        } else if (filter === 'price') {
-                            priceFilterButton.classList.add('active');
-                        }
-                    }
 
-                    var cards = document.querySelectorAll('.order-card__wrapper');
-                    if (filter === 'done') {
-                        if (button.classList.contains('active')) {
-                            cards.forEach(function(card) {
-                                card.style.display = card.classList.contains('done') ? 'flex' : 'none';
-                            })
-                        } else {
-                            cards.forEach(function(card) {
-                                card.style.display = 'flex';
-                            })
-                        }
-                    } else if (filter === 'date' && button.classList.contains('active')) {
-                        //                        TODO СОРТИРОВКА ПО ДАТЕ
-                    } else if (filter === 'price' && button.classList.contains('active')) {
-                        //                        TODO СОРТИРОВКА ПО ЦЕНЕ
-                    }
-                }
-            </script>
-        </div>
-        <div class="list-block__body">
-            {% if orders %}
-            {% for order in orders %}
-            {% include 'order_card.html' with context%}
-            {% endfor %}
-            {% else %}
-            {% include 'order_card.html' %}
-            {% endif %}
+            </div>
+            <div class="list-block__body">
+                {% if orders %}
+                    {% for order in orders %}
+                        {% include 'order_card.html' with context %}
+                    {% endfor %}
+                {% else %}
+                    {% include 'order_card.html' %}
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let container = document.querySelector('.list-block__body'); // замените селектор на ваш
+            let cards = Array.from(container.querySelectorAll('.order-card__wrapper'));
 
-{% endblock%}
+            cards.sort((a, b) => {
+                return new Date(b.dataset.date) - new Date(a.dataset.date); // от новой к старой
+            });
+
+            cards.forEach(card => container.appendChild(card));
+        });
+    </script>
+    <script>
+        function toggleFilter(button) {
+            var filter = button.getAttribute('data-filter');
+            if (filter === 'done') {
+                button.classList.toggle('active');
+            } else {
+                var dateFilterButton = document.querySelector('.filter-button[data-filter="date"]');
+                var priceFilterButton = document.querySelector('.filter-button[data-filter="price"]');
+                dateFilterButton.classList.remove('active')
+                priceFilterButton.classList.remove('active')
+                if (filter === 'date') {
+                    dateFilterButton.classList.add('active');
+                } else if (filter === 'price') {
+                    priceFilterButton.classList.add('active');
+                }
+            }
+
+            var cards = document.querySelectorAll('.order-card__wrapper');
+            if (filter === 'done') {
+                if (button.classList.contains('active')) {
+                    cards.forEach(function (card) {
+                        card.style.display = card.classList.contains('done') ? 'flex' : 'none';
+                    })
+                } else {
+                    cards.forEach(function (card) {
+                        card.style.display = 'flex';
+                    })
+                }
+            } else if (filter === 'date' && button.classList.contains('active')) {
+                let container = document.querySelector('.list-block__body');
+                let cards = Array.from(container.querySelectorAll('.order-card__wrapper'));
+
+                cards.sort((a, b) => {
+                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                });
+
+                cards.forEach(card => container.appendChild(card));
+            } else if (filter === 'price' && button.classList.contains('active')) {
+                let container = document.querySelector('.list-block__body'); // замените на свой родительский контейнер
+                let cards = Array.from(container.querySelectorAll('.order-card__wrapper'));
+
+                cards.sort((a, b) => {
+                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                });
+                cards.forEach(card => container.appendChild(card));
+            }
+        }
+    </script>
+{% endblock %}

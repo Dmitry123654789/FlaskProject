@@ -4,6 +4,7 @@ from flask import jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
+from data.product import Product
 from .parser_order import parser
 from data import db_session
 from data.order import Order
@@ -55,8 +56,17 @@ class OrdersListResource(Resource):
         if not args['id_user'] is None:
             filters.append(Order.id_user == args['id_user'])
         orders = session.query(Order).filter(*filters)
-        return jsonify({'orders': [item.to_dict(
-            only=('id', 'id_product', 'id_user', 'status', 'price', 'create_date')) for item in orders]})
+
+        dict_resp = {'orders': []}
+        for order in orders:
+            dict_resp['orders'].append(order.to_dict(only=('id', 'id_user', 'status', 'price', 'create_date')))
+            products = session.get(Product, order.id_product)
+            if not products:
+                dict_resp['orders'][-1]['product'] = {}
+            else:
+                dict_resp['orders'][-1]['product'] = products.to_dict()
+        return jsonify(dict_resp)
+        # return jsonify({'orders': [item.to_dict() for item in orders]})
 
     def post(self):
         args = parser.parse_args()
