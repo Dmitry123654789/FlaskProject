@@ -7,35 +7,6 @@
 
 {% block content %}
     <div class="background-fill">
-        <div id="modalWin" class="modal">
-            <div class="modal-window">
-                <h2>Здесь вы можете задать любой вопрос, касающийся работы нашего сайта</h2>
-                <form method="post">
-                    {{ form.hidden_tag() }}
-
-                    <div class="form-group mb-2">
-                        <label>{{ form.theme.label }}</label>
-                        {{ form.theme(class="form-control") }}
-                        {% for error in form.theme.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group mb-2">
-                        <label>{{ form.question.label }}</label>
-                        {{ form.question(class="form-control") }}
-                        {% for error in form.question.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <p>{{ form.submit(type="submit", class="send_mess") }}</p>
-                    <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;"><span style="color: red">*</span>
-                        В течение дня наш сотрудник ответит вам, оставив уведомление в личном кабинете</a>
-                </form>
-                <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">X</button>
-            </div>
-            <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
-        </div>
-
         <header class="nav-menu">
             <a href="/"><img height="40"
                              src="https://x-lines.ru/letters/i/cyrillicscript/0552/e79408/44/0/4nkpbqgozzembwcb4gbpbqgtth.png"
@@ -218,6 +189,6 @@
         <div align="center" style="padding: 35px 0 5px; height: max-content;">
             <a>ООО "Династия" </a>
         </div>
-        <script src="/static/js/easy-togler.js"></script>
+        {% include 'form_appeal.html'  %}
     </div>
 {% endblock %}

@@ -1,70 +1,70 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link href="{{ url_for('static', filename='css/profile_page.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/profile_page.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
-
-<div class="profile-page__wrapper">
-    <div class="profile-container">
-        <div class="profile-sidebar__wrapper">
-            <a href="{{ url_for('profile', user_id=user_id)}}">
-                <div class="profile-sidebar-info__wrapper">
-                    <img src="{{ url_for('static', filename='svg/user-default-avatar.svg')}}" alt="Аватар профиля"
-                         class="user-avatar">
-                    <div class="profile-username" id="user_avatar_info">{{ current_user.name }} {{ current_user.surname }}</div>
-                </div>
-            </a>
-            <nav class="profile-menu">
-                <ul>
-                    <li class="profile-menu-item {% if '/info' in request.path %}active{% endif %}"><a
-                            href="{{ url_for('user_info', user_id=user_id) }}">Профиль</a></li>
-                    <li class="profile-menu-item {% if '/orders' in request.path %}active{% endif %}"><a
-                            href="{{ url_for('user_orders', user_id=user_id) }}">Заказы</a>
-                    </li>
-                    <li class="profile-menu-item {% if '/notifications' in request.path %}active{% endif %}"><a
-                            href="{{ url_for('user_notifications', user_id=user_id) }}">Уведомления</a>
-                    </li>
-                    <li class="profile-menu-item"><a
-                            href="{{ url_for('logout', user_id=user_id) }}">Выйти</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div class="profile-container">
-        <div class="profile-main__wrapper">
-            {% block profile_content %}
-            <div class="profile-main-section__wrapper">
-                <div class="content-label">
-                    Последний заказ
-                </div>
-                {% include "order_card.html" with context%}
-            </div>
-            <div class="profile-main-section__wrapper">
-                <a href="tel: +79008007721">
-                    <button class="contact-button" type="button">
-                    <span class="content-label">
-                        Нужна помощь?
-                    </span>
-                        <span>Напишите нам</span>
-                    </button>
+    <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
+    <div class="profile-page__wrapper">
+        <div class="profile-container">
+            <div class="profile-sidebar__wrapper">
+                <a href="{{ url_for('profile', user_id=user_id) }}">
+                    <div class="profile-sidebar-info__wrapper">
+                        <img src="{{ url_for('static', filename='svg/user-default-avatar.svg') }}" alt="Аватар профиля"
+                             class="user-avatar">
+                        <div class="profile-username"
+                             id="user_avatar_info">{{ current_user.name }} {{ current_user.surname }}</div>
+                    </div>
                 </a>
+                <nav class="profile-menu">
+                    <ul>
+                        <li class="profile-menu-item {% if '/info' in request.path %}active{% endif %}"><a
+                                href="{{ url_for('user_info', user_id=user_id) }}">Профиль</a></li>
+                        <li class="profile-menu-item {% if '/orders' in request.path %}active{% endif %}"><a
+                                href="{{ url_for('user_orders', user_id=user_id) }}">Заказы</a>
+                        </li>
+                        <li class="profile-menu-item {% if '/notifications' in request.path %}active{% endif %}"><a
+                                href="{{ url_for('user_notifications', user_id=user_id) }}">Уведомления</a>
+                        </li>
+                        <li class="profile-menu-item"><a
+                                href="{{ url_for('logout', user_id=user_id) }}">Выйти</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            {% endblock %}
+        </div>
+        <div class="profile-container">
+            <div class="profile-main__wrapper">
+                {% block profile_content %}
+                    <div class="profile-main-section__wrapper">
+                        <div class="content-label">
+                            Последний заказ
+                        </div>
+                        {% include "order_card.html" with context %}
+                    </div>
+                    <div class="profile-main-section__wrapper">
+                        <a href="#" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe>
+                            <button class="contact-button" type="button">
+                            <span class="content-label">
+                                Нужна помощь?
+                            </span>
+                                <span>Напишите нам</span>
+                            </button>
+                        </a>
+                    </div>
+
+                {% endblock %}
+            </div>
         </div>
     </div>
-</div>
-<script>
-    const userId = {{user_id|tojson}}
+    <script>
+        const userId = {{user_id|tojson}}
 
-    loadUser(userId).then(data => {
-        const user = data['user']
-        document.getElementById('user_avatar_info').innerText = user['name'] + " " + user['surname']
-    });
-
-
-</script>
+        loadUser(userId).then(data => {
+            const user = data['user']
+            document.getElementById('user_avatar_info').innerText = user['name'] + " " + user['surname']
+        });
+    </script>
+    {% include 'form_appeal.html' %}
 {% endblock %}

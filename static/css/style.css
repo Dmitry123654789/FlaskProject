@@ -38,14 +38,97 @@ div {
 }
 
 .background-fill {
-    background-color:#ff99fc;
-background-image:
-radial-gradient(at 2% 51%, hsla(12,85%,64%,1) 0px, transparent 50%),
-radial-gradient(at 22% 10%, hsla(263,84%,73%,1) 0px, transparent 50%),
-radial-gradient(at 92% 56%, hsla(182,70%,60%,1) 0px, transparent 50%),
-radial-gradient(at 61% 18%, hsla(118,94%,68%,1) 0px, transparent 50%),
-radial-gradient(at 37% 88%, hsla(352,74%,79%,1) 0px, transparent 50%),
-radial-gradient(at 14% 6%, hsla(332,76%,78%,1) 0px, transparent 50%),
-radial-gradient(at 52% 52%, hsla(21,89%,76%,1) 0px, transparent 50%),
-radial-gradient(at 89% 48%, hsla(353,66%,68%,1) 0px, transparent 50%);
+    background-color: #ff99fc;
+    background-image: radial-gradient(at 2% 51%, hsla(12, 85%, 64%, 1) 0px, transparent 50%),
+    radial-gradient(at 22% 10%, hsla(263, 84%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 92% 56%, hsla(182, 70%, 60%, 1) 0px, transparent 50%),
+    radial-gradient(at 61% 18%, hsla(118, 94%, 68%, 1) 0px, transparent 50%),
+    radial-gradient(at 37% 88%, hsla(352, 74%, 79%, 1) 0px, transparent 50%),
+    radial-gradient(at 14% 6%, hsla(332, 76%, 78%, 1) 0px, transparent 50%),
+    radial-gradient(at 52% 52%, hsla(21, 89%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 89% 48%, hsla(353, 66%, 68%, 1) 0px, transparent 50%);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    z-index: -1;
+    opacity: 0;
+    transition: all .09s ease-out;
+}
+
+.modal.show {
+    visibility: visible;
+    z-index: 1000;
+    opacity: 1;
+}
+
+.modal .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.7;
+    z-index: 0;
+}
+
+.modal h2 {
+    margin-bottom: 15px;
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal .send_mess {
+    width: 100%;
+    padding: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+.modal .send_mess:hover {
+    background: darkred;
+}
+
+.modal-window {
+    position: relative;
+    z-index: 2;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, .4);
+    background-color: #FFFFFF;
+    padding: 30px;
+}
+
+.modal-window .btn-close {
+    position: absolute;
+    border: none;
+    background: none;
+    opacity: 0.7;
+    right: 20px;
+    top: 20px;
+}
+
+.modal-window .btn-close:hover {
+    opacity: 1;
 }

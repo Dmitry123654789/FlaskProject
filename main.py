@@ -155,7 +155,7 @@ def home_page():
             'theme': form.theme.data
         }
         post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
-        return redirect('/profile')
+        return redirect(f'/profile/{current_user.id}')
     return render_template('home.html', form=form)
 
 
@@ -283,8 +283,17 @@ def logout():
 def profile(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
+    form = AddAppealForm()
+    if form.validate_on_submit():
+        appeal_data = {
+            'id_user': user_id,
+            'question': form.question.data,
+            'theme': form.theme.data
+        }
+        post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
+        return redirect(f'/profile/{user_id}')
     # order = [{'status': 'done', 'name': 'Шкаф-купе 175x75', 'price': 56500, 'id': 1}]
-    return render_template('profile.html', user_id=user_id)
+    return render_template('profile.html', user_id=user_id, form=form)
 
 
 @app.route('/profile/<int:user_id>/info', methods=['GET', 'POST'])
