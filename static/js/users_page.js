@@ -28,7 +28,7 @@ const userTable = new TableManager({
         { field: "email", label: "Почта" },
         { field: "phone", label: "Телефон" },
         { field: "sex", label: "Пол" },
-        { field: "role", label: "Роль" },
+        { field: "role_name", label: "Роль" },
     ],
     data: data,
     applySearch_func: applySearch,
@@ -36,25 +36,29 @@ const userTable = new TableManager({
 });
 
 function loadUsers() {
-    fetch('/api/users?full=true')
-        .then(response => response.json())
-        .then(data => {
+    fetch('/api/roles').then(resp => resp.json())
+        .then(roles_data => {
+        let roles = roles_data['roles']
+        fetch('/api/users?full=true')
+            .then(response => response.json())
+            .then(data => {
 
-        let allUsers = data['users'].map(user => {
-            const cleanedUser = {};
-            for (const key in user) {
-                if (user.hasOwnProperty(key)) {
-                    cleanedUser[key] = user[key] == null ? '-' : user[key];
+            let allUsers = data['users'].map(user => {
+                const cleanedUser = {};
+                for (const key in user) {
+                    if (user.hasOwnProperty(key)) {
+                        cleanedUser[key] = user[key] == null ? '-' : user[key];
+                    }
                 }
-            }
-            return cleanedUser;
-        });
-        userTable.setData(allUsers);
+                cleanedUser['role_name'] = roles[user['role_id'] - 1]['name'];
+                return cleanedUser;
+            });
+            userTable.setData(allUsers);
 
-    })
-        .catch(err => console.error('Ошибка загрузки:', err));
+        })
+            .catch(err => console.error('Ошибка загрузки:', err));
+    });
 }
-
 
 
 loadUsers();

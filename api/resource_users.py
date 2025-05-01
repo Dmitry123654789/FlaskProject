@@ -25,12 +25,12 @@ class UserListResource(Resource):
             if not user:
                 NotFound(f'Пользователь с email={request.args.get("phone")} не найден.')
             return jsonify({'user': user.to_dict(
-                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
         users = session.query(User).filter(*filters)
         if 'full' in request.args.keys():
             return jsonify({'users': [item.to_dict(
-                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role')) for item in
+                only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id')) for item in
                 users]})
         return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'email')) for item in users]})
 
@@ -50,7 +50,7 @@ class UserListResource(Resource):
         sess.commit()
 
         return jsonify({'id': new_user.id, 'user': new_user.to_dict(
-            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
+            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
 
 class UserResource(Resource):
@@ -63,7 +63,7 @@ class UserResource(Resource):
         if user.birth_date:
             user.birth_date = datetime.strftime(user.birth_date, '%Y-%m-%d')
         return jsonify(
-            {'user': user.to_dict(only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role'))})
+            {'user': user.to_dict(only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
     def put(self, user_id):
         args = user_parser.parse_args()
@@ -103,4 +103,4 @@ class RoleResource(Resource):
     def get(self):
         sess = db_session.create_session()
         roles = sess.query(Role).all()
-        return jsonify({'roles': [item.to_dict(only=('id', 'role_name')) for item in roles]})
+        return jsonify({'roles': [item.to_dict(only=('id', 'name')) for item in roles]})
