@@ -2,7 +2,7 @@ from datetime import datetime as ddt, datetime
 
 from flask import request, jsonify, make_response, abort
 from flask_restful import Resource
-from werkzeug.exceptions import NotFound, BadRequest
+from werkzeug.exceptions import BadRequest
 import werkzeug.exceptions
 from data import db_session
 from data.users import User
@@ -16,14 +16,14 @@ class UserListResource(Resource):
         filters = []
         if 'sex' in request.args.keys():
             if request.args.get('sex') not in ['female', 'male']:
-                return BadRequest('sex')
+                return abort(400,{'message': 'Пол должен быть указан как: male или female'})
             filters.append(User.sex == request.args.get('sex'))
         if 'birthday' in request.args.keys() and request.args.get('birthday') == 'true':
             filters.append(User.birth_date == ddt.now())
         if 'email' in request.args.keys():
             user = session.query(User).filter(User.phone == request.args.get('phone')).first()
             if not user:
-                NotFound(f'Пользователь с email={request.args.get("phone")} не найден.')
+                return abort(404,{'message': f'Пользователь с email={request.args.get("email")} не найден.'})
             return jsonify({'user': user.to_dict(
                 only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
@@ -58,7 +58,7 @@ class UserResource(Resource):
         sess = db_session.create_session()
         user = sess.get(User, user_id)
         if not user:
-            return NotFound(f'Пользователь с id={user_id} не найден')
+            return abort(404, {'message': f'Пользователь с id={user_id} не найден'})
 
         if user.birth_date:
             user.birth_date = datetime.strftime(user.birth_date, '%Y-%m-%d')
@@ -71,7 +71,7 @@ class UserResource(Resource):
         sess = db_session.create_session()
         user = sess.get(User, user_id)
         if not user:
-            return NotFound(f'Пользователь с id={user_id} не найден')
+            return abort(404, {'message': f'Пользователь с id={user_id} не найден'})
         user.surname = args['surname']
         user.name = args['name']
         if 'phone' in args:
@@ -93,7 +93,7 @@ class UserResource(Resource):
         sess = db_session.create_session()
         user = sess.get(User, user_id)
         if not user:
-            return NotFound(f'Пользователь с id={user_id} не найден.')
+            return abort(404,{'message': f'Пользователь с id={user_id} не найден'})
         sess.delete(user)
         sess.commit()
         return make_response({'message': f'Пользователь с id={user_id} удалён.'}, 200)
@@ -103,4 +103,4 @@ class RoleResource(Resource):
     def get(self):
         sess = db_session.create_session()
         roles = sess.query(Role).all()
-        return jsonify({'roles': [item.to_dict(only=('id', 'name')) for item in roles]})
+        return make_response({'roles': [item.to_dict(only=('id', 'name')) for item in roles]}, 200)

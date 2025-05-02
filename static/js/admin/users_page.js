@@ -14,7 +14,7 @@ function applySearch() {
 }
 
 function onRowClck(user) {
-    window.location.href = "/profile/" + user.id;
+    window.location.href = "/admin/users/" + user.id;
 };
 
 let data = [];

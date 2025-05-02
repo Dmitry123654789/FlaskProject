@@ -16,7 +16,10 @@ async function loadUser(userId) {
     // если кэш просрочен или отсутствует — запрашиваем заново
     try {
         const response = await fetch(`/api/users/${userId}`);
-        if (!response.ok) throw new Error("Failed to load user");
+        if (!response.ok) {
+            document.getElementsByClassName("profile-main__wrapper")[0].innerHTML = `<h2>Пользователь не найден</h2>`
+            throw new Error("Пользователь не найден");
+        };
 
         const data = await response.json();
 

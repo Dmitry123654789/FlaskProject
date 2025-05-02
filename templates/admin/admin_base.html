@@ -13,14 +13,22 @@
                 <ul class="list-group">
                     <li class="profile-menu-item {% if '/users' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_users') }}">Пользователи</a></li>
+                    {% if current_user.role_id >= 3 %}
                     <li class="profile-menu-item {% if '/products' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_products') }}">Товары</a></li>
+                    {% endif %}
                     <li class="profile-menu-item {% if '/orders' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_orders') }}">Заказы</a></li>
+                    {% if current_user.role_id >= 3 %}
                     <li class="profile-menu-item {% if '/notifications' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_notifications') }}">Уведомления</a></li>
+                    {% endif %}
+                    <li class="profile-menu-item {% if '/appeals' in request.path %}active{% endif %}"><a
+                            href="{{ url_for('appeals_page') }}">Обращения</a></li>
+                    {% if current_user.role_id == 4 %}
                     <li class="profile-menu-item {% if '/admins' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_page') }}">Админы</a></li>
+                    {% endif %}
 
                 </ul>
             </nav>

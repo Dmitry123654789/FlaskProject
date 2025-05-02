@@ -49,11 +49,11 @@ class NotificationsResource(Resource):
 class NotificationsListResource(Resource):
     def get(self):
         session = create_session()
-        args = parser.parse_args()
+        # args = parser.parse_args()
         filters = []
-        if not args['id_user'] is None:
-            filters.append(Notification.id_user == args['id_user'])
-        notifications = session.query(Notification).filter(or_(*filters, Notification.public == 1))
+        if 'id_user' in request.args.keys():
+            filters.append(Notification.id_user == request.args['id_user'])
+        notifications = session.query(Notification).filter(*filters, Notification.public == 1)
         return jsonify({'notifications': [item.to_dict(
             only=('id', 'title', 'text', 'public', 'read', 'create_date', 'id_user')) for item in notifications]})
 

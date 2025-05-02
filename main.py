@@ -71,14 +71,17 @@ def load_user(user_id):
 
 
 def check_if_admin(user):
-    return user.role_id > 2
+    return user.role_id >= 3
+
+
+def check_if_support(user):
+    return user.role_id >= 2
 
 
 # Декоратор для проверки, админ ли пользователь
 def admin_required(func):
     @login_required
     def wrapper(*args, **kwargs):
-        print(current_user.role_id, 'check', current_user)
         if current_user.role_id <= 2:
             return redirect(url_for('index'))
         return func(*args, **kwargs)
@@ -87,22 +90,61 @@ def admin_required(func):
     return wrapper
 
 
-@admin_required
+def support_required(func):
+    @login_required
+    def wrapper(*args, **kwargs):
+        if current_user.role_id == 1:
+            return redirect(url_for('index'))
+        return func(*args, **kwargs)
+
+    wrapper.__name__ = func.__name__  # чтобы Flask не ругался
+    return wrapper
+
+
+@support_required
 @app.route('/admin')
 def admin_page():
     return render_template('admin/admin_base.html')
 
 
-@admin_required
+@support_required
 @app.route('/admin/users')
 def admin_users():
     return render_template('admin/users_page.html')
 
 
-@admin_required
-@app.route('/admin/users/<int:user_id>')
+@support_required
+@app.route('/admin/users/<int:user_id>', methods=['GET', 'POST', 'DELETE'])
 def admin_user_page(user_id):
-    return render_template('admin/user.html')
+    form = UserForm()
+    if request.method == 'POST':
+        user_json = {
+            'phone': form.phone.data,
+            'email': form.email.data,
+            'surname': form.surname.data,
+            'name': form.name.data,
+            'patronymic': form.patronymic.data,
+            'birth_date': str(form.birth_date.data),
+            'sex': form.sex.data,
+            'address': form.address.data
+        }
+        post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
+        if post_status.status_code == 201:
+            return render_template('admin/user.html', user_id=user_id, form=form, status_text='Успешно!',
+                                   admin_role=current_user.role_id)
+    return render_template('admin/user.html', form=form, user_id=user_id, admin_role=current_user.role_id)
+
+
+@support_required
+@app.route('/admin/appeals')
+def appeals_page():
+    return render_template('admin/appeals_page.html')
+
+
+@support_required
+@app.route('/admin/appeals/<int:appeal_id>')
+def admin_appeal_page():
+    return render_template('admin/appeals_page.html')
 
 
 @admin_required
@@ -133,7 +175,7 @@ def admin_product_page(product_id):
     return render_template('admin/product.html')
 
 
-@admin_required
+@support_required
 @app.route('/admin/orders')
 def admin_orders():
     return render_template('admin/orders_page.html')
@@ -289,8 +331,10 @@ def profile(user_id):
         }
         post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
         return redirect(f'/profile/{user_id}')
-    order = max(get('http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders'],
-                key=lambda x: datetime.strptime(x['create_date'], '%Y-%m-%d'))
+    orders = get(f'http://localhost:8080/api/orders?id_user={user_id}')
+    order = None
+    if orders.status_code == 200 and orders.json()['orders']:
+        order = max(orders.json()['orders'], key=lambda x: datetime.strptime(x['create_date'], '%Y-%m-%d'))
     return render_template('profile.html', user_id=user_id, form=form, order=order)
 
 
@@ -300,33 +344,6 @@ def user_info(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     form = UserForm()
-
-    # if request.method == 'GET':
-    # if current_user.id != user_id:
-    #     user = get(f'http://localhost:8080/api/users/{user_id}')
-    #
-    #     if user.status_code == 200:
-    #         user = user.json()['user']
-    #         form.phone.data = user['phone']
-    #         form.email.data = user['email']
-    #         form.surname.data = user['surname']
-    #         form.name.data = user['name']
-    #         form.patronymic.data = user['patronymic']
-    #         if user['birth_date']:
-    #             form.birth_date.data = datetime(*map(int, user['birth_date'].split('-')))
-    #         form.sex.data = user['sex']
-    #     elif user.status_code == 404:
-    #         return render_template('fail.html', message='Пользователь не найден')
-    #
-    # else:
-    #     form.phone.data = current_user.phone
-    #     form.email.data = current_user.email
-    #     form.surname.data = current_user.surname
-    #     form.name.data = current_user.name
-    #     form.patronymic.data = current_user.patronymic
-    #     if current_user.birth_date != 'None':
-    #         form.birth_date.data = datetime(*map(int, current_user.birth_date.split('-')))
-    #     form.sex.data = current_user.sex
 
     if request.method == 'POST':
         user_json = {
@@ -350,7 +367,7 @@ def user_info(user_id):
 def user_orders(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    orders = get(f'http://localhost:8080/api/orders', json={'id_user': user_id}).json()['orders']
+    orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
     return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
 

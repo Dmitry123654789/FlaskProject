@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
@@ -56,10 +56,10 @@ class OrdersResource(Resource):
 class OrdersListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        args = parser.parse_args()
+        # args = parser.parse_args()
         filters = []
-        if not args['id_user'] is None:
-            filters.append(Order.id_user == args['id_user'])
+        if 'id_user' in request.args.keys():
+            filters.append(Order.id_user == int(request.args['id_user']))
         orders = session.query(Order).filter(*filters)
 
         dict_resp = {'orders': []}
@@ -69,7 +69,6 @@ class OrdersListResource(Resource):
             if date_create is None:
                 dict_resp['orders'][-1]['create_date'] = date_create
             else:
-                print(type(date_create))
                 dict_resp['orders'][-1]['create_date'] = date_create.strftime('%Y-%m-%d')
             products = session.get(Product, order.id_product)
             if not products:

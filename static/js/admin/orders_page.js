@@ -34,7 +34,7 @@ function loadOrders() {
     fetch('/api/orders')
         .then(response => response.json())
         .then(data => {
-
+        console.log('Data:', data);
         let allProducts = data['orders'].map(order => {
             const cleanedProduct = {};
             for (const key in order) {

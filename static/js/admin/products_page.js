@@ -12,7 +12,7 @@ function applySearch() {
 }
 
 function onRowClck(product) {
-    window.location.href = "adimin/products/" + product.id;
+    window.location.href = "/admin/products/" + product.id;
 };
 
 let data = [];
