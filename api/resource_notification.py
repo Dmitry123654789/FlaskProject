@@ -53,7 +53,10 @@ class NotificationsListResource(Resource):
         filters = []
         if 'id_user' in request.args.keys():
             filters.append(Notification.id_user == request.args['id_user'])
-        notifications = session.query(Notification).filter(*filters, Notification.public == 1)
+        if filters:
+            notifications = session.query(Notification).filter(or_(*filters, Notification.public == 1))
+        else:
+            notifications = session.query(Notification).filter(Notification.public == 1)
         return jsonify({'notifications': [item.to_dict(
             only=('id', 'title', 'text', 'public', 'read', 'create_date', 'id_user')) for item in notifications]})
 

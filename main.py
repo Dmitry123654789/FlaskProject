@@ -23,6 +23,7 @@ from forms.product_form import ProductForm
 from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
 from forms.register_form import RegisterForm
+from forms.appeal_answer_form import AnswerAppealForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -52,12 +53,9 @@ api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
 api.add_resource(DescriptionProductsResource, '/api/descriptionproducts/<int:description_products_id>')
 
 # api обращений пользователей
-api = Api(app)
 api.add_resource(AppealsListResource, '/api/appeal')
 api.add_resource(AppealsResource, '/api/appeal/<int:appeals_id>')
 
-# api уведомление пользователей
-api = Api(app)
 api.add_resource(NotificationsListResource, '/api/notification')
 api.add_resource(NotificationsResource, '/api/notification/<int:notifications_id>')
 
@@ -83,7 +81,7 @@ def admin_required(func):
     @login_required
     def wrapper(*args, **kwargs):
         if current_user.role_id <= 2:
-            return redirect(url_for('index'))
+            return redirect(url_for('home_page'))
         return func(*args, **kwargs)
 
     wrapper.__name__ = func.__name__  # чтобы Flask не ругался
@@ -94,27 +92,29 @@ def support_required(func):
     @login_required
     def wrapper(*args, **kwargs):
         if current_user.role_id == 1:
-            return redirect(url_for('index'))
+            return redirect(url_for('home_page'))
         return func(*args, **kwargs)
 
     wrapper.__name__ = func.__name__  # чтобы Flask не ругался
     return wrapper
 
 
-@support_required
+
 @app.route('/admin')
+@support_required
 def admin_page():
     return render_template('admin/admin_base.html')
 
 
-@support_required
 @app.route('/admin/users')
+@support_required
+
 def admin_users():
     return render_template('admin/users_page.html')
 
 
+@app.route('/admin/users/<int:user_id>', methods=['GET', 'POST'])
 @support_required
-@app.route('/admin/users/<int:user_id>', methods=['GET', 'POST', 'DELETE'])
 def admin_user_page(user_id):
     form = UserForm()
     if request.method == 'POST':
@@ -128,6 +128,7 @@ def admin_user_page(user_id):
             'sex': form.sex.data,
             'address': form.address.data
         }
+
         post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
         if post_status.status_code == 201:
             return render_template('admin/user.html', user_id=user_id, form=form, status_text='Успешно!',
@@ -135,26 +136,47 @@ def admin_user_page(user_id):
     return render_template('admin/user.html', form=form, user_id=user_id, admin_role=current_user.role_id)
 
 
-@support_required
 @app.route('/admin/appeals')
+@support_required
 def appeals_page():
     return render_template('admin/appeals_page.html')
 
 
+
+@app.route('/admin/appeals/<int:appeal_id>', methods=['GET', 'POST'])
 @support_required
-@app.route('/admin/appeals/<int:appeal_id>')
-def admin_appeal_page():
-    return render_template('admin/appeals_page.html')
+def admin_send_appeal_answer(appeal_id):
+    form = AnswerAppealForm()
+    appeal = get(f'http://localhost:8080/api/appeal/{appeal_id}')
+    if appeal.status_code == 404:
+        return render_template('fail.html', message='Не найден вопрос', errr_code=404)
+    form.title.data = 'Ответ на обращение: ' + str(appeal_id)
+    if request.method == 'POST':
+        answer_notification = {'title': form.title.data,
+                               'text': form.answer.data,
+                               'public': False,
+                               'read': False,
+                               'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                               'id_user': appeal.json()['appeals']['id_user']}
+        answer_post = post(f'http://localhost:8080/api/notification', json=answer_notification)
+        if answer_post.status_code == 200:
+            return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
+                                   appeal=appeal.json()['appeals'], status_text='Успешно!')
+
+    return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
+                           appeal=appeal.json()['appeals'])
 
 
-@admin_required
+
 @app.route('/admin/products')
+@admin_required
 def admin_products():
     return render_template('admin/products_page.html')
 
 
-@admin_required
+
 @app.route('/admin/products/create', methods=['GET', 'POST'])
+@admin_required
 def admin_product_create():
     form = ProductForm()
     if request.method == 'POST':
@@ -169,20 +191,23 @@ def admin_product_create():
     return render_template('admin/product_create.html', form=form)
 
 
-@admin_required
+
 @app.route('/admin/products/<int:product_id>')
+@admin_required
 def admin_product_page(product_id):
     return render_template('admin/product.html')
 
 
-@support_required
+
 @app.route('/admin/orders')
+@support_required
 def admin_orders():
     return render_template('admin/orders_page.html')
 
 
-@admin_required
+
 @app.route('/admin/notifications')
+@admin_required
 def admin_notifications():
     return render_template('admin/notifications_page.html')
 
@@ -353,12 +378,23 @@ def user_info(user_id):
             'name': form.name.data,
             'patronymic': form.patronymic.data,
             'birth_date': str(form.birth_date.data),
-            'sex': form.sex.data,
-            'address': form.address.data
+            'sex': form.sex.data
         }
+
         post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
-        if post_status.status_code == 200:
+
+        if post_status.status_code == 200 or post_status.status_code == 201:
+            login_user(User(**post_status.json()['user']), remember=True)
             return render_template('profile_info.html', user_id=user_id, form=form, status_text='Успешно!')
+        else:
+            return render_template('profile_info.html', user_id=user_id, form=form, status_text='Что-то пошло не так...')
+    form.phone.data = current_user.phone
+    form.email.data = current_user.email
+    form.surname.data = current_user.surname
+    form.name.data = current_user.name
+    form.patronymic.data = current_user.patronymic
+    form.birth_date.data = datetime.strptime(current_user.birth_date, '%Y-%m-%d')
+    form.sex.data = current_user.sex
     return render_template('profile_info.html', user_id=user_id, form=form)
 
 
@@ -386,7 +422,7 @@ def user_notifications(user_id):
             res = put(f'http://localhost:8080/api/notification/{id}', json={'read': True})
         return redirect(f'/profile/{user_id}/notifications')
 
-    notifications = get('http://localhost:8080/api/notification', json={'id_user': user_id}).json()
+    notifications = get(f'http://localhost:8080/api/notification?id_user={user_id}').json()
     return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 

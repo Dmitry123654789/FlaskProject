@@ -25,7 +25,6 @@ class FullProductResource(Resource):
         except Exception as e:
             print('error', e)
 
-        print(type(args))
         sess = db_session.create_session()
 
         new_description = DescriptionProduct(
@@ -37,7 +36,6 @@ class FullProductResource(Resource):
             style=args['style'],
             features=args['features']
         )
-        print('arged')
         sess.add(new_description)
         sess.commit()
 

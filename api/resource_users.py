@@ -38,7 +38,7 @@ class UserListResource(Resource):
         args = user_parser.parse_args()
         new_user = User(**args)
 
-        # new_user.role_id = 1
+        new_user.role_id = 1
         new_user.set_password(new_user.password)
         if args['birth_date']:
             brth = datetime(*map(int, args['birth_date'].split('-')))
@@ -87,7 +87,8 @@ class UserResource(Resource):
             user.sex = args['sex']
         # print(args)
         sess.commit()
-        return jsonify({'message': f'Пользователь с id={user_id} изменен.'}, 201)
+        return jsonify({'message': f'Пользователь с id={user_id} изменен.', 'user': user.to_dict(
+            only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
     def delete(self, user_id):
         sess = db_session.create_session()

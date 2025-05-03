@@ -1,0 +1,37 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+<div class="profile-main-section__wrapper">
+    <div class="content-label">Создание ответа на вопрос пользователя {{ appeal['id_user'] }}</div>
+    <div class="profile-info-group">
+        <span class="profile-info-group__text">Вопрос пользователя</span>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Тема</span>
+            <input class="form-control input-group" type="text" disabled value="{{appeal['theme']}}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Вопрос</span>
+            <input class="form-control input-group" type="text" disabled value="{{appeal['question']}}">
+
+
+        </div>
+    </div>
+    <form id="profileForm" method="post">
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Создание ответа</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Заголовок</span>
+                {{form.title(class="form-control input-group")}}
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Ответ</span>
+                {{form.answer(class="form-control input-group")}}
+            </div>
+        </div>
+        <div class="submit__wrapper">
+            {{form.submit(class="btn btn-secondary save-btn input-group")}}
+            {{ status_text }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -33,9 +33,13 @@
             <a><a href="/portfolio">Портфолио</a><br></a>
             {% if current_user.is_authenticated %}
                 <a><a href="/profile/{{ current_user.id }}">Профиль</a><br></a>
+                <a><a href="/logout">Выход</a><br></a>
             {% else %}
                 <a><a href="/login">Войти</a><br></a>
                 <a><a href="/register">Зарегистрироваться</a><br></a>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.role_id >= 2 %}
+                <a><a href="/admin">Админ-панель</a><br></a>
             {% endif %}
         </div>
     </div>

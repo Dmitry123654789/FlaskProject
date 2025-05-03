@@ -35,7 +35,7 @@ function loadAppeals() {
         .then(response => response.json())
         .then(data => {
 
-        let allAppeals = data['products'].map(appeal => {
+        let allAppeals = data['appeals'].map(appeal => {
             const cleanedAppeal = {};
             for (const key in appeal) {
                 if (appeal.hasOwnProperty(key)) {
