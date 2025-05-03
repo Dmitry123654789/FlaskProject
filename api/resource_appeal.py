@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
@@ -44,7 +44,10 @@ class AppealsResource(Resource):
 class AppealsListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        appeals = session.query(Appeal).all()
+        filters = []
+        if 'id_user' in request.args.keys():
+            filters.append(Appeal.id_user == int(request.args['id_user']))
+        appeals = session.query(Appeal).filter(*filters)
         return jsonify({'appeals': [item.to_dict(
             only=('id', 'theme', 'question', 'id_user')) for item in appeals]})
 

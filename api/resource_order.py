@@ -56,12 +56,10 @@ class OrdersResource(Resource):
 class OrdersListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        # args = parser.parse_args()
         filters = []
         if 'id_user' in request.args.keys():
             filters.append(Order.id_user == int(request.args['id_user']))
         orders = session.query(Order).filter(*filters)
-
         dict_resp = {'orders': []}
         for order in orders:
             dict_resp['orders'].append(order.to_dict(only=('id', 'id_user', 'status', 'price')))

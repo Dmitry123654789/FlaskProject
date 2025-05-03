@@ -4,9 +4,8 @@ function toggleFilter(button) {
     button.classList.toggle('active');
     localStorage.setItem(`filter-${filter}`, button.classList.contains('active'));
 
-    var cards = document.querySelectorAll('.notification-card');
-
     if (filter === 'read') {
+        var cards = document.querySelectorAll('.notification-card');
         if (button.classList.contains('active')) {
             cards.forEach(function (card) {
                 card.style.display = card.classList.contains('unread') ? 'flex' : 'none';
@@ -20,9 +19,15 @@ function toggleFilter(button) {
         let container = document.querySelector('.list-block__body');
         let cards = Array.from(container.querySelectorAll('.notification-card'));
 
-        cards.sort((a, b) => {
-            return new Date(b.dataset.date) - new Date(a.dataset.date);
-        });
+        if (button.classList.contains('active')) {
+            cards.sort((a, b) => {
+                return new Date(b.dataset.date) - new Date(a.dataset.date);
+            });
+        } else {
+            cards.sort((a, b) => {
+                return new Date(a.dataset.date) - new Date(b.dataset.date);
+            });
+        }
 
         cards.forEach(card => container.appendChild(card));
     }
