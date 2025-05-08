@@ -19,14 +19,16 @@ function toggleFilter(button) {
     } else if (filter === 'date') {
         let container = document.querySelector('.list-block__body');
         let cards = Array.from(container.querySelectorAll('.notification-card'));
-
         cards.sort((a, b) => {
-            return new Date(b.dataset.date) - new Date(a.dataset.date);
-        });
-
+                return new Date(b.dataset.date) - new Date(a.dataset.date);
+            });
+        if (!button.classList.contains('active')) {
+            cards = cards.reverse()
+        }
         cards.forEach(card => container.appendChild(card));
+        }
     }
-}
+
 
 // Расскрытие уведомления
 function toggleNotification(card) {

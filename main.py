@@ -19,6 +19,7 @@ from api.resource_login import LoginResource
 from api.resource_full_product import FullProductResource
 from data.db_session import global_init, create_session
 from data.users import User
+from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.add_appeal import AddAppealForm
 from forms.user_form import UserForm
@@ -99,7 +100,6 @@ def support_required(func):
     return wrapper
 
 
-
 @app.route('/admin')
 @support_required
 def admin_page():
@@ -108,7 +108,6 @@ def admin_page():
 
 @app.route('/admin/users')
 @support_required
-
 def admin_users():
     return render_template('admin/users_page.html')
 
@@ -142,7 +141,6 @@ def appeals_page():
     return render_template('admin/appeals_page.html')
 
 
-
 @app.route('/admin/appeals/<int:appeal_id>', methods=['GET', 'POST'])
 @support_required
 def admin_send_appeal_answer(appeal_id):
@@ -167,12 +165,10 @@ def admin_send_appeal_answer(appeal_id):
                            appeal=appeal.json()['appeals'])
 
 
-
 @app.route('/admin/products')
 @admin_required
 def admin_products():
     return render_template('admin/products_page.html')
-
 
 
 @app.route('/admin/products/create', methods=['GET', 'POST'])
@@ -191,12 +187,10 @@ def admin_product_create():
     return render_template('admin/product_create.html', form=form)
 
 
-
 @app.route('/admin/products/<int:product_id>')
 @admin_required
 def admin_product_page(product_id):
     return render_template('admin/product.html')
-
 
 
 @app.route('/admin/orders')
@@ -205,11 +199,23 @@ def admin_orders():
     return render_template('admin/orders_page.html')
 
 
-
 @app.route('/admin/notifications')
 @admin_required
 def admin_notifications():
     return render_template('admin/notifications_page.html')
+
+@app.route('/admin/notifications/create', methods=['GET', 'POST'])
+@admin_required
+def admin_notification_create():
+    form = NotificationForm()
+    if request.method == 'POST':
+
+        notif_json = form.to_dict()
+        notif_json.update({'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')})
+        resp = post('http://localhost:8080/api/notification', json=notif_json)
+        if resp.status_code == 200:
+            return render_template('admin/notification_create.html', form=form, success=True)
+    return render_template('admin/notification_create.html', form=form)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -295,7 +301,11 @@ def product(product_id):
                       'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
         response_order = post('http://localhost:8080/api/orders', json=json_order).json()
 
-        # Добавить уведомление о добавленом заказе
+        notification = {'title': 'Регистрация заказа №' + str(response_order['id']),
+                        'text': f'\tЗдравствуйте, {current_user.name}! Ваш заказ товара {prod["title"]} был оформел и в скорем времени мы приступим к его выполнению.\n\n\tСпасибо, что выбираете нас!',
+                        'public': False, 'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                        'id_user': current_user.id}
+        post('http://localhost:8080/api/notification', json=notification)
     return render_template('product.html', prod=prod, products=products)
 
 
@@ -387,7 +397,8 @@ def user_info(user_id):
             login_user(User(**post_status.json()['user']), remember=True)
             return render_template('profile_info.html', user_id=user_id, form=form, status_text='Успешно!')
         else:
-            return render_template('profile_info.html', user_id=user_id, form=form, status_text='Что-то пошло не так...')
+            return render_template('profile_info.html', user_id=user_id, form=form,
+                                   status_text='Что-то пошло не так...')
     form.phone.data = current_user.phone
     form.email.data = current_user.email
     form.surname.data = current_user.surname

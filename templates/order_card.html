@@ -17,8 +17,10 @@
                     {% elif order.status == 'done' %}
                         <img src="{{ url_for('static', filename='svg/order-done.svg') }}" alt="завершён">
                         <div class="order-state__text">Заказ завершён</div>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='svg/order-wait.svg') }}" alt="собирается">
+                        <div class="order-state__text">Заказ зафиксирован</div>
                     {% endif %}
-
                 </div>
                 <div class="order-name">{{ order.product.title }}</div>
                 <div class="order-price">{{ order.price }} ₽</div>

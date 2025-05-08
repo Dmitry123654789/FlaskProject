@@ -1,0 +1,56 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block admin_content %}
+<div class="profile-main-section__wrapper">
+
+    <div class="content-label">Создание уведомления</div>
+    {% if success == True %}
+    <h2 class="align-center">Успешно!</h2>
+
+    <button class="btn"><a href="/admin/notifications">Вернуться</a></button>
+
+    {% else %}
+    <form id="notificationForm" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Содержание</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Заголовок</span>
+                {{ form.title(class='form-control', required=True) }}
+            </div>
+            {% for error in form.title.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+            <div class="input-group mb-3">
+                <span class="input-group-text">Текст</span>
+                {{ form.text(class='form-control', required=True) }}
+                {% for error in form.text.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Настройки</span>
+            <div class="input-group mb-3">
+                {{ form.public(class='form-check-input') }}
+                <span class="form-check-label" style="margin-left: 10px">Публичный</span>
+            </div>
+            {% for error in form.public.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Получатель</span>
+                {{ form.id_user(class='form-control', required=True) }}
+            </div>
+            {% for error in form.id_user.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+
+
+            <input type="submit" class="btn btn-primary" value="Отправить">
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
