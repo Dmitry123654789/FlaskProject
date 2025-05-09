@@ -66,7 +66,8 @@ api.add_resource(NotificationsResource, '/api/notification/<int:notifications_id
 def load_user(user_id):
     sess = create_session()
     user = sess.get(User, user_id)
-    user.birth_date = str(user.birth_date).split(' ')[0]
+    if user:
+        user.birth_date = str(user.birth_date).split(' ')[0]
     return user
 
 
@@ -191,12 +192,22 @@ def admin_notifications():
 def home_page():
     form = AddAppealForm()
     if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            return redirect('/login')
         appeal_data = {
             'id_user': current_user.id,
             'question': form.question.data,
             'theme': form.theme.data
         }
+        notif_data = {
+            'title': 'Новое обращение',
+            'text': f'Тема: {form.theme.data}\nТекст: {form.question.data}',
+            'read': False,
+            'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'id_user': current_user.id
+        }
         post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
+        post(f'http://localhost:8080/api/notification', json=notif_data).json()
         return redirect(f'/profile/{current_user.id}')
     return render_template('home.html', form=form)
 
@@ -273,7 +284,6 @@ def product(product_id):
         notif_json = {
             'title': 'Новый заказ',
             'text': f'Сделан заказ на "{prod["title"]}"',
-            'public': False,
             'read': False,
             'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
             'id_user': current_user.id
@@ -304,7 +314,6 @@ def register():
             notif_json = {
                 'title': 'Регистрация',
                 'text': 'Ваш аккаунт зарегистрирован.\nДля изменения данных о пользователе перейдите в раздел "Профиль"',
-                'public': False,
                 'read': False,
                 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
                 'id_user': current_user.id
@@ -351,6 +360,14 @@ def profile(user_id):
             'question': form.question.data,
             'theme': form.theme.data
         }
+        notif_data = {
+            'title': 'Новое обращение',
+            'text': f'Тема: {form.theme.data}\nТекст: {form.question.data}',
+            'read': False,
+            'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'id_user': current_user.id
+        }
+        post(f'http://localhost:8080/api/notification', json=notif_data).json()
         post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
         return redirect(f'/profile/{user_id}')
     orders = get(f'http://localhost:8080/api/orders?id_user={user_id}')
@@ -368,29 +385,38 @@ def user_info(user_id):
     form = UserForm()
 
     if request.method == 'POST':
-        user_json = {
-            'phone': form.phone.data,
-            'email': form.email.data,
-            'surname': form.surname.data,
-            'name': form.name.data,
-            'patronymic': form.patronymic.data,
-            'birth_date': str(form.birth_date.data),
-            'sex': form.sex.data,
-            'address': form.address.data
-        }
-        notif_json = {
-            'title': 'Данные пользователя',
-            'text': 'Данные вашего аккаунта были изменены, если это были не вы, обратитесь в поддержку',
-            'public': False,
-            'read': False,
-            'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'id_user': user_id
-        }
+        if 'save_submit' in request.form:
+            user_json = {
+                'phone': form.phone.data,
+                'email': form.email.data,
+                'surname': form.surname.data,
+                'name': form.name.data,
+                'patronymic': form.patronymic.data,
+                'birth_date': str(form.birth_date.data),
+                'sex': form.sex.data,
+                'address': form.address.data
+            }
+            notif_json = {
+                'title': 'Данные пользователя',
+                'text': 'Данные вашего аккаунта были изменены, если это были не вы, обратитесь в поддержку',
+                'read': False,
+                'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                'id_user': user_id
+            }
 
-        post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
-        post_notif = post('http://localhost:8080/api/notification', json=notif_json)
-        if post_status.status_code == 200:
-            return redirect(f'/profile/{user_id}/info')
+            post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
+            post_notif = post('http://localhost:8080/api/notification', json=notif_json)
+            if post_status.status_code == 200:
+                return redirect(f'/profile/{user_id}/info')
+        if 'delete_submit' in request.form:
+            orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
+            if len(orders) > 0:
+                return render_template('fail.html', errr_code=403, message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
+            logout_user()
+            del_user = delete(f'http://localhost:8080/api/users/{user_id}')
+            del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
+            del_user = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            return redirect('/')
     return render_template('profile_info.html', user_id=user_id, form=form)
 
 

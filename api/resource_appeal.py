@@ -68,3 +68,14 @@ class AppealsListResource(Resource):
             return jsonify({'id': appeals.id})
 
         raise BadRequest('Bad Request')
+
+    def delete(self):
+        session = db_session.create_session()
+        if 'id_user' not in request.args.keys():
+            raise BadRequest()
+
+        appeals = session.query(Appeal).filter(Appeal.id_user == request.args['id_user'])
+        for appeal in appeals:
+            session.delete(appeal)
+        session.commit()
+        return jsonify({'success': 'OK'})

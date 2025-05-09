@@ -147,7 +147,7 @@ a {
     margin: 0;
 }
 
-.submit__wrapper input {
+.submit__wrapper .save-btn {
     font-weight: 600;
     font-size: 18px;
     color: #000;
