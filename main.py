@@ -419,6 +419,21 @@ def user_orders(user_id):
     orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
     return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
+@app.route('/order/<int:order_id>', methods=['POST', "GET"])
+@login_required
+def order_page(order_id):
+    order = get(f'http://localhost:8080/api/orders/{order_id}')
+    if order.status_code == 404:
+        return render_template('fail.html', message='Заказ не найден.', errr_code='404')
+
+    if check_if_support(current_user):
+        if request.method == 'POST':
+            print('posted')
+        return render_template('order.html', order=order.json()['orders'])
+    if order.json()['orders']['id_user'] != current_user.id:
+        return render_template('fail.html', message='У вас нет прав на просмотр этого заказа!')
+    return render_template('order.html', order=order.json()['orders'])
+
 
 @app.route('/profile/<int:user_id>/notifications', methods=['GET', 'POST'])
 @login_required

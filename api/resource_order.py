@@ -5,6 +5,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
 from data.product import Product
+from data.users import User
 from .parser_order import parser
 from data import db_session
 from data.order import Order
@@ -18,10 +19,16 @@ class OrdersResource(Resource):
             raise NotFound('Заказ не найден')
         dict_answer = {'orders': order.to_dict(only=('id', 'id_user', 'status', 'price', 'create_date'))}
         products = session.get(Product, order.id_product)
+        user = session.get(User, order.id_user)
         if not products:
             dict_answer['orders']['product'] = {}
         else:
             dict_answer['orders']['product'] = products.to_dict()
+        if not user:
+            dict_answer['orders']['user'] = {}
+        else:
+            dict_answer['orders']['user'] = user.to_dict(only=('id', 'name', 'surname', 'email', 'phone', 'sex'))
+
         return jsonify(dict_answer)
 
     def delete(self, orders_id):
