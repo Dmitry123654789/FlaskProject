@@ -214,18 +214,12 @@ def home_page():
 
 @app.route('/portfolio')
 def portfolio():
-    filters = request.args.getlist('filters')
-    all_categories = ['kitchen', 'bed', 'living']
 
-    if not filters:
-        filters = all_categories
-
-    direct = os.path.join('static', 'img', 'portfolio')
+    direct = os.path.join('static', 'img', 'catalog')
     all_files = [os.path.join(direct, x) for x in os.listdir(direct)]
     shuffle(all_files)
 
-    # Возвращаем всё, но фильтр передаём отдельно
-    return render_template('portfolio.html', images=all_files, active_filters=filters)
+    return render_template('portfolio.html', images=all_files)
 
 
 @app.errorhandler(HTTPException)
