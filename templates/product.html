@@ -13,7 +13,7 @@
                 <div class="left-block">
                     {# carousel #}
                     <div id="carouselExampleIndicators" class="carousel slide">
-                        {% set img = prod['path_images'].split(', ') %}
+                        {% set img = prod['path_images'].split(',') %}
                         <div class="carousel-indicators">
                             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
                                     class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -26,13 +26,13 @@
                         </div>
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="{{ url_for('static', filename='img/catalog/' + img[0]) }}"
+                                <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + img[0]) }}"
                                      class="d-block w-100" alt="Фото потерялось оп пути к вам"
                                      style="height: 50%; max-height: 600px;">
                             </div>
                             {% for path in img[1:] %}
                                 <div class="carousel-item">
-                                    <img src="{{ url_for('static', filename='img/catalog/' + path) }}"
+                                    <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + path) }}"
                                          class="d-block w-100" alt="Фото потерялось оп пути к вам"
                                          style="height: 50%;  max-height: 600px;">
                                 </div>
@@ -91,8 +91,8 @@
             <div class="card-container">
                 {% for prod in products['products'] %}
                     <div class="card" style="width: 18rem;">
-                        <a href="catalog/{{ prod['id'] }}" style="padding: 10px;"><img
-                                src="{{ url_for('static', filename='img/catalog/' + prod['path_images'].split(', ')[0]) }}"
+                        <a href="/catalog/{{ prod['id'] }}" style="padding: 10px;"><img
+                                src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}"
                                 class="card-img-top" alt="Изображение не найдено"></a>
                         <div class="card-body">
                             <h5 class="card-title">{{ prod['title'] }}</h5>

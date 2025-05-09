@@ -151,16 +151,20 @@ def admin_send_appeal_answer(appeal_id):
         return render_template('fail.html', message='Не найден вопрос', errr_code=404)
     form.title.data = 'Ответ на обращение: ' + str(appeal_id)
     if request.method == 'POST':
-        answer_notification = {'title': form.title.data,
-                               'text': form.answer.data,
-                               'public': False,
-                               'read': False,
-                               'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
-                               'id_user': appeal.json()['appeals']['id_user']}
-        answer_post = post(f'http://localhost:8080/api/notification', json=answer_notification)
-        if answer_post.status_code == 200:
-            return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
-                                   appeal=appeal.json()['appeals'], status_text='Успешно!')
+        if 'save_submit' in request.form:
+            answer_notification = {'title': form.title.data,
+                                   'text': form.answer.data,
+                                   'read': False,
+                                   'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                                   'id_user': appeal.json()['appeals']['id_user']}
+            answer_post = post(f'http://localhost:8080/api/notification', json=answer_notification)
+            if answer_post.status_code == 200:
+                return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
+                                       appeal=appeal.json()['appeals'], status_text='Успешно!')
+        if 'delete_submit' in request.form:
+            answer_post = delete(f'http://localhost:8080/api/appeal/{appeal_id}')
+            if answer_post.status_code == 200:
+                return redirect('/admin/appeals')
 
     return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
                            appeal=appeal.json()['appeals'])
@@ -191,7 +195,7 @@ def admin_product_create():
 @app.route('/admin/products/<int:product_id>')
 @admin_required
 def admin_product_page(product_id):
-    return render_template('admin/product.html')
+    return render_template('admin/product_edit.html')
 
 
 @app.route('/admin/orders')
@@ -211,12 +215,15 @@ def admin_notifications():
 def admin_notification_create():
     form = NotificationForm()
     if request.method == 'POST':
-
         notif_json = form.to_dict()
         notif_json.update({'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')})
-        resp = post('http://localhost:8080/api/notification', json=notif_json)
+        if notif_json['public']:
+            resp = post('http://localhost:8080/api/notification?public=true', json=notif_json)
+        else:
+            resp = post('http://localhost:8080/api/notification', json=notif_json)
         if resp.status_code == 200:
             return render_template('admin/notification_create.html', form=form, success=True)
+
     return render_template('admin/notification_create.html', form=form)
 
 

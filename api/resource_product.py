@@ -1,3 +1,5 @@
+import os
+
 from flask import jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
@@ -16,6 +18,7 @@ class ProductsResource(Resource):
             raise NotFound('Заказ не найден')
 
         dict_product = {'products': product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images'))}
+        dict_product['products']['path_images'] = ','.join(os.listdir(dict_product['products']['path_images']))
         description_product = session.get(DescriptionProduct, product.id_description)
         if not description_product:
             dict_product['products']['description_products'] = {}
@@ -55,6 +58,7 @@ class ProductsListResource(Resource):
         dict_products = {'products': []}
         for product in products:
             dict_products['products'].append(product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images')))
+            dict_products['products'][-1]['path_images'] = ','.join(os.listdir(dict_products['products'][-1]['path_images']))
             description_product = session.get(DescriptionProduct, product.id_description)
             if not description_product:
                 dict_products['products'][-1]['description_products'] = {}

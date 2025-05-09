@@ -11,9 +11,9 @@
             {% for prod in products['products'] %}
                 <div class="card" style="width: 18rem;">
                     <a href="catalog/{{ prod['id'] }}"><img
-                            src="{{ url_for('static', filename='img/catalog/' + prod['path_images'].split(', ')[0]) }}"
+                            src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}"
                             class="card-img-top" alt="Изображение не найдено"></a>
-                    <div class="card-body">
+                    <div class="card-body" style="height: 400px;">
                         <h5 class="card-title">{{ prod['title'] }}</h5>
                         {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
                             <h5 class="card-title">{{ prod['price'] }}₽</h5>
