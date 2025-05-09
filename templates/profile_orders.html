@@ -88,7 +88,7 @@
 
                 cards.forEach(card => container.appendChild(card));
             } else if (filter === 'price' && button.classList.contains('active')) {
-                let container = document.querySelector('.list-block__body'); // замените на свой родительский контейнер
+                let container = document.querySelector('.list-block__body');
                 let cards = Array.from(container.querySelectorAll('.order-card__wrapper'));
 
                 cards.sort((a, b) => {

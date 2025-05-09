@@ -3,7 +3,7 @@ from datetime import datetime
 from random import shuffle
 
 from flask import Flask, jsonify, render_template
-from flask import redirect, request, session, url_for
+from flask import redirect, request, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
 from requests import get, put, post, delete
@@ -12,19 +12,19 @@ from werkzeug.exceptions import HTTPException
 from api import resource_users
 from api.resource_appeal import AppealsListResource, AppealsResource
 from api.resource_description_product import DescriptionProductsListResource, DescriptionProductsResource
+from api.resource_full_product import FullProductResource
+from api.resource_login import LoginResource
+from api.resource_notification import NotificationsListResource, NotificationsResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
-from api.resource_notification import NotificationsListResource, NotificationsResource
-from api.resource_login import LoginResource
-from api.resource_full_product import FullProductResource
 from data.db_session import global_init, create_session
 from data.users import User
+from forms.add_appeal import AddAppealForm
+from forms.appeal_answer_form import AnswerAppealForm
 from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
-from forms.add_appeal import AddAppealForm
-from forms.user_form import UserForm
 from forms.register_form import RegisterForm
-from forms.appeal_answer_form import AnswerAppealForm
+from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -65,7 +65,8 @@ api.add_resource(NotificationsResource, '/api/notification/<int:notifications_id
 def load_user(user_id):
     sess = create_session()
     user = sess.get(User, user_id)
-    user.birth_date = str(user.birth_date).split(' ')[0]
+    if user:
+        user.birth_date = str(user.birth_date).split(' ')[0]
     return user
 
 
@@ -204,6 +205,7 @@ def admin_orders():
 def admin_notifications():
     return render_template('admin/notifications_page.html')
 
+
 @app.route('/admin/notifications/create', methods=['GET', 'POST'])
 @admin_required
 def admin_notification_create():
@@ -297,7 +299,7 @@ def product(product_id):
         if not current_user.is_authenticated:
             return redirect('/login')
 
-        json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'accepted',
+        json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'construction',
                       'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
         response_order = post('http://localhost:8080/api/orders', json=json_order).json()
 
