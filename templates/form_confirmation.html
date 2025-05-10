@@ -1,0 +1,18 @@
+<div id="modalWin" class="modal">
+    <div class="modal-window">
+        <h3>Хорошо подумайте перед этим действием</h3>
+        <form method="post">
+            <div style="display: flex; gap: 20px;">
+                <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn btn-dark"
+                        style="margin: 5px 0 12px; width: 100%">Отменить
+                </button>
+                <input class="btn btn-danger" type="submit" value="Удалить" name="delete_submit">
+            </div>
+            <a style="color: #666666; letter-spacing: 0.1px; font-size: 12px;"><span style="color: red">*</span>
+                Это действие необратимо</a>
+        </form>
+        <button data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe class="btn-close">X</button>
+    </div>
+    <div class="overlay" data-easy-toggle="#modalWin" data-easy-class="show" data-easy-rcoe></div>
+</div>
+<script src="{{ url_for('static', filename='js/easy_togler.js') }}"></script>

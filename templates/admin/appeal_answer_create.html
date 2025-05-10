@@ -31,7 +31,8 @@
         <div class="submit__wrapper">
             {{form.submit(class="btn btn-secondary save-btn input-group")}}
             {{ status_text }}
-            {{form.delete_submit(class="btn btn-danger")}}
+            <a href="#" class="btn btn-danger" data-easy-toggle="#modalWin" data-easy-class="show">Удалить обращение</a>
+            {% include 'form_confirmation.html' %}
         </div>
     </form>
 </div>

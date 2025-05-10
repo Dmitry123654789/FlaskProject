@@ -118,21 +118,34 @@ def admin_users():
 def admin_user_page(user_id):
     form = UserForm()
     if request.method == 'POST':
-        user_json = {
-            'phone': form.phone.data,
-            'email': form.email.data,
-            'surname': form.surname.data,
-            'name': form.name.data,
-            'patronymic': form.patronymic.data,
-            'birth_date': str(form.birth_date.data),
-            'sex': form.sex.data,
-            'address': form.address.data
-        }
+        if 'save_submit' in request.form:
+            user_json = {
+                'phone': form.phone.data,
+                'email': form.email.data,
+                'surname': form.surname.data,
+                'name': form.name.data,
+                'patronymic': form.patronymic.data,
+                'birth_date': str(form.birth_date.data),
+                'sex': form.sex.data,
+                'address': form.address.data
+            }
 
-        post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
-        if post_status.status_code == 201:
-            return render_template('admin/user.html', user_id=user_id, form=form, status_text='Успешно!',
-                                   admin_role=current_user.role_id)
+            post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
+            if post_status.status_code == 201:
+                return render_template('admin/user.html', user_id=user_id, form=form, status_text='Успешно!',
+                                       admin_role=current_user.role_id)
+
+        if 'delete_submit' in request.form:
+            orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
+            if len(orders) > 0:
+                return render_template('fail.html', errr_code=403,
+                                       message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
+            if current_user.id == user_id:
+                logout_user()
+            del_user = delete(f'http://localhost:8080/api/users/{user_id}')
+            del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
+            del_appeal = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            return redirect('/admin/users')
     return render_template('admin/user.html', form=form, user_id=user_id, admin_role=current_user.role_id)
 
 
@@ -212,7 +225,7 @@ def admin_product_page(product_id):
                 return redirect(f'/admin/products/{product_id}')
             return render_template('fail.html', message='Произошла ошибка при заполнении данных', errr_code='403')
 
-        if 'delete_sub' in request.form:
+        if 'delete_submit' in request.form:
             resp = delete(f'http://localhost:8080/api/products/{product_id}')
             if resp.status_code == 200:
                 return redirect(f'/admin/products')

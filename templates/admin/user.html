@@ -49,26 +49,10 @@
             </div>
         </div>
         <div class="submit__wrapper">
-            <input class="btn btn-secondary save-btn input-group" type="submit" value="Сохранить">
-<!--            {% if admin_role == 4 %}-->
-<!--            <button class="btn btn-danger save-btn input-group" value="" id="delete-btn" style="display: inline; width: 240px">Удалить пользователя</button>-->
-<!--            <script>-->
-<!--                const user_id = {{user_id|tojson}}-->
-<!--                document.getElementById('delete-btn').addEventListener('click', () => {-->
-<!--                    fetch('/api/users/' + user_id, {method: 'DELETE'}).then(res => {-->
-<!--                        if (res.ok) {-->
-<!--                            document.getElementById('save-status-text').innerHTML = "Пользователь удален"-->
-<!--                            document.querySelectorAll("input").forEach(input => {-->
-<!--                                input.disabled = true;-->
-<!--                            });-->
-<!--                        }-->
-<!--                        })-->
-<!--                })-->
-
-
-<!--            </script>-->
-<!--            {% endif %}-->
+            <input class="btn btn-secondary save-btn input-group" type="submit" name="save_submit" value="Сохранить">
             <span id="save-status-text">{{status_text}}</span>
+            <a href="#" class="btn btn-danger" data-easy-toggle="#modalWin" data-easy-class="show">Удалить аккаунт</a>
+            {% include 'form_confirmation.html' %}
         </div>
     </form>
 </div>
