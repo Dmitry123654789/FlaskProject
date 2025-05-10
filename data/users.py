@@ -20,8 +20,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     sex = sqlalchemy.Column(sqlalchemy.String, default='male')
 
     role_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('roles.id'))
-
-    role = orm.relationship("Role", back_populates="users")
+    role = orm.relationship("Role")
 
 
     def set_password(self, password):
