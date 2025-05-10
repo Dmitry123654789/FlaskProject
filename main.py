@@ -21,6 +21,7 @@ from data.db_session import global_init, create_session
 from data.users import User
 from forms.add_appeal import AddAppealForm
 from forms.appeal_answer_form import AnswerAppealForm
+from forms.edit_order_form import EditOrderForm
 from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
@@ -119,6 +120,8 @@ def admin_user_page(user_id):
     form = UserForm()
     if request.method == 'POST':
         if 'save_submit' in request.form:
+            if current_user.role_id < 3:
+                return render_template('fail.html', message='У вас нет прав на эти действия')
             user_json = {
                 'phone': form.phone.data,
                 'email': form.email.data,
@@ -136,6 +139,8 @@ def admin_user_page(user_id):
                                        admin_role=current_user.role_id)
 
         if 'delete_submit' in request.form:
+            if current_user.role_id != 4:
+                return render_template('fail.html', message='У вас нет прав на эти действия')
             orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
             if len(orders) > 0:
                 return render_template('fail.html', errr_code=403,
@@ -305,39 +310,38 @@ def portfolio():
 
 
 @app.errorhandler(HTTPException)
-def handle_http_exception(error):
-    """Обрабатывает HTTP-исключения: возвращает JSON или HTML"""
-
-    accept = request.accept_mimetypes
-    # Если клиент явно просит JSON или не указал предпочтения
-    if accept.accept_json and not accept.accept_html or \
-            accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
-        response = jsonify({
-            'error': error.description,
-            'status_code': error.code
-        })
-        response.status_code = error.code
-        return response
-    else:
-        return render_template('fail.html', errr_code=error.code, message=error.description)
-
-
-@app.errorhandler(Exception)
-def handle_generic_exception(error):
-    """Обрабатывает все остальные исключения (базовые Exception)"""
-
-    accept = request.accept_mimetypes
-    if accept.accept_json and not accept.accept_html or \
-            accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
-        response = jsonify({
-            'error': 'Internal Server Error',
-            'message': str(error)
-        })
-        response.status_code = 500
-        return response
-    else:
-        return render_template('fail.html', errr_code=500, message=str(error))
-
+# def handle_http_exception(error):
+#     """Обрабатывает HTTP-исключения: возвращает JSON или HTML"""
+#
+#     accept = request.accept_mimetypes
+#     # Если клиент явно просит JSON или не указал предпочтения
+#     if accept.accept_json and not accept.accept_html or \
+#             accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
+#         response = jsonify({
+#             'error': error.description,
+#             'status_code': error.code
+#         })
+#         response.status_code = error.code
+#         return response
+#     else:
+#         return render_template('fail.html', errr_code=error.code, message=error.description)
+#
+#
+# @app.errorhandler(Exception)
+# def handle_generic_exception(error):
+#     """Обрабатывает все остальные исключения (базовые Exception)"""
+#
+#     accept = request.accept_mimetypes
+#     if accept.accept_json and not accept.accept_html or \
+#             accept.accept_json and accept.accept_html and accept['application/json'] >= accept['text/html']:
+#         response = jsonify({
+#             'error': 'Internal Server Error',
+#             'message': str(error)
+#         })
+#         response.status_code = 500
+#         return response
+#     else:
+#         return render_template('fail.html', errr_code=500, message=str(error))
 
 @app.route('/catalog')
 def catalog():
@@ -477,17 +481,30 @@ def user_orders(user_id):
 @app.route('/order/<int:order_id>', methods=['POST', "GET"])
 @login_required
 def order_page(order_id):
-    order = get(f'http://localhost:8080/api/orders/{order_id}')
-    if order.status_code == 404:
+    form = EditOrderForm()
+    order_req = get(f'http://localhost:8080/api/orders/{order_id}')
+    if order_req.status_code == 404:
         return render_template('fail.html', message='Заказ не найден.', errr_code='404')
+    order = order_req.json()['orders']
+    if request.method == 'POST':
+        if 'save_submit' in request.form and check_if_admin(current_user):
+            data_order = {
+                'id_product': order['product']['id'],
+                'id_user': order['id_user'],
+                'status': form.state.data,
+                'price': order['price'],
+                'create_date': order['create_date'],
+            }
+            resp = put(f'http://localhost:8080/api/orders/{order_id}', json=data_order)
+            if resp.status_code == 200:
+                return redirect(f'/order/{order_id}')
 
-    if check_if_support(current_user):
-        if request.method == 'POST':
-            print('posted')
-        return render_template('order.html', order=order.json()['orders'])
-    if order.json()['orders']['id_user'] != current_user.id:
-        return render_template('fail.html', message='У вас нет прав на просмотр этого заказа!')
-    return render_template('order.html', order=order.json()['orders'])
+        if 'delete_submit' in request.form and current_user.role_id == 4:
+            req = delete(f'http://localhost:8080/api/orders/{order_id}')
+            return redirect(f'/admin/orders')
+    if order['id_user'] != current_user.id and not check_if_support(current_user):
+        return render_template('fail.html', message='У вас нет прав на просмотр этого заказа!', errr_code='403')
+    return render_template('order.html', order=order, form=form)
 
 
 @app.route('/profile/<int:user_id>/notifications', methods=['GET', 'POST'])

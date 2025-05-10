@@ -51,7 +51,8 @@ class OrdersResource(Resource):
                  ['id_product', 'id_user', 'status', 'price', 'create_date']):
             for key, value in args.items():
                 if key == 'create_date':
-                    setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
+                    if not value is None:
+                        setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
                 else:
                     setattr(order, key, value)
             db_sess.commit()

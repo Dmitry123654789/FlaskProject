@@ -1,64 +1,76 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link href="{{ url_for('static', filename='css/order.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/order.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="main__wrapper background-fill">
-    <div class="order-container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Заказ "{{ order.product.title }}"</h2>
-            <span class="fs-4 text-success">{{ "{:,}".format(order.price).replace(",", " ") }} ₽</span>
-        </div>
+    <div class="main__wrapper background-fill">
+        <form class="order-container" method="post">
+            {{ form.hidden_tag() }}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Заказ "{{ order.product.title }}"</h2>
+                <span class="fs-4 text-success">{{ "{:,}".format(order.price).replace(",", " ") }} ₽</span>
+            </div>
 
-        <div class="mb-4">
-            <h5>Состояние заказа:</h5>
-            {% set state_map = {
+            <div class="mb-4">
+                <h5>Состояние заказа:</h5>
+                {% set state_map = {
             'construction': 'order-wait.svg',
             'ready': 'order-warehouse.svg',
             'sent': 'order-onway.svg',
             'done': 'order-done.svg'
             } %}
-            {%
-            set state_text_map = {
+                {% set state_text_map = {
             'construction': "Заказ собирается",
-            'ready':"Заказ гото",
+            'ready':"Заказ готов",
             'sent':"Заказ в пути",
             'done':"Заказ завершён"
-            }
-            %}
-            <span class="d-flex align-items-center gap-3">
+            } %}
+                <span class="d-flex align-items-center gap-3">
                 <img src="{{ url_for('static', filename='svg/' + state_map.get(order.status, 'order-wait.svg')) }}"
                      alt="собирается" class="status-img">
-                <span class="fs-5">{{ state_text_map.get(order.status, 'Заказ зафиксирован')}}</span>
+                    <span style="min-width: max-content" class="fs-5">{{ state_text_map.get(order.status, 'Заказ зафиксирован') }}</span>
+                    {% if current_user.role_id > 2 %}
+                        {{ form.state(class='form-control', required=True, value=order.status) }}
+                    {% endif %}
             </span>
-        </div>
+            </div>
 
-        <div class="mb-4">
-            <h5>Заказчик:</h5>
-            <div class="d-flex align-items-center gap-3">
-                <img src="{{ url_for('static', filename='svg/user-default-avatar.svg') }}"
-                     alt="User" class="user-avatar">
-                <div>
-                    <div class="fw-semibold">Заказчик</div>
-                    <div>{{ order.user.name }} {{ order.user.surname }}</div>
+            <div class="mb-4">
+                <h5>Заказчик:</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <img src="{{ url_for('static', filename='svg/user-default-avatar.svg') }}"
+                         alt="User" class="user-avatar">
+                    <div>
+                        <div class="fw-semibold">Заказчик</div>
+                        <div>{{ order.user.name }} {{ order.user.surname }}</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mb-4">
-            <h6>Дата оформления:</h6>
-            <p>{{ order.create_date }}</p>
-        </div>
-
-        <div class="mb-3">
-            <h6>Заказанный товар:</h6>
-            <div class="d-flex justify-content-between align-items-center">
-                <span>{{ order.product.title }}</span>
-                <a href="/catalog/{{ order.product.id }}" class="btn btn-primary">Перейти к товару</a>
+            <div class="mb-4">
+                <h6>Дата оформления:</h6>
+                <p>{{ order.create_date }}</p>
             </div>
+
+            <div class="mb-3">
+                <h6>Заказанный товар:</h6>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ order.product.title }}</span>
+                    <a href="/catalog/{{ order.product.id }}" class="btn btn-primary">Перейти к товару</a>
+                </div>
+            </div>
+        <div style="display: flex; gap: 20px; width: 40%">
+            {% if current_user.role_id > 2 %}
+                {{ form.save_submit(class="btn btn-secondary save-btn input-group") }}
+            {% endif %}
+            {% if current_user.role_id == 4 %}
+                <a href="#" class="btn btn-danger" data-easy-toggle="#modalWin" data-easy-class="show" style="width: 100%">Удалить
+                    товар</a>
+                {% include 'form_confirmation.html' %}
+            {% endif %}
         </div>
+        </form>
     </div>
-</div>
 {% endblock %}
