@@ -35,6 +35,12 @@ class ProductsResource(Resource):
         if not products:
             raise NotFound('Не найден товар для удаления')
         desc = session.get(DescriptionProduct, products.id_description)
+        try:
+            for f in os.listdir(products.path_images):
+                os.remove(os.path.join(products.path_images, f))
+            os.rmdir(products.path_images)
+        except FileNotFoundError:
+            pass
         if desc:
             session.delete(desc)
         session.delete(products)
