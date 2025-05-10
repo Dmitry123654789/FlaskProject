@@ -9,14 +9,20 @@
     <div class="background-fill">
         <div class="card-container">
             {% for prod in products['products'] %}
-                <div class="card" style="width: 18rem;">
-                    <a href="catalog/{{ prod['id'] }}"><img
-                            src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}"
-                            class="card-img-top" alt="Изображение не найдено"></a>
-                    <div class="card-body" style="height: 400px;">
+                <div class="card">
+                    <a href="/catalog/{{ prod['id'] }}">
+                        <img src="{% if prod['path_images'] is not none %}
+                                {{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}
+                            {% else %}
+                                {{ url_for('static', filename='img/products/no_prod.png') }}
+                            {% endif %}"
+                            class="card-img-top card-img-catalog"
+                            alt="Изображение не найдено">
+                    </a>
+                    <div class="card-body">
                         <h5 class="card-title">{{ prod['title'] }}</h5>
-                        {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
-                            <h5 class="card-title">{{ prod['price'] }}₽</h5>
+                        {% if prod['discount'] is none or prod['discount'] <= prod['price'] %}
+                            <a class="card-title">{{ prod['price'] }}₽</a>
                         {% else %}
                             <a class="card-title discount-card"
                                style="color: red">{{ prod['price'] }}₽</a>

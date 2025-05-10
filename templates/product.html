@@ -13,6 +13,7 @@
                 <div class="left-block">
                     {# carousel #}
                     <div id="carouselExampleIndicators" class="carousel slide">
+                    {% if prod['path_images'] is not none %}
                         {% set img = prod['path_images'].split(',') %}
                         <div class="carousel-indicators">
                             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
@@ -25,19 +26,32 @@
                             {% endfor %}
                         </div>
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
+                            <div class="carousel-item active" style="aspect-ratio: 16/9;">
                                 <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + img[0]) }}"
                                      class="d-block w-100" alt="Фото потерялось оп пути к вам"
-                                     style="height: 50%; max-height: 600px;">
+                                     style="aspect-ratio: 16/9;">
                             </div>
                             {% for path in img[1:] %}
-                                <div class="carousel-item">
+                                <div class="carousel-item" style="aspect-ratio: 16/9;">
                                     <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + path) }}"
                                          class="d-block w-100" alt="Фото потерялось оп пути к вам"
-                                         style="height: 50%;  max-height: 600px;">
+                                         style="aspect-ratio: 16/9;">
                                 </div>
                             {% endfor %}
                         </div>
+                    {% else %}
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{{ url_for('static', filename='img/products/no_prod.png') }}"
+                                     class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                     style="height: 50%; max-height: 600px;">
+                            </div>
+                        </div>
+                    {% endif %}
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
                                 data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -53,7 +67,7 @@
                 </div>
                 <div class="right-block">
                     <h5 class="card-title" style="font-size: 35px;">{{ prod['title'] }}</h5>
-                    {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
+                    {% if prod['discount'] is none or prod['discount'] <= prod['price'] %}
                         <h5 style="font-size: 25px;" class="card-title">{{ prod['price'] }}₽</h5>
                     {% else %}
                         <a class="card-title discount-card" style="color: red; font-size: 25px">{{ prod['price'] }}₽
@@ -91,13 +105,19 @@
             <div class="card-container">
                 {% for prod in products['products'] %}
                     <div class="card" style="width: 18rem;">
-                        <a href="/catalog/{{ prod['id'] }}" style="padding: 10px;"><img
-                                src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}"
-                                class="card-img-top" alt="Изображение не найдено"></a>
+                        <a href="/catalog/{{ prod['id'] }}">
+                        <img src="{% if prod['path_images'] is not none %}
+                                {{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod['path_images'].split(',')[0]) }}
+                            {% else %}
+                                {{ url_for('static', filename='img/products/no_prod.png') }}
+                            {% endif %}"
+                            class="card-img-top card-img-catalog"
+                            alt="Изображение не найдено">
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title">{{ prod['title'] }}</h5>
-                            {% if prod['discount'] is none or prod['discount'] < prod['price'] %}
-                                <h5 class="card-title">{{ prod['price'] }}₽</h5>
+                            {% if prod['discount'] is none or prod['discount'] <= prod['price'] %}
+                                <a class="card-title">{{ prod['price'] }}₽</a>
                             {% else %}
                                 <a class="card-title discount-card"
                                    style="color: red">{{ prod['price'] }}₽</a>

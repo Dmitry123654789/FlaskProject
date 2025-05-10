@@ -8,8 +8,10 @@
 }
 
 .card {
-    flex: 0 0 calc(20% - 20px);
+    flex: 0 0 calc(30% - 20px);
     box-sizing: border-box;
+    height: min-content;
+    background-color: #f6f6f6;
 }
 
 .card-title {
@@ -28,4 +30,13 @@
     font-size: 18px;
     line-height: 24px;
     color: #f44;
+}
+
+.card-img-catalog {
+    height: 100%;
+    aspect-ratio: 16/9;
+}
+
+.card a {
+    aspect-ratio: 16/9;
 }

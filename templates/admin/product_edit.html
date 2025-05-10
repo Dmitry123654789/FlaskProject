@@ -98,16 +98,17 @@
             {% endfor %}
         </div>
         <div class="profile-info-group">
-            <span class="profile-info-group__text">Изображения</span>
+            <span class="profile-info-group__text">Изображения, в соотношении сторон 16:9<br>! При загрузке новых фотографий, все старые будут удалены</span>
             <div class="input-group mb-3">
-                {{ form.images(class='form-control', required=True, accept=".png,.jpg,.jpeg") }}
+                {{ form.images(class='form-control', required=False, accept=".png,.jpg,.jpeg") }}
             </div>
             {% for error in form.images.errors %}
             <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Сохранить">
+        <input type="submit" class="btn btn-primary" value="Сохранить" name="save_sub">
+        <input type="submit" class="btn btn-danger" value="Удалить" name="delete_sub">
     </form>
     {% endif %}
 </div>

@@ -47,7 +47,7 @@ api.add_resource(OrdersResource, '/api/orders/<int:orders_id>')
 # api товаров
 api.add_resource(ProductsListResource, '/api/products')
 api.add_resource(ProductsResource, '/api/products/<int:products_id>')
-api.add_resource(FullProductResource, '/api/create_full_product')
+api.add_resource(FullProductResource, '/api/full_product')
 
 # api описания товаров
 api.add_resource(DescriptionProductsListResource, '/api/descriptionproducts')
@@ -185,17 +185,51 @@ def admin_product_create():
             f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type) for
             i in range(len(form.images.data))}
 
-        resp = post('http://localhost:8080/api/create_full_product', data=form.to_dict(), files=files)
+        resp = post('http://localhost:8080/api/full_product', data=form.to_dict(), files=files)
         if resp.status_code == 200:
             return render_template('admin/product_create.html', form=form, success=True,
                                    product_id=resp.json()[0]['id'])
     return render_template('admin/product_create.html', form=form)
 
 
-@app.route('/admin/products/<int:product_id>')
+@app.route('/admin/products/<int:product_id>', methods=['GET', 'POST'])
 @admin_required
 def admin_product_page(product_id):
-    return render_template('admin/product_edit.html')
+    form = ProductForm()
+    product_req = get(f'http://localhost:8080/api/products/{product_id}')
+    if product_req.status_code == 404:
+        return render_template('fail.html', message='Продукт не найден', errr_code='404')
+    product = product_req.json()['products']
+    if request.method == 'POST':
+        if 'save_sub' in request.form:
+            files = {
+                f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type)
+                for
+                i in range(len(form.images.data))}
+            resp = put('http://localhost:8080/api/full_product?description_id={}&product_id={}'.format(
+                product['description_products']['id'], product_id), data=form.to_dict(), files=files)
+            if resp.status_code == 200:
+                return redirect(f'/admin/products/{product_id}')
+            return render_template('fail.html', message='Произошла ошибка при заполнении данных', errr_code='403')
+
+        if 'delete_sub' in request.form:
+            resp = delete(f'http://localhost:8080/api/products/{product_id}')
+            if resp.status_code == 200:
+                return redirect(f'/admin/products')
+            return render_template('fail.html', message='Произошла ошибка', errr_code=500)
+
+    form.title.data = product['title']
+    form.price.data = product['price']
+    form.discount.data = product['discount']
+    form.description.data = product['description_products']['description']
+    form.size.data = product['description_products']['size']
+    form.type.data = product['description_products']['type']
+    form.material.data = product['description_products']['material']
+    form.color.data = product['description_products']['color']
+    form.style.data = product['description_products']['style']
+    form.features.data = product['description_products']['features']
+    form.images.data = product['path_images']
+    return render_template('admin/product_edit.html', form=form)
 
 
 @app.route('/admin/orders')
@@ -425,6 +459,7 @@ def user_orders(user_id):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
     orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
     return render_template('profile_orders.html', user_id=user_id, orders=orders)
+
 
 @app.route('/order/<int:order_id>', methods=['POST', "GET"])
 @login_required

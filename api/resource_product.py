@@ -18,7 +18,10 @@ class ProductsResource(Resource):
             raise NotFound('Заказ не найден')
 
         dict_product = {'products': product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images'))}
-        dict_product['products']['path_images'] = ','.join(os.listdir(dict_product['products']['path_images']))
+        try:
+            dict_product['products']['path_images'] = ','.join(os.listdir(dict_product['products']['path_images']))
+        except FileNotFoundError:
+            dict_product['products']['path_images'] = None
         description_product = session.get(DescriptionProduct, product.id_description)
         if not description_product:
             dict_product['products']['description_products'] = {}
@@ -31,6 +34,9 @@ class ProductsResource(Resource):
         products = session.get(Product, products_id)
         if not products:
             raise NotFound('Не найден товар для удаления')
+        desc = session.get(DescriptionProduct, products.id_description)
+        if desc:
+            session.delete(desc)
         session.delete(products)
         session.commit()
         return jsonify({'success': 'OK'})
@@ -58,7 +64,10 @@ class ProductsListResource(Resource):
         dict_products = {'products': []}
         for product in products:
             dict_products['products'].append(product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images')))
-            dict_products['products'][-1]['path_images'] = ','.join(os.listdir(dict_products['products'][-1]['path_images']))
+            try:
+                dict_products['products'][-1]['path_images'] = ','.join(os.listdir(dict_products['products'][-1]['path_images']))
+            except FileNotFoundError:
+                dict_products['products'][-1]['path_images'] = None
             description_product = session.get(DescriptionProduct, product.id_description)
             if not description_product:
                 dict_products['products'][-1]['description_products'] = {}
