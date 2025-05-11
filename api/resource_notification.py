@@ -17,7 +17,7 @@ class NotificationsResource(Resource):
         if not notifications:
             raise NotFound('Уведомление не найдено')
         return jsonify({'notifications': notifications.to_dict(
-            only=('id', 'title', 'text', 'read', 'create_date', 'id_user'))})
+            only=('id', 'title', 'text', 'read', 'public', 'create_date', 'id_user'))})
 
     def delete(self, notifications_id):
         session = create_session()
@@ -55,7 +55,7 @@ class NotificationsListResource(Resource):
 
         notifications = session.query(Notification).filter(*filters)
         return jsonify({'notifications': [item.to_dict(
-            only=('id', 'title', 'text', 'read', 'create_date', 'id_user')) for item in notifications]})
+            only=('id', 'title', 'text', 'read', 'public', 'create_date', 'id_user')) for item in notifications]})
 
     def delete(self):
         session = create_session()
@@ -83,6 +83,7 @@ class NotificationsListResource(Resource):
                         title=args['title'],
                         text=args['text'],
                         read=args['read'],
+                        public=True,
                         create_date=datetime.strptime(args['create_date'], '%Y-%m-%d %H:%M'),
                         id_user=id[0]
                     )
@@ -95,6 +96,7 @@ class NotificationsListResource(Resource):
                     text=args['text'],
                     read=args['read'],
                     create_date=datetime.strptime(args['create_date'], '%Y-%m-%d %H:%M'),
+                    public=False,
                     id_user=args['id_user']
                 )
                 db_sess.add(notifications)
