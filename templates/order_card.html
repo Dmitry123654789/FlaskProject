@@ -23,7 +23,7 @@
                     {% endif %}
                 </div>
                 <div class="order-name">{{ order.product.title }}</div>
-                <div class="order-price">{{ order.price }} ₽</div>
+                <div class="order-price">{{ "{:,}".format(order.price).replace(",", " ") }} ₽</div>
             </div>
         </a>
     </div>
