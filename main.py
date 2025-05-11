@@ -2,12 +2,11 @@ import os
 from datetime import datetime
 from random import shuffle
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, render_template
 from flask import redirect, request, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
 from requests import get, put, post, delete
-from werkzeug.exceptions import HTTPException
 
 from api import resource_users
 from api.resource_appeal import AppealsListResource, AppealsResource
@@ -17,11 +16,13 @@ from api.resource_login import LoginResource
 from api.resource_notification import NotificationsListResource, NotificationsResource
 from api.resource_order import OrdersListResource, OrdersResource
 from api.resource_product import ProductsListResource, ProductsResource
+from config import SECRET_KEY, generate_token
 from data.db_session import global_init, create_session
 from data.users import User
 from forms.add_appeal import AddAppealForm
 from forms.appeal_answer_form import AnswerAppealForm
 from forms.edit_order_form import EditOrderForm
+from forms.edit_role_form import ChangeRoleForm
 from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
@@ -29,7 +30,7 @@ from forms.user_form import UserForm
 
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['SECRET_KEY'] = SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -102,10 +103,22 @@ def support_required(func):
     return wrapper
 
 
-@app.route('/admin')
-@support_required
+@app.route('/admin/admins', methods=['GET', 'POST'])
+@admin_required
 def admin_page():
-    return render_template('admin/admin_base.html')
+    form = ChangeRoleForm()
+    if request.method == 'POST':
+        form.validate()
+        tokn = generate_token({'id': current_user.id, 'role_id': current_user.role_id})
+        change_req = put(f'http://localhost:8080/api/users/{form.user_id.data}', json={'role_id': form.role_id.data},
+                         headers={'Authorization': 'Bearer ' + tokn})
+        if change_req.status_code == 200:
+            form.submit.errors = ['Успешно!']
+        elif change_req.status_code == 404:
+            form.user_id.errors = ['Пользователь не найден']
+        else:
+            print(change_req.status_code, change_req.json())
+    return render_template('admin/admins_page.html', form=form)
 
 
 @app.route('/admin/users')
@@ -147,7 +160,8 @@ def admin_user_page(user_id):
                                        message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
             if current_user.id == user_id:
                 logout_user()
-            del_user = delete(f'http://localhost:8080/api/users/{user_id}')
+            tokn = generate_token({'id': current_user.id})
+            del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
             del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
             del_appeal = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
             return redirect('/admin/users')
@@ -231,7 +245,8 @@ def admin_product_page(product_id):
             return render_template('fail.html', message='Произошла ошибка при заполнении данных', errr_code='403')
 
         if 'delete_submit' in request.form:
-            resp = delete(f'http://localhost:8080/api/products/{product_id}')
+            tokn = generate_token({'id': current_user.id})
+            resp = delete(f'http://localhost:8080/api/products/{product_id}', headers={'Authorization': 'Bearer ' + tokn})
             if resp.status_code == 200:
                 return redirect(f'/admin/products')
             return render_template('fail.html', message='Произошла ошибка', errr_code=500)
@@ -309,7 +324,7 @@ def portfolio():
     return render_template('portfolio.html', images=all_files, active_filters=filters)
 
 
-@app.errorhandler(HTTPException)
+# @app.errorhandler(HTTPException)
 # def handle_http_exception(error):
 #     """Обрабатывает HTTP-исключения: возвращает JSON или HTML"""
 #
@@ -362,7 +377,7 @@ def product(product_id):
         response_order = post('http://localhost:8080/api/orders', json=json_order).json()
 
         notification = {'title': 'Регистрация заказа №' + str(response_order['id']),
-                        'text': f'\tЗдравствуйте, {current_user.name}! Ваш заказ товара {prod["title"]} был оформел и в скорем времени мы приступим к его выполнению.\n\n\tСпасибо, что выбираете нас!',
+                        'text': f'\tЗдравствуйте, {current_user.name}! Ваш заказ товара "{prod["title"]}" был оформел, и в скорем времени мы приступим к его выполнению.\n\n\tСпасибо, что выбираете нас!',
                         'public': False, 'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
                         'id_user': current_user.id}
         post('http://localhost:8080/api/notification', json=notification)
@@ -429,6 +444,7 @@ def profile(user_id):
     orders = get(f'http://localhost:8080/api/orders?id_user={user_id}')
     order = None
     if orders.status_code == 200 and orders.json()['orders']:
+        print(orders.json())
         order = max(orders.json()['orders'], key=lambda x: datetime.strptime(x['create_date'], '%Y-%m-%d'))
     return render_template('profile.html', user_id=user_id, form=form, order=order)
 
@@ -500,8 +516,11 @@ def order_page(order_id):
                 return redirect(f'/order/{order_id}')
 
         if 'delete_submit' in request.form and current_user.role_id == 4:
-            req = delete(f'http://localhost:8080/api/orders/{order_id}')
-            return redirect(f'/admin/orders')
+            tokn = generate_token({'id': current_user.id})
+            req = delete(f'http://localhost:8080/api/orders/{order_id}',
+                          headers={'Authorization': 'Bearer ' + tokn})
+            if req.status_code == 200:
+                return redirect(f'/admin/orders')
     if order['id_user'] != current_user.id and not check_if_support(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр этого заказа!', errr_code='403')
     return render_template('order.html', order=order, form=form)

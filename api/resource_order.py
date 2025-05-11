@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 
 from data.product import Product
 from data.users import User
+from .api_tools import check_admin_request
 from .parser_order import parser
 from data import db_session
 from data.order import Order
@@ -32,13 +33,14 @@ class OrdersResource(Resource):
         return jsonify(dict_answer)
 
     def delete(self, orders_id):
-        session = db_session.create_session()
-        orders = session.get(Order, orders_id)
-        if not orders:
-            raise NotFound('Не найден заказ для удаления')
-        session.delete(orders)
-        session.commit()
-        return jsonify({'success': 'OK'})
+        if check_admin_request(request.headers.get('Authorization')):
+            session = db_session.create_session()
+            orders = session.get(Order, orders_id)
+            if not orders:
+                raise NotFound('Не найден заказ для удаления')
+            session.delete(orders)
+            session.commit()
+            return jsonify({'success': 'OK'})
 
     def put(self, orders_id):
         args = parser.parse_args()
@@ -52,7 +54,7 @@ class OrdersResource(Resource):
             for key, value in args.items():
                 if key == 'create_date':
                     if not value is None:
-                        setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
+                        setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
                 else:
                     setattr(order, key, value)
             db_sess.commit()

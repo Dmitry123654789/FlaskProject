@@ -1,10 +1,11 @@
 import os
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
 from data.description_product import DescriptionProduct
+from .api_tools import check_admin_request
 from .parser_product import parser
 from data import db_session
 from data.product import Product
@@ -30,22 +31,23 @@ class ProductsResource(Resource):
         return jsonify(dict_product)
 
     def delete(self, products_id):
-        session = db_session.create_session()
-        products = session.get(Product, products_id)
-        if not products:
-            raise NotFound('Не найден товар для удаления')
-        desc = session.get(DescriptionProduct, products.id_description)
-        try:
-            for f in os.listdir(products.path_images):
-                os.remove(os.path.join(products.path_images, f))
-            os.rmdir(products.path_images)
-        except FileNotFoundError:
-            pass
-        if desc:
-            session.delete(desc)
-        session.delete(products)
-        session.commit()
-        return jsonify({'success': 'OK'})
+        if check_admin_request(request.headers.get('Authorization')):
+            session = db_session.create_session()
+            products = session.get(Product, products_id)
+            if not products:
+                raise NotFound('Не найден товар для удаления')
+            desc = session.get(DescriptionProduct, products.id_description)
+            try:
+                for f in os.listdir(products.path_images):
+                    os.remove(os.path.join(products.path_images, f))
+                os.rmdir(products.path_images)
+            except FileNotFoundError:
+                pass
+            if desc:
+                session.delete(desc)
+            session.delete(products)
+            session.commit()
+            return jsonify({'success': 'OK'})
 
     def put(self, products_id):
         args = parser.parse_args()
@@ -71,7 +73,8 @@ class ProductsListResource(Resource):
         for product in products:
             dict_products['products'].append(product.to_dict(only=('id', 'price', 'discount', 'title', 'path_images')))
             try:
-                dict_products['products'][-1]['path_images'] = ','.join(os.listdir(dict_products['products'][-1]['path_images']))
+                dict_products['products'][-1]['path_images'] = ','.join(
+                    os.listdir(dict_products['products'][-1]['path_images']))
             except FileNotFoundError:
                 dict_products['products'][-1]['path_images'] = None
             description_product = session.get(DescriptionProduct, product.id_description)

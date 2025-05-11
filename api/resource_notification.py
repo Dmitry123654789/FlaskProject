@@ -39,7 +39,7 @@ class NotificationsResource(Resource):
             if value is None:
                 continue
             if key == 'create_date':
-                setattr(notification, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
+                setattr(notification, key, datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
             else:
                 setattr(notification, key, value)
         db_sess.commit()

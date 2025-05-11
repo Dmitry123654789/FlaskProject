@@ -1,7 +1,8 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
+from .api_tools import check_admin_request
 from .parser_description_product import parser
 from data import db_session
 from data.description_product import DescriptionProduct
@@ -17,13 +18,14 @@ class DescriptionProductsResource(Resource):
             only=('id', 'description', 'size', 'type', 'material', 'color', 'style', 'features'))})
 
     def delete(self, description_products_id):
-        session = db_session.create_session()
-        description_products = session.get(DescriptionProduct, description_products_id)
-        if not description_products:
-            raise NotFound('Не найден товар для удаления')
-        session.delete(description_products)
-        session.commit()
-        return jsonify({'success': 'OK'})
+        if check_admin_request(request.headers.get('Authorization')):
+            session = db_session.create_session()
+            description_products = session.get(DescriptionProduct, description_products_id)
+            if not description_products:
+                raise NotFound('Не найден товар для удаления')
+            session.delete(description_products)
+            session.commit()
+            return jsonify({'success': 'OK'})
 
     def put(self, description_products_id):
         args = parser.parse_args()

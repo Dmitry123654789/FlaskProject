@@ -1,0 +1,26 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+<div class="table-container" id="table-container">
+    {% if current_user.role_id == 4 %}
+    <form id="roleForm" method="post">
+        {{ form.hidden_tag() }}
+        <div class="d-flex allign-items-center gap-3" style="max-width: max-content">
+            {{form.user_id(class="form-control")}}
+            {{form.role_id(class="form-control")}}
+        </div>
+        {% for error in form.user_id.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+        <div class="d-flex allign-items-center gap-3 mb-4 mt-3">
+            {{form.submit(class="btn btn-secondary")}}
+            {% for message in form.submit.errors %}
+            <span>{{ message }}</span>
+            {% endfor %}
+        </div>
+    </form>
+    {% endif %}
+
+</div>
+<script type="module" src="../../static/js/admin/admins_page.js"></script>
+{% endblock %}

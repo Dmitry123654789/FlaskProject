@@ -86,7 +86,7 @@ class FullProductResource(Resource):
         sess.commit()
 
 
-        product_folder = os.path.join('static/img/products/', f'product_{request.args['description_id']}')
+        product_folder = os.path.join('static/img/products/', f'product_{request.args["description_id"]}')
         files = request.files
 
         if list(files.values())[0].filename != '':
