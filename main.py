@@ -2,11 +2,12 @@ import os
 from datetime import datetime
 from random import shuffle
 
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask import redirect, request, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
 from requests import get, put, post, delete
+from werkzeug.exceptions import HTTPException
 
 from api import resource_users
 from api.resource_appeal import AppealsListResource, AppealsResource
@@ -323,7 +324,7 @@ def home_page():
 def portfolio():
 
     direct = os.path.join('static', 'img', 'products')
-    all_files1 = [[os.path.join(direct, x, i) for i in os.listdir(os.path.join(direct, x))] for x in os.listdir(direct)]
+    all_files1 = [[os.path.join(direct, x, i) for i in os.listdir(os.path.join(direct, x))] for x in os.listdir(direct) if x != 'no_prod.png']
     all_files = []
     for file in all_files1:
         all_files.extend(file)
