@@ -7,7 +7,7 @@
     {% if success == True %}
     <h2 class="align-center">Успешно!</h2>
 
-    <button class="btn btn-secondary"><a href="/admin/products/{{ product_id }}">Перейти к товару</a></button>
+    <button class="btn btn-secondary"><a href="/catalog/{{ product_id }}">Перейти к товару</a></button>
 
     {% else %}
     <form id="productForm" method="post" enctype="multipart/form-data">
@@ -98,9 +98,9 @@
             {% endfor %}
         </div>
         <div class="profile-info-group">
-            <span class="profile-info-group__text">Изображения</span>
+            <span class="profile-info-group__text">Изображения, в соотношении сторон 16:9</span>
             <div class="input-group mb-3">
-                {{ form.images(class='form-control', required=True) }}
+                {{ form.images(class='form-control', required=True, accept=".png,.jpg,.jpeg") }}
             </div>
             {% for error in form.images.errors %}
             <div class="invalid-feedback d-block">{{ error }}</div>

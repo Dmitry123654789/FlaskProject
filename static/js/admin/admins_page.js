@@ -28,6 +28,7 @@ const userTable = new TableManager({
         { field: "email", label: "Почта" },
         { field: "phone", label: "Телефон" },
         { field: "sex", label: "Пол" },
+        { field: "role_name", label: "Роль" },
     ],
     data: data,
     applySearch_func: applySearch,
@@ -42,7 +43,7 @@ function loadUsers() {
             .then(response => response.json())
             .then(data => {
 
-            let allUsers = data['users'].map(user => {
+            let allAdmins = data['users'].filter(user => user.role_id >= 2).map(user => {
                 const cleanedUser = {};
                 for (const key in user) {
                     if (user.hasOwnProperty(key)) {
@@ -52,7 +53,7 @@ function loadUsers() {
                 cleanedUser['role_name'] = roles[user['role_id'] - 1]['name'];
                 return cleanedUser;
             });
-            userTable.setData(allUsers);
+            userTable.setData(allAdmins);
 
         })
             .catch(err => console.error('Ошибка загрузки:', err));

@@ -122,10 +122,33 @@ radial-gradient(at 95% 13%, hsla(40,44%,84%,0.82) 0px, transparent 50%);
     border: none;
     background: none;
     opacity: 0.7;
-    right: 20px;
-    top: 20px;
+    right: 10px;
+    top: 10px;
 }
 
 .modal-window .btn-close:hover {
     opacity: 1;
+}
+
+.text-nav-navigane {
+    font-size: 20px;
+}
+
+.div-nav-navigane {
+    border: 0 solid rgba(255, 255, 255, 0);
+    border-bottom-width: 1px;
+}
+
+.div-nav-navigane:hover {
+    border-bottom-color: #FFFFFF;
+}
+
+.text-nav-title {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+.offcanvas-title {
+    margin-top: 0;
+    margin-bottom: 30px
 }

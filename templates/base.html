@@ -23,19 +23,26 @@
     <div class="offcanvas offcanvas-start text-bg-dark" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
          aria-labelledby="staticBackdropLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="staticBackdropLabel">Навигация</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body">
-            <a><a href="/">О компании</a><br></a>
-            <a><a href="/catalog">Католог</a><br></a>
-            <a><a href="/portfolio">Портфолио</a><br></a>
+        <div class="offcanvas-body" style="padding-top: 0">
+            <div class="offcanvas-title" id="staticBackdropLabel"><a style="color: #fff !important"
+                                                                     class="text-nav-title">Династия</a></div>
+            <div class="div-nav-navigane"><a class="text-nav-navigane" href="/">О компании</a></div>
+            <div class="div-nav-navigane"><a class="text-nav-navigane" href="/catalog">Католог</a></div>
+            <div class="div-nav-navigane"><a class="text-nav-navigane" href="/portfolio">Портфолио</a></div>
             {% if current_user.is_authenticated %}
-                <a><a href="/profile/{{ current_user.id }}">Профиль</a><br></a>
+                <div class="div-nav-navigane"><a class="text-nav-navigane"
+                                                 href="/profile/{{ current_user.id }}">Профиль</a></div>
+                <div class="div-nav-navigane"><a class="text-nav-navigane" href="/logout">Выход</a></div>
             {% else %}
-                <a><a href="/login">Войти</a><br></a>
-                <a><a href="/register">Зарегистрироваться</a><br></a>
+                <div class="div-nav-navigane"><a class="text-nav-navigane" href="/login">Войти</a></div>
+                <div class="div-nav-navigane"><a class="text-nav-navigane" href="/register">Зарегистрироваться</a></div>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.role_id >= 2 %}
+                <div class="div-nav-navigane"><a class="text-nav-navigane" href="/admin/users">Админ-панель</a>
+                </div>
             {% endif %}
         </div>
     </div>

@@ -5,6 +5,8 @@ from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest
 
 from data.product import Product
+from data.users import User
+from .api_tools import check_admin_request
 from .parser_order import parser
 from data import db_session
 from data.order import Order
@@ -18,20 +20,27 @@ class OrdersResource(Resource):
             raise NotFound('Заказ не найден')
         dict_answer = {'orders': order.to_dict(only=('id', 'id_user', 'status', 'price', 'create_date'))}
         products = session.get(Product, order.id_product)
+        user = session.get(User, order.id_user)
         if not products:
             dict_answer['orders']['product'] = {}
         else:
             dict_answer['orders']['product'] = products.to_dict()
+        if not user:
+            dict_answer['orders']['user'] = {}
+        else:
+            dict_answer['orders']['user'] = user.to_dict(only=('id', 'name', 'surname', 'email', 'phone', 'sex'))
+
         return jsonify(dict_answer)
 
     def delete(self, orders_id):
-        session = db_session.create_session()
-        orders = session.get(Order, orders_id)
-        if not orders:
-            raise NotFound('Не найден заказ для удаления')
-        session.delete(orders)
-        session.commit()
-        return jsonify({'success': 'OK'})
+        if check_admin_request(request.headers.get('Authorization')):
+            session = db_session.create_session()
+            orders = session.get(Order, orders_id)
+            if not orders:
+                raise NotFound('Не найден заказ для удаления')
+            session.delete(orders)
+            session.commit()
+            return jsonify({'success': 'OK'})
 
     def put(self, orders_id):
         args = parser.parse_args()
@@ -44,7 +53,8 @@ class OrdersResource(Resource):
                  ['id_product', 'id_user', 'status', 'price', 'create_date']):
             for key, value in args.items():
                 if key == 'create_date':
-                    setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M'))
+                    if not value is None:
+                        setattr(order, key, datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
                 else:
                     setattr(order, key, value)
             db_sess.commit()

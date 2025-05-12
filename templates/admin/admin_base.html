@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile-page__wrapper">
+<div class="profile-page__wrapper background-fill">
     <div class="profile-container">
         <div class="profile-sidebar__wrapper">
             <nav class="profile-menu">
@@ -25,7 +25,7 @@
                     {% endif %}
                     <li class="profile-menu-item {% if '/appeals' in request.path %}active{% endif %}"><a
                             href="{{ url_for('appeals_page') }}">Обращения</a></li>
-                    {% if current_user.role_id == 4 %}
+                    {% if current_user.role_id >= 3 %}
                     <li class="profile-menu-item {% if '/admins' in request.path %}active{% endif %}"><a
                             href="{{ url_for('admin_page') }}">Админы</a></li>
                     {% endif %}

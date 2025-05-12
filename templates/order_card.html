@@ -1,7 +1,7 @@
 {% if order %}
 
     <div class="order-card__wrapper {{ order.status }}" data-date="{{ order.create_date }}" data-price="{{ order.price }}">
-        <a href="/catalog/{{ order.product.id }}" class="order-card-link">
+        <a href="/order/{{ order.id }}" class="order-card-link">
             <div class="order-card">
             <span class="date date-order">Заказ сделан: {{ order.create_date }}</span>
                 <div class="order-state">
@@ -17,11 +17,13 @@
                     {% elif order.status == 'done' %}
                         <img src="{{ url_for('static', filename='svg/order-done.svg') }}" alt="завершён">
                         <div class="order-state__text">Заказ завершён</div>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='svg/order-wait.svg') }}" alt="собирается">
+                        <div class="order-state__text">Заказ зафиксирован</div>
                     {% endif %}
-
                 </div>
                 <div class="order-name">{{ order.product.title }}</div>
-                <div class="order-price">{{ order.price }} ₽</div>
+                <div class="order-price">{{ "{:,}".format(order.price).replace(",", " ") }} ₽</div>
             </div>
         </a>
     </div>
