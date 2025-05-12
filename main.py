@@ -511,10 +511,11 @@ def user_info(user_id):
             orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
             if len(orders) > 0:
                 return render_template('fail.html', errr_code=403, message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
-            logout_user()
-            del_user = delete(f'http://localhost:8080/api/users/{user_id}')
+            tokn = generate_token({'id': current_user.id})
+            del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
             del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
             del_user = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            logout_user()
             return redirect('/')
         form.phone.data = current_user.phone
         form.email.data = current_user.email
