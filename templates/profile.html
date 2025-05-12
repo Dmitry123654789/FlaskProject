@@ -62,7 +62,7 @@
     <script>
         const userId = {{user_id|tojson}}
 
-        loadUser(userId).then(data => {
+        loadApiUser(userId).then(data => {
             const user = data['user']
             document.getElementById('user_avatar_info').innerText = user['name'] + " " + user['surname']
         });

@@ -1,91 +1,97 @@
 {% extends 'admin/admin_base.html' %}
 
 {% block admin_content %}
-    <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
-    <div class="profile-main-section__wrapper">
-        <div class="content-label">Профиль пользователя {{ user_id }}</div>
-        <form id="profileForm" method="post">
-            <div class="profile-info-group">
-                <span class="profile-info-group__text">Контактные данные</span>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Телефон</span>
-                    {{ form.phone(class='form-control', placeholder='+7') }}
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="input-email-label">E-mail</span>
-                    {{ form.email(class='form-control', placeholder='example@mail.ru') }}
-
-                </div>
+<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
+<div class="profile-main-section__wrapper">
+    <div class="content-label">Профиль пользователя {{ user_id }}</div>
+    <form id="profileForm" method="post">
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Контактные данные</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Телефон</span>
+                {{ form.phone(class='form-control', placeholder='+7') }}
             </div>
-            <div class="profile-info-group">
-                <span class="profile-info-group__text">Личные данные</span>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Фамилия</span>
-                    {{ form.surname(class='form-control', placeholder='Фамилия') }}
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Имя</span>
-                    {{ form.name(class='form-control', placeholder='Имя') }}
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Отчество</span>
-                    {{ form.patronymic(class='form-control', placeholder='Отчество') }}
-                </div>
-            </div>
-            <div class="profile-info-group">
-                <span class="profile-info-group__text">Дата рождения</span>
-                {{ form.birth_date(class='form-control input-group') }}
-            </div>
-            <div class="profile-info-group">
-                <span class="profile-info-group__text">Ваш пол</span>
-                <div class="input-group"
-                     style="display: grid; grid-template-rows: 100%; grid-template-columns: 100px auto; column-gap: 20px">
-                    {% for subfield in form.sex %}
-                        <div class="radio-group">
-                            <span class="radio-checkbox">{{ subfield }}</span>
-                            <span>{{ subfield.label }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="submit__wrapper">
-                {% if current_user.role_id > 2 %}
-                    <input class="btn btn-secondary save-btn input-group" type="submit" name="save_submit"
-                           value="Сохранить">
-                    <span id="save-status-text">{{ status_text }}</span>
-                {% endif %}
-                {% if current_user.role_id == 4 %}
-                    <a href="#" class="btn btn-danger" data-easy-toggle="#modalWin" data-easy-class="show">Удалить
-                        аккаунт</a>
-                    {% include 'form_confirmation.html' %}
-                {% endif %}
-            </div>
-        </form>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cached = localStorage.getItem("cached_user");
-            if (!cached) return;
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input-email-label">E-mail</span>
+                {{ form.email(class='form-control', placeholder='example@mail.ru') }}
 
-            const data = JSON.parse(cached);
+            </div>
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Личные данные</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Фамилия</span>
+                {{ form.surname(class='form-control', placeholder='Фамилия') }}
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Имя</span>
+                {{ form.name(class='form-control', placeholder='Имя') }}
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Отчество</span>
+                {{ form.patronymic(class='form-control', placeholder='Отчество') }}
+            </div>
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Дата рождения</span>
+            {{ form.birth_date(class='form-control input-group') }}
+        </div>
+        <div class="profile-info-group">
+            <span class="profile-info-group__text">Ваш пол</span>
+            <div class="input-group"
+                 style="display: grid; grid-template-rows: 100%; grid-template-columns: 100px auto; column-gap: 20px">
+                {% for subfield in form.sex %}
+                <div class="radio-group">
+                    <span class="radio-checkbox">{{ subfield }}</span>
+                    <span>{{ subfield.label }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="submit__wrapper">
+            {% if current_user.role_id > 2 %}
+            <input class="btn btn-secondary save-btn input-group" type="submit" name="save_submit"
+                   value="Сохранить">
+            <span id="save-status-text">{{ status_text }}</span>
+            {% endif %}
+            {% if current_user.role_id == 4 %}
+            <a href="#" class="btn btn-danger" data-easy-toggle="#modalWin" data-easy-class="show">Удалить
+                аккаунт</a>
+            {% include 'form_confirmation.html' %}
+            {% endif %}
+        </div>
+    </form>
+</div>
+<script>
 
-            const fillIfExists = (id, value) => {
-                const el = document.getElementById(id);
-                if (el && value !== undefined) el.value = value;
-            };
 
-            fillIfExists("phone", data.phone);
-            fillIfExists("email", data.email);
-            fillIfExists("surname", data.surname);
-            fillIfExists("name", data.name);
-            fillIfExists("patronymic", data.patronymic);
-            fillIfExists("birth_date", data.birth_date);
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const user_id = {{user_id|tojson}}
 
-            // Пол: выбираем radio с нужным value
-            if (data.sex) {
-                const sexRadio = document.querySelector(`input[name="sex"][value="${data.sex}"]`);
-                if (sexRadio) sexRadio.checked = true;
-            }
-        });
-    </script>
+        loadApiUser(user_id).then(data => {
+        const user = data['user']
+
+        const fillIfExists = (id, value) => {
+            const el = document.getElementById(id);
+            if (el && value !== undefined) el.value = value;
+        };
+
+        fillIfExists("phone", user.phone);
+        fillIfExists("email", user.email);
+        fillIfExists("surname", user.surname);
+        fillIfExists("name", user.name);
+        fillIfExists("patronymic", user.patronymic);
+        fillIfExists("birth_date", user.birth_date);
+
+        // Пол: выбираем radio с нужным value
+        if (user.sex) {
+            const sexRadio = document.querySelector(`input[name="sex"][value="${user.sex}"]`);
+            if (sexRadio) sexRadio.checked = true;
+        }
+    });
+    });
+
+</script>
 {% endblock %}

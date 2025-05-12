@@ -38,3 +38,19 @@ async function loadUser(userId) {
         }
     }
 }
+
+async function loadApiUser(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`);
+        if (!response.ok) {
+            document.getElementsByClassName("profile-main__wrapper")[0].innerHTML = `<h2>Пользователь не найден</h2>`
+            throw new Error("Пользователь не найден");
+        };
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Ошибка при загрузке пользователя:", error);
+        throw error;
+        }
+}

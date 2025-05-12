@@ -248,7 +248,8 @@ def admin_product_page(product_id):
 
         if 'delete_submit' in request.form:
             tokn = generate_token({'id': current_user.id})
-            resp = delete(f'http://localhost:8080/api/products/{product_id}', headers={'Authorization': 'Bearer ' + tokn})
+            resp = delete(f'http://localhost:8080/api/products/{product_id}',
+                          headers={'Authorization': 'Bearer ' + tokn})
             if resp.status_code == 200:
                 return redirect(f'/admin/products')
             return render_template('fail.html', message='Произошла ошибка', errr_code=500)
@@ -322,9 +323,9 @@ def home_page():
 
 @app.route('/portfolio')
 def portfolio():
-
     direct = os.path.join('static', 'img', 'products')
-    all_files1 = [[os.path.join(direct, x, i) for i in os.listdir(os.path.join(direct, x))] for x in os.listdir(direct) if x != 'no_prod.png']
+    all_files1 = [[os.path.join(direct, x, i) for i in os.listdir(os.path.join(direct, x))] for x in os.listdir(direct)
+                  if x != 'no_prod.png']
     all_files = []
     for file in all_files1:
         all_files.extend(file)
@@ -366,6 +367,7 @@ def handle_generic_exception(error):
         return response
     else:
         return render_template('fail.html', errr_code=500, message=str(error))
+
 
 @app.route('/catalog')
 def catalog():
@@ -506,11 +508,14 @@ def user_info(user_id):
             post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
             post_notif = post('http://localhost:8080/api/notification', json=notif_json)
             if post_status.status_code == 200:
+                logout_user()
+                login_user(User(**post_status.json()['user']), remember=True)
                 return redirect(f'/profile/{user_id}/info')
         if 'delete_submit' in request.form:
             orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
             if len(orders) > 0:
-                return render_template('fail.html', errr_code=403, message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
+                return render_template('fail.html', errr_code=403,
+                                       message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
             tokn = generate_token({'id': current_user.id})
             del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
             del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
@@ -560,7 +565,7 @@ def order_page(order_id):
         if 'delete_submit' in request.form and current_user.role_id == 4:
             tokn = generate_token({'id': current_user.id})
             req = delete(f'http://localhost:8080/api/orders/{order_id}',
-                          headers={'Authorization': 'Bearer ' + tokn})
+                         headers={'Authorization': 'Bearer ' + tokn})
             if req.status_code == 200:
                 return redirect(f'/admin/orders')
     if order['id_user'] != current_user.id and not check_if_support(current_user):
