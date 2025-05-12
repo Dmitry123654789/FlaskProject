@@ -8,20 +8,20 @@ const testimonials = [
         text: "Высокое качество обслуживание, быстрое и качественное выполнение заказов."
     },
     {
-        name: "Jane Smith",
-        text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        "name": "Иванова Мария",
+        "text": "Очень довольна заказом! Мебель идеально вписалась в интерьер, всё аккуратно и в срок."
     },
     {
-        name: "Bob Johnson",
-        text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        "name": "Козлов Алексей",
+        "text": "Понравился проффессиональный подход к заказу и отличное качество материалов."
     },
     {
-        name: "Alice Brown",
-        text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        "name": "Смирнова Елена",
+        "text": "Отличный сервис! Менеджер помог с выбором, доставка очень быстрая."
     },
     {
-        name: "Charlie Davis",
-        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium."
+        "name": "Никитин Павел",
+        "text": "Работают профессионалы. Учли все пожелания, собрали быстро и без лишней суеты."
     }
 ];
 

@@ -38,15 +38,12 @@ div {
 }
 
 .background-fill {
-    background-color: #ff99fc;
-    background-image: radial-gradient(at 2% 51%, hsla(12, 85%, 64%, 1) 0px, transparent 50%),
-    radial-gradient(at 22% 10%, hsla(263, 84%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 92% 56%, hsla(182, 70%, 60%, 1) 0px, transparent 50%),
-    radial-gradient(at 61% 18%, hsla(118, 94%, 68%, 1) 0px, transparent 50%),
-    radial-gradient(at 37% 88%, hsla(352, 74%, 79%, 1) 0px, transparent 50%),
-    radial-gradient(at 14% 6%, hsla(332, 76%, 78%, 1) 0px, transparent 50%),
-    radial-gradient(at 52% 52%, hsla(21, 89%, 76%, 1) 0px, transparent 50%),
-    radial-gradient(at 89% 48%, hsla(353, 66%, 68%, 1) 0px, transparent 50%);
+background-color:hsla(44.4, 76.2%, 75.3%, 0.91);
+background-image:
+radial-gradient(at 96% 93%, hsla(40,44%,84%,0.82) 0px, transparent 50%),
+radial-gradient(at 2% 7%, hsla(40,44%,84%,0.82) 0px, transparent 50%),
+radial-gradient(at 5% 91%, hsla(40,44%,84%,0.82) 0px, transparent 50%),
+radial-gradient(at 95% 13%, hsla(40,44%,84%,0.82) 0px, transparent 50%);
 }
 
 .modal {

@@ -40,19 +40,14 @@
 
         <div align="center" class="nav-menu-home">
             <div>
-                <div style="max-width: 1184px; padding-top: 90px;"><a class="text-header">Изготовление корпусной мебели
-                    на
-                    заказ
-                    - индивидуальность и качество!</a>
+                <div style="max-width: 1184px; padding: 120px 0;"><a class="text-header">Изготовление мебели на заказ -
+                    индивидуальность и качество!</a>
                 </div>
-                <div style="padding-top: 20px; padding-bottom: 60px; max-width: 572px"><a style="color: white">Изготавливаем
-                    уникальную корпусную
-                    мебель на заказ по индивидуальным проектам.</a></div>
             </div>
         </div>
 
-        <div align="center" style="padding-top: 100px;">
-            <div class="cards">
+        <div align="center">
+            <div class="cards" style="padding-top: 120px;">
                 <div class="card" style="max-width: 280px">
                     <img width="100px" src="/static/img/home_page/xit.png">
                     <span class="card-span">Изготовление мебели на заказ – быстро и качественно!<br></span>
@@ -81,34 +76,34 @@
             </div>
         </div>
 
-        <h2 align="center" style="padding-top: 100px">Наши товары</h2>
+        <h2 align="center" style="padding-top: 120px; margin-bottom: 30px;">Наши товары</h2>
         <div align="center"
              style="width: calc(100% - 20px);  display: flex;  justify-content: center;" id="services">
 
             <div class="cards-contact" style="flex-wrap: wrap;">
                 <a>
                     <div class="card card-service"
-                         style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
-                        <div class="text-card" style="width: max-content">Кухни на заказ</div>
+                         style="background-image: url(/static/img/home_page/kitchen.jpg)">
+                        <div class="text-card" style="width: max-content">Кухни</div>
                     </div>
                 </a>
                 <a>
                     <div class="card card-service"
-                         style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
+                         style="background-image: url(/static/img/home_page/bed_meb.jpg)">
                         <div class="text-card" style="width: max-content">Мебель для спальни</div>
                     </div>
                 </a>
                 <a>
                     <div class="card card-service"
-                         style="background-image: url(/static/img/home_page/home_page_photo.jpg)">
+                         style="background-image: url(/static/img/home_page/gostin_meb.jpg)">
                         <div class="text-card" style="width: max-content">Мебель для гостиной</div>
                     </div>
                 </a>
             </div>
         </div>
 
-        <div class="about-section" id="about">
-            <h2>О компании</h2>
+        <div class="about-section" id="about" style="padding-top: 120px;">
+            <h2 style="margin-bottom: 30px;">О компании</h2>
             <div class="about-container">
                 <div class="about-content">
 
@@ -122,7 +117,7 @@
                     </div>
 
                     <div class="about-text">
-                        <p>
+                        <p style="font-size: 20px;">
                             Компания «Династия» уже 10 лет занимается изготовлением мебели на заказ.
                             За это время мы накопили огромный опыт в создании качественной корпусной мебели.
                             Нам доверяют сотни клиентов – подтверждением этому служат многочисленные положительные
@@ -143,8 +138,8 @@
             </div>
         </div>
 
-        <div class="carousel-container" id="reviews">
-            <h2 align="center">Отзывы</h2>
+        <div class="carousel-container" id="reviews" style="padding-top: 120px;">
+            <h2 align="center" style="margin-bottom: 30px;">Отзывы</h2>
             <div class="carousel">
                 <!-- Testimonials will be dynamically added here -->
             </div>
@@ -153,8 +148,8 @@
         </div>
         <script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
 
-        <div align="center" style="padding-top: 100px;" id="contacts">
-            <h2>Контакты</h2>
+        <div align="center" id="contacts" style="padding-top: 120px;">
+            <h2 style="margin-bottom: 30px;">Контакты</h2>
             <div class="cards-contact">
                 <div class="card card-contact" align="left">
                     <a class="card-a">Телефон:</a>
@@ -193,6 +188,6 @@
             <a>ООО "Династия" </a>
         </div>
         {% include 'form_appeal.html' %}
-    <script src="/static/js/modal_wind.js"></script>
+        <script src="/static/js/modal_wind.js"></script>
     </div>
 {% endblock %}

@@ -215,8 +215,11 @@ def home_page():
 @app.route('/portfolio')
 def portfolio():
 
-    direct = os.path.join('static', 'img', 'catalog')
-    all_files = [os.path.join(direct, x) for x in os.listdir(direct)]
+    direct = os.path.join('static', 'img', 'products')
+    all_files1 = [[os.path.join(direct, x, i) for i in os.listdir(os.path.join(direct, x))] for x in os.listdir(direct)]
+    all_files = []
+    for file in all_files1:
+        all_files.extend(file)
     shuffle(all_files)
 
     return render_template('portfolio.html', images=all_files)
