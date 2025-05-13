@@ -25,3 +25,23 @@ def check_admin_request(header: str) -> bool:
         abort(401, "Время действия токена истекло")
     except jwt.InvalidTokenError:
         abort(401, "Токен не действителен")
+
+
+def check_user_is_user_request(header: str, get_user_id: int) -> bool:
+    if not header or not header.startswith('Bearer '):
+        abort(401, "Токен не передан или неверен.")
+    token = header.split(' ')[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user_id = payload.get('id')
+        if not user_id:
+            abort(401, "Токен должен содержать ID пользователя")
+        if user_id == get_user_id:
+            abort(403, 'У вас нет прав на выполнение этого действия')
+        else:
+            return True
+    except jwt.ExpiredSignatureError:
+
+        abort(401, "Время действия токена истекло")
+    except jwt.InvalidTokenError:
+        abort(401, "Токен не действителен")

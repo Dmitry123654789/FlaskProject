@@ -160,12 +160,12 @@ def admin_user_page(user_id):
             if len(orders) > 0:
                 return render_template('fail.html', errr_code=403,
                                        message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
-            if current_user.id == user_id:
-                logout_user()
             tokn = generate_token({'id': current_user.id})
             del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
             del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
             del_appeal = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            if current_user.id == user_id:
+                logout_user()
             return redirect('/admin/users')
     return render_template('admin/user.html', form=form, user_id=user_id, admin_role=current_user.role_id)
 

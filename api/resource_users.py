@@ -1,16 +1,12 @@
 from datetime import datetime as ddt, datetime
 
-import jwt
 from flask import request, jsonify, make_response, abort
 from flask_restful import Resource
-from werkzeug.exceptions import BadRequest
-import werkzeug.exceptions
 
-from config import SECRET_KEY
 from data import db_session
-from data.users import User
 from data.roles import Role
-from .api_tools import check_admin_request
+from data.users import User
+from .api_tools import check_admin_request, check_user_is_user_request
 from .parser_user import user_parser
 
 
@@ -94,7 +90,8 @@ class UserResource(Resource):
             only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
 
     def delete(self, user_id):
-        if check_admin_request(request.headers.get('Authorization')):
+        if check_admin_request(request.headers.get('Authorization')) or \
+                check_user_is_user_request(request.headers.get('Authorization'), user_id):
             sess = db_session.create_session()
             user = sess.get(User, user_id)
             if not user:
