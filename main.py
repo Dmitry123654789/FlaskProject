@@ -32,6 +32,7 @@ from forms.user_form import UserForm
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
+API_DOMEN = 'dmitry123654789-flaskproject-fe06.twc1.net'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -112,7 +113,7 @@ def admin_page():
     if request.method == 'POST':
         form.validate()
         tokn = generate_token({'id': current_user.id, 'role_id': current_user.role_id})
-        change_req = put(f'http://localhost:8080/api/users/{form.user_id.data}', json={'role_id': form.role_id.data},
+        change_req = put(f'https://{API_DOMEN}/api/users/{form.user_id.data}', json={'role_id': form.role_id.data},
                          headers={'Authorization': 'Bearer ' + tokn})
         if change_req.status_code == 200:
             form.submit.errors = ['Успешно!']
@@ -148,7 +149,7 @@ def admin_user_page(user_id):
                 'address': form.address.data
             }
 
-            post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
+            post_status = put(f'https://{API_DOMEN}/api/users/{user_id}', json=user_json)
             if post_status.status_code == 201:
                 return render_template('admin/user.html', user_id=user_id, form=form, status_text='Успешно!',
                                        admin_role=current_user.role_id)
@@ -156,14 +157,14 @@ def admin_user_page(user_id):
         if 'delete_submit' in request.form:
             if current_user.role_id != 4:
                 return render_template('fail.html', message='У вас нет прав на эти действия')
-            orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
+            orders = get(f'https://{API_DOMEN}/api/orders?id_user={user_id}').json()['orders']
             if len(orders) > 0:
                 return render_template('fail.html', errr_code=403,
                                        message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
             tokn = generate_token({'id': current_user.id})
-            del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
-            del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
-            del_appeal = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            del_user = delete(f'https://{API_DOMEN}/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
+            del_notif = delete(f'https://{API_DOMEN}/api/notification?id_user={user_id}')
+            del_appeal = delete(f'https://{API_DOMEN}/api/appeal?id_user={user_id}')
             if current_user.id == user_id:
                 logout_user()
                 return redirect('/')
@@ -181,7 +182,7 @@ def appeals_page():
 @support_required
 def admin_send_appeal_answer(appeal_id):
     form = AnswerAppealForm()
-    appeal = get(f'http://localhost:8080/api/appeal/{appeal_id}')
+    appeal = get(f'https://{API_DOMEN}/api/appeal/{appeal_id}')
     if appeal.status_code == 404:
         return render_template('fail.html', message='Не найден вопрос', errr_code=404)
     form.title.data = 'Ответ на обращение: ' + str(appeal_id)
@@ -192,12 +193,12 @@ def admin_send_appeal_answer(appeal_id):
                                    'read': False,
                                    'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
                                    'id_user': appeal.json()['appeals']['id_user']}
-            answer_post = post(f'http://localhost:8080/api/notification', json=answer_notification)
+            answer_post = post(f'https://{API_DOMEN}/api/notification', json=answer_notification)
             if answer_post.status_code == 200:
                 return render_template('admin/appeal_answer_create.html', form=form, appeal_id=appeal_id,
                                        appeal=appeal.json()['appeals'], status_text='Успешно!')
         if 'delete_submit' in request.form:
-            answer_post = delete(f'http://localhost:8080/api/appeal/{appeal_id}')
+            answer_post = delete(f'https://{API_DOMEN}/api/appeal/{appeal_id}')
             if answer_post.status_code == 200:
                 return redirect('/admin/appeals')
 
@@ -220,7 +221,7 @@ def admin_product_create():
             f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type) for
             i in range(len(form.images.data))}
 
-        resp = post('http://localhost:8080/api/full_product', data=form.to_dict(), files=files)
+        resp = post(f'https://{API_DOMEN}/api/full_product', data=form.to_dict(), files=files)
         if resp.status_code == 200:
             return render_template('admin/product_create.html', form=form, success=True,
                                    product_id=resp.json()[0]['id'])
@@ -231,7 +232,7 @@ def admin_product_create():
 @admin_required
 def admin_product_page(product_id):
     form = ProductForm()
-    product_req = get(f'http://localhost:8080/api/products/{product_id}')
+    product_req = get(f'https://{API_DOMEN}/api/products/{product_id}')
     if product_req.status_code == 404:
         return render_template('fail.html', message='Продукт не найден', errr_code='404')
     product = product_req.json()['products']
@@ -241,7 +242,7 @@ def admin_product_page(product_id):
                 f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type)
                 for
                 i in range(len(form.images.data))}
-            resp = put('http://localhost:8080/api/full_product?description_id={}&product_id={}'.format(
+            resp = put(f'https://{API_DOMEN}/api/full_product?description_id={}&product_id={}'.format(
                 product['description_products']['id'], product_id), data=form.to_dict(), files=files)
             if resp.status_code == 200:
                 return redirect(f'/admin/products/{product_id}')
@@ -249,7 +250,7 @@ def admin_product_page(product_id):
 
         if 'delete_submit' in request.form:
             tokn = generate_token({'id': current_user.id})
-            resp = delete(f'http://localhost:8080/api/products/{product_id}',
+            resp = delete(f'https://{API_DOMEN}/api/products/{product_id}',
                           headers={'Authorization': 'Bearer ' + tokn})
             if resp.status_code == 200:
                 return redirect(f'/admin/products')
@@ -289,9 +290,9 @@ def admin_notification_create():
         notif_json = form.to_dict()
         notif_json.update({'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')})
         if notif_json['public']:
-            resp = post('http://localhost:8080/api/notification?public=true', json=notif_json)
+            resp = post(f'https://{API_DOMEN}/api/notification?public=true', json=notif_json)
         else:
-            resp = post('http://localhost:8080/api/notification', json=notif_json)
+            resp = post(f'https://{API_DOMEN}/api/notification', json=notif_json)
         if resp.status_code == 200:
             return render_template('admin/notification_create.html', form=form, success=True)
 
@@ -316,8 +317,8 @@ def home_page():
             'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
             'id_user': current_user.id
         }
-        post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
-        post(f'http://localhost:8080/api/notification', json=notif_data).json()
+        post(f'https://{API_DOMEN}/api/appeal', json=appeal_data).json()
+        post(f'https://{API_DOMEN}/api/notification', json=notif_data).json()
         return redirect(f'/profile/{current_user.id}')
     return render_template('home.html', form=form)
 
@@ -372,27 +373,27 @@ def handle_generic_exception(error):
 
 @app.route('/catalog')
 def catalog():
-    products = get('http://localhost:8080/api/products').json()
+    products = get(f'https://{API_DOMEN}/api/products').json()
     return render_template('catalog.html', products=products)
 
 
 @app.route('/catalog/<int:product_id>', methods=['GET', 'POST'])
 def product(product_id):
-    prod = get(f'http://localhost:8080/api/products/{product_id}').json()['products']
-    products = get('http://localhost:8080/api/products').json()
+    prod = get(f'https://{API_DOMEN}/api/products/{product_id}').json()['products']
+    products = get(f'https://{API_DOMEN}/api/products').json()
     if request.method == 'POST':
         if not current_user.is_authenticated:
             return redirect('/login')
 
         json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'construction',
                       'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
-        response_order = post('http://localhost:8080/api/orders', json=json_order).json()
+        response_order = post(f'https://{API_DOMEN}/api/orders', json=json_order).json()
 
         notification = {'title': 'Регистрация заказа №' + str(response_order['id']),
                         'text': f'\tЗдравствуйте, {current_user.name}! Ваш заказ товара "{prod["title"]}" был оформел, и в скорем времени мы приступим к его выполнению.\n\n\tСпасибо, что выбираете нас!',
                         'public': False, 'read': False, 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
                         'id_user': current_user.id}
-        post('http://localhost:8080/api/notification', json=notification)
+        post(f'https://{API_DOMEN}/api/notification', json=notification)
     return render_template('product.html', prod=prod, products=products)
 
 
@@ -401,7 +402,7 @@ def register():
     form = RegisterForm()
     if request.method == 'POST':
         if form.validate():
-            try_post = post('http://localhost:8080/api/users',
+            try_post = post(f'https://{API_DOMEN}/api/users',
                             json={'email': form.email.data, 'password': form.password.data,
                                   'surname': form.surname.data,
                                   'name': form.name.data, 'sex': form.sex.data,
@@ -421,7 +422,7 @@ def register():
                 'id_user': current_user.id
             }
 
-            post_notif = post('http://localhost:8080/api/notification', json=notif_json)
+            post_notif = post(f'https://{API_DOMEN}/api/notification', json=notif_json)
 
             return render_template('register.html', form=form, success=True)
     return render_template('register.html', form=form)
@@ -431,7 +432,7 @@ def register():
 def login():
     form = UserForm()
     if request.method == 'POST':
-        login_post = post(f'http://localhost:8080/api/login',
+        login_post = post(f'https://{API_DOMEN}/api/login',
                           json={'email': form.email.data, 'password': form.password.data})
         if login_post.status_code == 200:
             user = User(**login_post.json()['user'])
@@ -469,10 +470,10 @@ def profile(user_id):
             'create_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
             'id_user': current_user.id
         }
-        post(f'http://localhost:8080/api/notification', json=notif_data).json()
-        post(f'http://localhost:8080/api/appeal', json=appeal_data).json()
+        post(f'https://{API_DOMEN}/api/notification', json=notif_data).json()
+        post(f'https://{API_DOMEN}/api/appeal', json=appeal_data).json()
         return redirect(f'/profile/{user_id}')
-    orders = get(f'http://localhost:8080/api/orders?id_user={user_id}')
+    orders = get(f'https://{API_DOMEN}/api/orders?id_user={user_id}')
     order = None
     if orders.status_code == 200 and orders.json()['orders']:
         order = max(orders.json()['orders'], key=lambda x: datetime.strptime(x['create_date'], '%Y-%m-%d'))
@@ -506,21 +507,21 @@ def user_info(user_id):
                 'id_user': user_id
             }
 
-            post_status = put(f'http://localhost:8080/api/users/{user_id}', json=user_json)
-            post_notif = post('http://localhost:8080/api/notification', json=notif_json)
+            post_status = put(f'https://{API_DOMEN}/api/users/{user_id}', json=user_json)
+            post_notif = post(f'https://{API_DOMEN}/api/notification', json=notif_json)
             if post_status.status_code == 200:
                 logout_user()
                 login_user(User(**post_status.json()['user']), remember=True)
                 return redirect(f'/profile/{user_id}/info')
         if 'delete_submit' in request.form:
-            orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
+            orders = get(f'https://{API_DOMEN}/api/orders?id_user={user_id}').json()['orders']
             if len(orders) > 0:
                 return render_template('fail.html', errr_code=403,
                                        message='У вас есть незавершенные заказы, обратиесь в поддержку для отмены заказа или дождитесь их выполнения')
             tokn = generate_token({'id': current_user.id})
-            del_user = delete(f'http://localhost:8080/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
-            del_notif = delete(f'http://localhost:8080/api/notification?id_user={user_id}')
-            del_user = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
+            del_user = delete(f'https://{API_DOMEN}/api/users/{user_id}', headers={'Authorization': 'Bearer ' + tokn})
+            del_notif = delete(f'https://{API_DOMEN}/api/notification?id_user={user_id}')
+            del_user = delete(f'https://{API_DOMEN}/api/appeal?id_user={user_id}')
             logout_user()
             return redirect('/')
         form.phone.data = current_user.phone
@@ -538,7 +539,7 @@ def user_info(user_id):
 def user_orders(user_id):
     if current_user.id != user_id and not check_if_admin(current_user):
         return render_template('fail.html', message='У вас нет прав на просмотр профиля другого пользователя')
-    orders = get(f'http://localhost:8080/api/orders?id_user={user_id}').json()['orders']
+    orders = get(f'https://{API_DOMEN}/api/orders?id_user={user_id}').json()['orders']
     return render_template('profile_orders.html', user_id=user_id, orders=orders)
 
 
@@ -546,7 +547,7 @@ def user_orders(user_id):
 @login_required
 def order_page(order_id):
     form = EditOrderForm()
-    order_req = get(f'http://localhost:8080/api/orders/{order_id}')
+    order_req = get(f'https://{API_DOMEN}/api/orders/{order_id}')
     if order_req.status_code == 404:
         return render_template('fail.html', message='Заказ не найден.', errr_code='404')
     order = order_req.json()['orders']
@@ -559,13 +560,13 @@ def order_page(order_id):
                 'price': order['price'],
                 'create_date': order['create_date'],
             }
-            resp = put(f'http://localhost:8080/api/orders/{order_id}', json=data_order)
+            resp = put(f'https://{API_DOMEN}/api/orders/{order_id}', json=data_order)
             if resp.status_code == 200:
                 return redirect(f'/order/{order_id}')
 
         if 'delete_submit' in request.form and current_user.role_id == 4:
             tokn = generate_token({'id': current_user.id})
-            req = delete(f'http://localhost:8080/api/orders/{order_id}',
+            req = delete(f'https://{API_DOMEN}/api/orders/{order_id}',
                          headers={'Authorization': 'Bearer ' + tokn})
             if req.status_code == 200:
                 return redirect(f'/admin/orders')
@@ -582,14 +583,14 @@ def user_notifications(user_id):
     if request.method == 'POST':
         if 'delete_submit' in request.form:
             id = request.form.get('delete_submit')
-            res = delete(f'http://localhost:8080/api/notification/{id}')
+            res = delete(f'https://{API_DOMEN}/api/notification/{id}')
 
         if 'read_submit' in request.form:
             id = request.form.get('read_submit')
-            res = put(f'http://localhost:8080/api/notification/{id}', json={'read': True})
+            res = put(f'https://{API_DOMEN}/api/notification/{id}', json={'read': True})
         return redirect(f'/profile/{user_id}/notifications')
 
-    notifications = get(f'http://localhost:8080/api/notification?id_user={user_id}').json()
+    notifications = get(f'https://{API_DOMEN}/api/notification?id_user={user_id}').json()
     return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 
