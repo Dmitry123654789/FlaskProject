@@ -28,7 +28,7 @@ from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
 from forms.user_form import UserForm
-
+from waitress import serve
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -597,4 +597,5 @@ def user_notifications(user_id):
 
 
 if __name__ == '__main__':
-    app.run(host="192.168.0.4", port=8080)
+    # app.run(host="0.0.0.0", port=5000)
+    serve(app, host="0.0.0.0", port=5000)
