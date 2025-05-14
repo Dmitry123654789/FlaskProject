@@ -595,4 +595,4 @@ def user_notifications(user_id):
 
 if __name__ == '__main__':
     global_init('db/dynasty.sqlite')
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="192.168.0.4", port=8080)
