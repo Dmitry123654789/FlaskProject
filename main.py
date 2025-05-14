@@ -119,7 +119,7 @@ def admin_page():
         elif change_req.status_code == 404:
             form.user_id.errors = ['Пользователь не найден']
         else:
-            print(change_req.status_code, change_req.json())
+            form.user_id.errors = [change_req.json()]
     return render_template('admin/admins_page.html', form=form)
 
 
@@ -594,5 +594,4 @@ def user_notifications(user_id):
 
 if __name__ == '__main__':
     global_init('db/dynasty.sqlite')
-    port = int(os.environ.get("PORT", 4000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=8080)

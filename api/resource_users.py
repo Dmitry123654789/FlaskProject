@@ -21,7 +21,7 @@ class UserListResource(Resource):
         if 'birthday' in request.args.keys() and request.args.get('birthday') == 'true':
             filters.append(User.birth_date == ddt.now())
         if 'email' in request.args.keys():
-            user = session.query(User).filter(User.phone == request.args.get('phone')).first()
+            user = session.query(User).filter(User.email == request.args.get('email')).first()
             if not user:
                 return abort(404, f'Пользователь с email={request.args.get("email")} не найден.')
             return jsonify({'user': user.to_dict(

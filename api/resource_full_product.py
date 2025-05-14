@@ -23,7 +23,8 @@ class FullProductResource(Resource):
         try:
             args = request.form.to_dict()
         except Exception as e:
-            print('error', e)
+            BadRequest(str(e))
+            # print('error', e)
 
         sess = db_session.create_session()
 
