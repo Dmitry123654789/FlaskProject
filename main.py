@@ -166,6 +166,7 @@ def admin_user_page(user_id):
             del_appeal = delete(f'http://localhost:8080/api/appeal?id_user={user_id}')
             if current_user.id == user_id:
                 logout_user()
+                return redirect('/')
             return redirect('/admin/users')
     return render_template('admin/user.html', form=form, user_id=user_id, admin_role=current_user.role_id)
 
