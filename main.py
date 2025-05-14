@@ -65,6 +65,8 @@ api.add_resource(AppealsResource, '/api/appeal/<int:appeals_id>')
 api.add_resource(NotificationsListResource, '/api/notification')
 api.add_resource(NotificationsResource, '/api/notification/<int:notifications_id>')
 
+global_init('db/dynasty.sqlite')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -242,7 +244,7 @@ def admin_product_page(product_id):
                 f'file{i}': (form.images.data[i].filename, form.images.data[i].read(), form.images.data[i].content_type)
                 for
                 i in range(len(form.images.data))}
-            resp = put(f'https://{API_DOMEN}/api/full_product?description_id={}&product_id={}'.format(
+            resp = put(f'https://{API_DOMEN}/' + 'api/full_product?description_id={}&product_id={}'.format(
                 product['description_products']['id'], product_id), data=form.to_dict(), files=files)
             if resp.status_code == 200:
                 return redirect(f'/admin/products/{product_id}')
@@ -595,5 +597,4 @@ def user_notifications(user_id):
 
 
 if __name__ == '__main__':
-    global_init('db/dynasty.sqlite')
     app.run(host="192.168.0.4", port=8080)
