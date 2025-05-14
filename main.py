@@ -596,4 +596,4 @@ def user_notifications(user_id):
     return render_template('profile_notifications.html', user_id=user_id, notifications=notifications)
 
 
-app.run(host="192.168.0.4", port=8080)
+app.run(host="0.0.0.0", port=8080)
