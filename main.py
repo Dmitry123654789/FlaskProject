@@ -29,6 +29,7 @@ from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
 from forms.user_form import UserForm
 from waitress import serve
+
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -385,9 +386,12 @@ def product(product_id):
     if request.method == 'POST':
         if not current_user.is_authenticated:
             return redirect('/login')
-
-        json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'construction',
-                      'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
+        if prod['discount'] and prod['discount'] != 0 and prod['price'] > prod['discount']:
+            json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'construction',
+                          'price': prod['discount'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
+        else:
+            json_order = {'id_product': product_id, 'id_user': current_user.id, 'status': 'construction',
+                          'price': prod['price'], 'create_date': datetime.now().strftime('%Y-%m-%d %H:%M')}
         response_order = post(f'http://localhost:5000/api/orders', json=json_order).json()
 
         notification = {'title': 'Регистрация заказа №' + str(response_order['id']),
