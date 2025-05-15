@@ -4,13 +4,14 @@
     justify-content: center;
     gap: 20px; /* отступы между карточками */
     margin: 0 20px;
-    padding-top: 100px
+    padding-top: 100px;
+    padding-bottom: 50px;
 }
 
 .card {
     flex: 0 0 calc(30% - 20px);
     box-sizing: border-box;
-    height: min-content;
+    max-height: min-content;
     background-color: #f6f6f6;
 }
 

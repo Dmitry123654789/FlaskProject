@@ -412,9 +412,14 @@ def register():
                                   'surname': form.surname.data,
                                   'name': form.name.data, 'sex': form.sex.data,
                                   'birth_date': str(form.birth_date.data)})
-            if try_post.status_code == 400:
-                form.email.errors = ['Данный email уже используется']
-                return render_template('register.html', form=form)
+            if try_post.status_code == 403:
+                field, mes = try_post.json()['message'].split(maxsplit=1)
+                if field == 'email':
+                    form.email.errors = [mes]
+                    return render_template('register.html', form=form)
+                if field == 'password':
+                    form.password.errors = [mes]
+                    return render_template('register.html', form=form)
             elif try_post.status_code == 500:
                 return redirect(url_for('server_error'))
             login_user(User(**try_post.json()['user']), remember=True)

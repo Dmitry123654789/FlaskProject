@@ -10,6 +10,16 @@ from .api_tools import check_admin_request, check_user_is_user_request
 from .parser_user import user_parser
 
 
+def check_password(pas: str) -> str:
+    if len(pas) < 8:
+        return 'Пороль должен быть не менее 8 символов'
+    if not any([x.isalpha() for x in pas]):
+        return 'Пороль должен содеожать хотя бы одну букву'
+    if not any([x.isdigit() for x in pas]):
+        return 'Пароль должен содержать хотя бы одну цифру'
+    return ''
+
+
 class UserListResource(Resource):
     def get(self):
         with db_session.create_session() as session:
@@ -26,11 +36,12 @@ class UserListResource(Resource):
                     return abort(404, f'Пользователь с email={request.args.get("email")} не найден.')
                 return jsonify({'user': user.to_dict(
                     only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id'))})
-    
+
             users = session.query(User).filter(*filters)
             if 'full' in request.args.keys():
                 return jsonify({'users': [item.to_dict(
-                    only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id')) for item
+                    only=('id', 'surname', 'name', 'patronymic', 'phone', 'birth_date', 'sex', 'email', 'role_id')) for
+                    item
                     in
                     users]})
             return jsonify({'users': [item.to_dict(only=('id', 'surname', 'name', 'email')) for item in users]})
@@ -46,7 +57,9 @@ class UserListResource(Resource):
             new_user.birth_date = brth
         with db_session.create_session() as session:
             if session.query(User).filter(User.email == args['email']).first():
-                return abort(400, 'Пользователь с таким email уже существует')
+                return abort(403, 'email Пользователь с таким email уже существует')
+            if check_password(args['password']):
+                return abort(403, f'password {check_password(args['password'])}')
             session.add(new_user)
             session.commit()
 
