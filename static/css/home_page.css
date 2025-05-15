@@ -139,11 +139,11 @@ ul {
 
 .text-card {
     position: absolute;
-    bottom: 10px;
-    left: 15px;
-    line-height: normal;
-    text-shadow: 1px 1px 0 black;
-    font-size: 20px;
+    width: 380px;
+    height: 248px;
+    background-size: cover;
+    padding-top: 70px;
+    padding-left: 20px;
 }
 
 .card-service:hover {
