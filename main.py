@@ -410,7 +410,6 @@ def register():
                                   'surname': form.surname.data,
                                   'name': form.name.data, 'sex': form.sex.data,
                                   'birth_date': str(form.birth_date.data)})
-            print(try_post.json())
             if try_post.status_code == 403:
                 field, mes = try_post.json()['message'].split(maxsplit=1)
                 if field == 'email':
