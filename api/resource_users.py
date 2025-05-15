@@ -59,7 +59,7 @@ class UserListResource(Resource):
             if session.query(User).filter(User.email == args['email']).first():
                 return abort(403, 'email Пользователь с таким email уже существует')
             if check_password(args['password']):
-                return abort(403, f'password {check_password(args['password'])}')
+                return abort(403, f'password {check_password(args["password"])}')
             session.add(new_user)
             session.commit()
 
