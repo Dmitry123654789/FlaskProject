@@ -28,7 +28,7 @@ from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
 from forms.user_form import UserForm
-from waitress import serve
+
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -409,11 +409,20 @@ def register():
                                   'surname': form.surname.data,
                                   'name': form.name.data, 'sex': form.sex.data,
                                   'birth_date': str(form.birth_date.data)})
-            if try_post.status_code == 400:
-                form.email.errors = ['Данный email уже используется']
-                return render_template('register.html', form=form)
-            elif try_post.status_code == 500:
+            print(try_post.json())
+            if try_post.status_code == 403:
+                field, mes = try_post.json()['message'].split(maxsplit=1)
+                if field == 'email':
+                    form.email.errors = [mes]
+                    return render_template('register.html', form=form)
+                if field == 'password':
+                    form.password.errors = [mes]
+                    return render_template('register.html', form=form)
+            if try_post.status_code == 500:
                 return redirect(url_for('server_error'))
+            if try_post.status_code == 400:
+                form.password.errors = [try_post.json()['error']]
+                return render_template('register.html', form=form)
             login_user(User(**try_post.json()['user']), remember=True)
 
             notif_json = {
@@ -597,5 +606,5 @@ def user_notifications(user_id):
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=5000)
-    serve(app, host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000)
+    # serve(app, host="0.0.0.0", port=5000)

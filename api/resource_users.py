@@ -10,6 +10,16 @@ from .api_tools import check_admin_request, check_user_is_user_request
 from .parser_user import user_parser
 
 
+def check_password(pas: str) -> str:
+    if len(pas) < 8:
+        return 'Пороль должен быть не менее 8 символов'
+    if not any([x.isalpha() for x in pas]):
+        return 'Пороль должен содеожать хотя бы одну букву'
+    if not any([x.isdigit() for x in pas]):
+        return 'Пароль должен содержать хотя бы одну цифру'
+    return ''
+
+
 class UserListResource(Resource):
     def get(self):
         session = db_session.create_session()
@@ -46,7 +56,9 @@ class UserListResource(Resource):
             new_user.birth_date = brth
         sess = db_session.create_session()
         if sess.query(User).filter(User.email == args['email']).first():
-            return abort(400, 'Пользователь с таким email уже существует')
+            return abort(403, 'email Пользователь с таким email уже существует')
+        if check_password(args['password']):
+            return abort(403, f'password {check_password(args['password'])}')
         sess.add(new_user)
         sess.commit()
 
