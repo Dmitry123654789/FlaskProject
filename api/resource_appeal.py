@@ -9,47 +9,46 @@ from data.appeal import Appeal
 
 class AppealsResource(Resource):
     def get(self, appeals_id):
-        session = db_session.create_session()
-        appeals = session.get(Appeal, appeals_id)
-        if not appeals:
-            raise NotFound('Обращение не найден')
-        return jsonify({'appeals': appeals.to_dict(
-            only=('id', 'theme', 'question', 'id_user'))})
+        with db_session.create_session() as session:
+            appeals = session.get(Appeal, appeals_id)
+            if not appeals:
+                raise NotFound('Обращение не найден')
+            return jsonify({'appeals': appeals.to_dict(
+                only=('id', 'theme', 'question', 'id_user'))})
 
     def delete(self, appeals_id):
-        session = db_session.create_session()
-        appeals = session.get(Appeal, appeals_id)
-        if not appeals:
-            raise NotFound('Не найдено обращение для удаления')
-        session.delete(appeals)
-        session.commit()
+        with db_session.create_session() as session:
+            appeals = session.get(Appeal, appeals_id)
+            if not appeals:
+                raise NotFound('Не найдено обращение для удаления')
+            session.delete(appeals)
+            session.commit()
         return jsonify({'success': 'OK'})
 
     def put(self, appeals_id):
         args = parser.parse_args()
-        db_sess = db_session.create_session()
-        appeal = db_sess.get(Appeal, appeals_id)
-        if not appeal:
-            raise NotFound('Не найден товар для изменения')
+        with db_session.create_session() as session:
+            appeal = session.get(Appeal, appeals_id)
+            if not appeal:
+                raise NotFound('Не найден товар для изменения')
 
-        elif all(key in args for key in ['theme', 'question', 'id_user']):
-            for key, value in args.items():
-                setattr(appeal, key, value)
-            db_sess.commit()
-            return jsonify({'success': 'OK'})
-
+            elif all(key in args for key in ['theme', 'question', 'id_user']):
+                for key, value in args.items():
+                    setattr(appeal, key, value)
+                session.commit()
+                return jsonify({'success': 'OK'})
         raise BadRequest('Bad Request')
 
 
 class AppealsListResource(Resource):
     def get(self):
-        session = db_session.create_session()
-        filters = []
-        if 'id_user' in request.args.keys():
-            filters.append(Appeal.id_user == int(request.args['id_user']))
-        appeals = session.query(Appeal).filter(*filters)
-        return jsonify({'appeals': [item.to_dict(
-            only=('id', 'theme', 'question', 'id_user')) for item in appeals]})
+        with db_session.create_session() as session:
+            filters = []
+            if 'id_user' in request.args.keys():
+                filters.append(Appeal.id_user == int(request.args['id_user']))
+            appeals = session.query(Appeal).filter(*filters)
+            return jsonify({'appeals': [item.to_dict(
+                only=('id', 'theme', 'question', 'id_user')) for item in appeals]})
 
     def post(self):
         args = parser.parse_args()
@@ -57,25 +56,25 @@ class AppealsListResource(Resource):
             raise BadRequest('Empty request')
 
         elif all(key in args for key in ['theme', 'question', 'id_user']):
-            db_sess = db_session.create_session()
-            appeals = Appeal(
-                theme=args['theme'],
-                question=args['question'],
-                id_user=args['id_user'],
-            )
-            db_sess.add(appeals)
-            db_sess.commit()
-            return jsonify({'id': appeals.id})
+            with db_session.create_session() as session:
+                appeals = Appeal(
+                    theme=args['theme'],
+                    question=args['question'],
+                    id_user=args['id_user'],
+                )
+                session.add(appeals)
+                session.commit()
+                return jsonify({'id': appeals.id})
 
         raise BadRequest('Bad Request')
 
     def delete(self):
-        session = db_session.create_session()
-        if 'id_user' not in request.args.keys():
-            raise BadRequest()
+        with db_session.create_session() as session:
+            if 'id_user' not in request.args.keys():
+                raise BadRequest()
 
-        appeals = session.query(Appeal).filter(Appeal.id_user == request.args['id_user'])
-        for appeal in appeals:
-            session.delete(appeal)
-        session.commit()
+            appeals = session.query(Appeal).filter(Appeal.id_user == request.args['id_user'])
+            for appeal in appeals:
+                session.delete(appeal)
+            session.commit()
         return jsonify({'success': 'OK'})

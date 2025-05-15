@@ -26,44 +26,44 @@ class FullProductResource(Resource):
             BadRequest(str(e))
             # print('error', e)
 
-        sess = db_session.create_session()
+        with db_session.create_session() as session:
 
-        new_description = DescriptionProduct(
-            description=args['description'],
-            size=args['size'],
-            type=args['type'],
-            material=args['material'],
-            color=args['color'],
-            style=args['style'],
-            features=args['features']
-        )
-        sess.add(new_description)
-        sess.commit()
-
-        desc_id = new_description.id
-
-        product_folder = os.path.join('static/img/products/', f'product_{desc_id}')
-        os.makedirs(product_folder, exist_ok=True)
-
-        files = request.files
-        file_num = 1
-        for key, file in files.items():
-            if file and allowed_file(file.filename):
-                fileext = file.filename.split('.')[-1]
-                file_path = os.path.join(product_folder, f'{file_num}.{fileext}')
-                file_num += 1
-                file.save(file_path)
-
-        new_product = Product(
-            price=args['price'],
-            discount=args['discount'],
-            title=args['title'],
-            id_description=desc_id,
-            path_images=product_folder
-        )
-        sess.add(new_product)
-        sess.commit()
-        return jsonify({'message': 'success', 'id': new_product.id}, 200)
+            new_description = DescriptionProduct(
+                description=args['description'],
+                size=args['size'],
+                type=args['type'],
+                material=args['material'],
+                color=args['color'],
+                style=args['style'],
+                features=args['features']
+            )
+            session.add(new_description)
+            session.commit()
+    
+            desc_id = new_description.id
+    
+            product_folder = os.path.join('static/img/products/', f'product_{desc_id}')
+            os.makedirs(product_folder, exist_ok=True)
+    
+            files = request.files
+            file_num = 1
+            for key, file in files.items():
+                if file and allowed_file(file.filename):
+                    fileext = file.filename.split('.')[-1]
+                    file_path = os.path.join(product_folder, f'{file_num}.{fileext}')
+                    file_num += 1
+                    file.save(file_path)
+    
+            new_product = Product(
+                price=args['price'],
+                discount=args['discount'],
+                title=args['title'],
+                id_description=desc_id,
+                path_images=product_folder
+            )
+            session.add(new_product)
+            session.commit()
+            return jsonify({'message': 'success', 'id': new_product.id}, 200)
 
     def put(self):
         try:
@@ -74,34 +74,33 @@ class FullProductResource(Resource):
         if not 'description_id' in request.args.keys() or not request.args['description_id'].isdigit() or \
                 not 'product_id' in request.args.keys() or not request.args['product_id'].isdigit():
             raise BadRequest()
-        sess = db_session.create_session()
-        desc = sess.get(DescriptionProduct, request.args['description_id'])
-        prod = sess.get(Product, request.args['product_id'])
+        with db_session.create_session() as session:
+            desc = session.get(DescriptionProduct, request.args['description_id'])
+            prod = session.get(Product, request.args['product_id'])
+    
+            for key in ['description', 'size', 'type', 'material', 'color', 'style', 'features']:
+                setattr(desc, key, args[key])
+    
+            for key in ['price', 'discount', 'title']:
+                setattr(prod, key, args[key])
+            setattr(prod, 'id_description', request.args['description_id'])
+            session.commit()
+    
+            product_folder = os.path.join('static/img/products/', f'product_{request.args["description_id"]}')
+            files = request.files
 
-        for key in ['description', 'size', 'type', 'material', 'color', 'style', 'features']:
-            setattr(desc, key, args[key])
-
-        for key in ['price', 'discount', 'title']:
-            setattr(prod, key, args[key])
-        setattr(prod, 'id_description', request.args['description_id'])
-        sess.commit()
+            if list(files.values())[0].filename != '':
+                for f in os.listdir(product_folder):
+                    os.remove(product_folder + '/'+ f   )
+            os.makedirs(product_folder, exist_ok=True)
 
 
-        product_folder = os.path.join('static/img/products/', f'product_{request.args["description_id"]}')
-        files = request.files
+            file_num = 1
+            for key, file in files.items():
+                if file and allowed_file(file.filename):
+                    fileext = file.filename.split('.')[-1]
+                    file_path = os.path.join(product_folder, f'{file_num}.{fileext}')
+                    file_num += 1
+                    file.save(file_path)
 
-        if list(files.values())[0].filename != '':
-            for f in os.listdir(product_folder):
-                os.remove(product_folder + '/'+ f   )
-        os.makedirs(product_folder, exist_ok=True)
-
-
-        file_num = 1
-        for key, file in files.items():
-            if file and allowed_file(file.filename):
-                fileext = file.filename.split('.')[-1]
-                file_path = os.path.join(product_folder, f'{file_num}.{fileext}')
-                file_num += 1
-                file.save(file_path)
-
-        return jsonify({'message': 'success', 'id': int(request.args['description_id'])}, 200)
+            return jsonify({'message': 'success', 'id': int(request.args['description_id'])}, 200)

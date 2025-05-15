@@ -13,8 +13,7 @@ class ProductForm(FlaskForm):
     size = StringField('Размер товара XxYxZ', validators=[DataRequired()])
     type = StringField('Тип товара', validators=[DataRequired()])
     material = StringField('Материал товара', validators=[DataRequired()])
-    color = SelectField('Цвет товара', validators=[DataRequired()],
-                        choices=[('red', 'Красный'), ('green', 'Зеленый'), ('blue', 'Синий')])
+    color = StringField('Цвет товара', validators=[DataRequired()])
     style = StringField('Стиль товара', validators=[DataRequired()])
     features = StringField('Особенности товара', validators=[DataRequired()])
 
