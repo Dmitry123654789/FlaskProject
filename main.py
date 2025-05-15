@@ -7,7 +7,6 @@ from flask import redirect, request, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
 from requests import get, put, post, delete
-from waitress import serve
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
@@ -29,11 +28,10 @@ from forms.notification_form import NotificationForm
 from forms.product_form import ProductForm
 from forms.register_form import RegisterForm
 from forms.user_form import UserForm
-
+from waitress import serve
 my_dir = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
-API_DOMEN = 'dmitry123654789-flaskproject-fe06.twc1.net'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -410,19 +408,11 @@ def register():
                                   'surname': form.surname.data,
                                   'name': form.name.data, 'sex': form.sex.data,
                                   'birth_date': str(form.birth_date.data)})
-            if try_post.status_code == 403:
-                field, mes = try_post.json()['message'].split(maxsplit=1)
-                if field == 'email':
-                    form.email.errors = [mes]
-                    return render_template('register.html', form=form)
-                if field == 'password':
-                    form.password.errors = [mes]
-                    return render_template('register.html', form=form)
-            if try_post.status_code == 500:
-                return redirect(url_for('server_error'))
             if try_post.status_code == 400:
-                form.password.errors = [try_post.json()['error']]
+                form.email.errors = ['Данный email уже используется']
                 return render_template('register.html', form=form)
+            elif try_post.status_code == 500:
+                return redirect(url_for('server_error'))
             login_user(User(**try_post.json()['user']), remember=True)
 
             notif_json = {

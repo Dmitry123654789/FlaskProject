@@ -139,11 +139,9 @@ ul {
 
 .text-card {
     position: absolute;
-    width: 380px;
-    height: 248px;
-    background-size: cover;
-    padding-top: 70px;
-    padding-left: 20px;
+    bottom: 10px;
+    left: 10px;
+    line-height: normal;
 }
 
 .card-service:hover {
