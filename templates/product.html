@@ -1,132 +1,133 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link href="{{ url_for('static', filename='css/product.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/product.css') }}" rel="stylesheet">
 {% endblock %}
 
 
 {% block content %}
-    <div class="background-fill">
+<div class="background-fill">
 
-        <div class="container">
-            <div class="content">
-                <div class="left-block">
-                    {# carousel #}
-                    <div id="carouselExampleIndicators" class="carousel slide">
+    <div class="container">
+        <div class="content">
+            <div class="left-block">
+                {# carousel #}
+                <div id="carouselExampleIndicators" class="carousel slide">
                     {% if prod.path_images is not none %}
-                        {% set img = prod.path_images.split(',') %}
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
-                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                    {% set img = prod.path_images.split(',') %}
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                class="active" aria-current="true" aria-label="Slide 1"></button>
 
-                            {% for _ in img[1:] %}
-                                <button type="button" data-bs-target="#carouselExampleIndicators"
-                                        data-bs-slide-to="{{ loop.index }}"
-                                        aria-label="Slide {{ loop.index  + 1 }}"></button>
-                            {% endfor %}
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active" style="aspect-ratio: 16/9;">
-                                <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + img[0]) }}"
-                                     class="d-block w-100" alt="Фото потерялось оп пути к вам"
-                                     style="aspect-ratio: 16/9;">
-                            </div>
-                            {% for path in img[1:] %}
-                                <div class="carousel-item" style="aspect-ratio: 16/9;">
-                                    <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + path) }}"
-                                         class="d-block w-100" alt="Фото потерялось оп пути к вам"
-                                         style="aspect-ratio: 16/9;">
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
-                                    class="active" aria-current="true" aria-label="Slide 1"></button>
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{{ url_for('static', filename='img/products/no_prod.png') }}"
-                                     class="d-block w-100" alt="Фото потерялось оп пути к вам"
-                                     style="height: 50%; max-height: 600px;">
-                            </div>
-                        </div>
-                    {% endif %}
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                                data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                                data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                    {# end carousel#}
-                </div>
-                <div class="right-block">
-                    <h5 class="card-title" style="font-size: 35px;">{{ prod.title }}</h5>
-                    {% if prod.discount is none or prod.discount <= prod.price %}
-                        <h5 style="font-size: 25px;" class="card-title">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</h5>
-                    {% else %}
-                        <a class="card-title discount-card" style="color: red; font-size: 25px">{{ "{:,}".format(prod.price).replace(",", " ") }}₽
-                            <s style="color: #9f9f9f;">{{ "{:,}".format(prod.discount).replace(",", " ") }}₽</s>
-                        </a>
-
-                    {% endif %}
-                    <form class="d-grid gap-2 col-6 mx-auto" style="margin: 0 !important" method="post">
-                        <button class="btn btn-primary" type="submit" style="width: max-content;">
-                            Заказать товар
-                        </button>
-                    </form>
-                    <div class="descript">
-                        {% set param = ['', 'Размеры', 'Тип', 'Материал', 'Цвет', 'Стиль', 'Особености'] %}
-                        {% for des in ['description', 'size', 'type', 'material', 'color', 'style', 'features'] %}
-                            {% if not prod.description_products[des] is none %}
-                                <div class="descript-row">
-                                    {% if des == 'description' %}
-                                        <div class="descript-key">Описание</div>
-                                        <div class="descript-value">{{ prod.description_products[des] }}</div>
-                                    {% else %}
-                                        <div class="descript-key">{{ param[loop.index - 1] }}</div>
-                                        <div class="descript-value">{{ prod.description_products[des] }}</div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
+                        {% for _ in img[1:] %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide-to="{{ loop.index }}"
+                                aria-label="Slide {{ loop.index  + 1 }}"></button>
                         {% endfor %}
                     </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" style="aspect-ratio: 16/9;">
+                            <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + img[0]) }}"
+                                 class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                 style="aspect-ratio: 16/9;">
+                        </div>
+                        {% for path in img[1:] %}
+                        <div class="carousel-item" style="aspect-ratio: 16/9;">
+                            <img src="{{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + path) }}"
+                                 class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                 style="aspect-ratio: 16/9;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                class="active" aria-current="true" aria-label="Slide 1"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{{ url_for('static', filename='img/products/no_prod.png') }}"
+                                 class="d-block w-100" alt="Фото потерялось оп пути к вам"
+                                 style="height: 50%; max-height: 600px;">
+                        </div>
+                    </div>
+                    {% endif %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                {# end carousel#}
+            </div>
+            <div class="right-block">
+                <h5 class="card-title" style="font-size: 35px;">{{ prod.title }}</h5>
+                {% if prod.discount is none or prod.discount >= prod.price or prod.discount == 0 %}
+                <h5 style="font-size: 25px;" class="card-title">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</h5>
+                {% else %}
+                <a class="card-title discount-card" style="color: red; font-size: 25px">{{
+                    "{:,}".format(prod.price).replace(",", " ") }}₽
+                    <s style="color: #9f9f9f;">{{ "{:,}".format(prod.discount).replace(",", " ") }}₽</s>
+                </a>
+
+                {% endif %}
+                <form class="d-grid gap-2 col-6 mx-auto" style="margin: 0 !important" method="post">
+                    <button class="btn btn-primary" type="submit" style="width: max-content;">
+                        Заказать товар
+                    </button>
+                </form>
+                <div class="descript">
+                    {% set param = ['', 'Размеры', 'Тип', 'Материал', 'Цвет', 'Стиль', 'Особености'] %}
+                    {% for des in ['description', 'size', 'type', 'material', 'color', 'style', 'features'] %}
+                    {% if not prod.description_products[des] is none %}
+                    <div class="descript-row">
+                        {% if des == 'description' %}
+                        <div class="descript-key">Описание</div>
+                        <div class="descript-value">{{ prod.description_products[des] }}</div>
+                        {% else %}
+                        <div class="descript-key">{{ param[loop.index - 1] }}</div>
+                        <div class="descript-value">{{ prod.description_products[des] }}</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
+    </div>
 
-        <div style="padding: 0 20px">
-            <h2 style="display: flex;  justify-content: center;">Посмотрите так же наши другие товары</h2>
-            <div class="card-container">
-                {% for prod in products.products %}
-                    <div class="card" style="width: 18rem;">
-                        <a href="/catalog/{{ prod.id }}">
-                        <img src="{% if prod.path_images is not none %}
+    <div style="padding: 0 20px">
+        <h2 style="display: flex;  justify-content: center;">Посмотрите так же наши другие товары</h2>
+        <div class="card-container">
+            {% for prod in products.products %}
+            <div class="card" style="width: 18rem;">
+                <a href="/catalog/{{ prod.id }}">
+                    <img src="{% if prod.path_images is not none %}
                                 {{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod.path_images.split(',')[0]) }}
                             {% else %}
                                 {{ url_for('static', filename='img/products/no_prod.png') }}
                             {% endif %}"
-                            class="card-img-top card-img-catalog"
-                            alt="Изображение не найдено">
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ prod.title }}</h5>
-                            {% if prod.discount is none or prod.discount <= prod.price %}
-                                <a class="card-title">{{ prod.price }}₽</a>
-                            {% else %}
-                                <a class="card-title discount-card"
-                                   style="color: red">{{ prod.price }}₽</a>
-                                <s style="color: #9f9f9f;">{{ prod.discount }}₽</s>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
+                         class="card-img-top card-img-catalog"
+                         alt="Изображение не найдено">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ prod.title }}</h5>
+                    {% if prod.discount is none or prod.discount <= prod.price %}
+                    <a class="card-title">{{ prod.price }}₽</a>
+                    {% else %}
+                    <a class="card-title discount-card"
+                       style="color: red">{{ prod.price }}₽</a>
+                    <s style="color: #9f9f9f;">{{ prod.discount }}₽</s>
+                    {% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
+</div>
 {% endblock %}

@@ -1,36 +1,36 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link href="{{ url_for('static', filename='css/catalog.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/catalog.css') }}" rel="stylesheet">
 {% endblock %}
 
 
 {% block content %}
-    <div class="background-fill">
-        <div class="card-container">
-            {% for prod in products.products %}
-                <div class="card">
-                    <a href="/catalog/{{ prod.id }}">
-                        <img src="{% if prod.path_images is not none %}
+<div class="background-fill">
+    <div class="card-container">
+        {% for prod in products.products %}
+        <div class="card">
+            <a href="/catalog/{{ prod.id }}">
+                <img src="{% if prod.path_images is not none %}
                                 {{ url_for('static', filename='img/products/product_' + prod.description_products.id|string + '/' + prod.path_images.split(',')[0]) }}
                             {% else %}
                                 {{ url_for('static', filename='img/products/no_prod.png') }}
                             {% endif %}"
-                            class="card-img-top card-img-catalog"
-                            alt="Изображение не найдено">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ prod.title }}</h5>
-                        {% if prod.discount is none or prod.discount <= prod.price %}
-                            <a class="card-title">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</a>
-                        {% else %}
-                            <a class="card-title discount-card"
-                               style="color: red">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</a>
-                            <s style="color: #9f9f9f;">{{ "{:,}".format(prod.discount).replace(",", " ") }}₽</s>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
+                     class="card-img-top card-img-catalog"
+                     alt="Изображение не найдено">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">{{ prod.title }}</h5>
+                {% if prod.discount is none or prod.discount >= prod.price or prod.discount == 0 %}
+                <a class="card-title">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</a>
+                {% else %}
+                <a class="card-title discount-card"
+                   style="color: red">{{ "{:,}".format(prod.price).replace(",", " ") }}₽</a>
+                <s style="color: #9f9f9f;">{{ "{:,}".format(prod.discount).replace(",", " ") }}₽</s>
+                {% endif %}
+            </div>
         </div>
+        {% endfor %}
     </div>
+</div>
 {% endblock %}
