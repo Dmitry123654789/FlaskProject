@@ -7,7 +7,6 @@ from flask import redirect, request, url_for
 from flask_login import current_user, logout_user, login_user, LoginManager, login_required
 from flask_restful import Api
 from requests import get, put, post, delete
-from waitress import serve
 from werkzeug.exceptions import HTTPException
 
 from api import resource_users
@@ -606,5 +605,5 @@ def user_notifications(user_id):
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=5000)
-    serve(app, host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000)
+    # serve(app, host="0.0.0.0", port=5000)
